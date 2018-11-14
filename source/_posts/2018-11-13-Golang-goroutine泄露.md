@@ -1,5 +1,5 @@
 ---
-title: Goroutine泄露
+title: Golang-goroutine泄露
 date: 2018-11-13 16:59:31
 categories:
 - Golang
@@ -39,7 +39,7 @@ func queryAll() int {
 func main() {  
     for i := 0; i < 4; i++ {  
         queryAll()  
-        fmt.Printf("#goroutines: %d", runtime.NumGoroutine())  
+        fmt.Printf("#goroutines: %d\n", runtime.NumGoroutine())  
     }  
 }
 ```
