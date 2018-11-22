@@ -11,12 +11,13 @@ comments: true
 
 ## channel的特性
 
-* 缓冲与非缓冲
+* 缓冲(len, cap操作)与非缓冲
 * 通过select从多个channel中读取
 * 通过range对一个channel进行循环读取
 * 从nil channel读写会阻塞
 * 从被close的channel写会panic，读会返回(零值, false)
 * 已经被close的channel，再次close会panic
+* channel并不需要显式的close，如果没有goroutine对其读写，则channel会被GC回收
   
 关闭channel的原则: **不要在消费端关闭，不要关闭有多个并行的生产者的channel**
 
