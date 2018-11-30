@@ -36,7 +36,7 @@ comments: true
     * before_script: 每一个Job执行之前的脚本
     * after_script: 每一个Job执行之后的脚本
     * variables: 定义变量
-    * cache: 定义与后续Job之间应缓存的文件，全局缓存，所有的Job都可以使用该缓存 
+    * cache: 定义与后续Job之间应缓存的文件，全局缓存，所有的Job都可以使用该缓存
 
   * Job中的关键字
     * image: 任务使用的docker镜像，为空时使用根中的定义
