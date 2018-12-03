@@ -117,14 +117,20 @@ MemStats: 内存分配器的统计信息
 * 并发与并行
   * 并行指的是在不同的物理处理器上同时执行不同的代码片段，并行可以同时做很多事情，而并发是同时管理很多事情
 
+* 线程模型 - 线程与内核调度实体(内核线程)的关系
+  * 1:1绑定 内核级线程(python gevent)
+  * n:1绑定 用户级线程(c++ std:thread)
+  * n:m动态绑定 混合级线程(golang goroutine)
+
 * 为什么需要语言级别的调度
   * OS的线程调度代价大
   * GC需要stop the workd，因此需要对goroutine进行调度，使其在GC时停止
 
 * 主要组成(G、P、M)
   * 每一个Go程序都自带一个runtime，负责与OS进行交互
-  * G: goroutine M: machine|thread
-  * P: processor 可以看作是一个在单线程上运行的goroutine队列
+  * G: goroutine
+  * P: processor 逻辑处理器，可以看作是一个在单线程上运行的goroutine队列
+  * M: machine|thread 分别从全局P和本地P中获取goroutine来运行
 
 ![image](/images/goroutine调度之G、P、M.jpg)
 
@@ -135,6 +141,14 @@ MemStats: 内存分配器的统计信息
   * 处于本地P中的goroutine，依次排队等待最终等着CPU执行
   * 运行的goroutine因为系统调用而阻塞的时候，将这个goroutine放入到全局P中
   * 各个本地P在运行完自己的队列后，也可以从全局P中获取goroutine
+
+* goroutine的阻塞
+  * 用户态的阻塞和唤醒
+    * channel操作
+    * sync操作
+  * 系统调用阻塞
+    * network IO **实际上golang中，已经使用epoll将阻塞的network IO变为非阻塞**
+    * blocking syscall
 
 * 特点
   * goroutine的动态栈
