@@ -4,15 +4,7 @@ date: 2018-12-07 19:03:56
 categories:
 - Golang
 tags:
-- Golang
-- condition variable
-- lock
-_ sync map
-- mutex
-- sync pool
-- rwmutex
-- once
-- waitgroup
+- sync
 comments: true
 ---
 
