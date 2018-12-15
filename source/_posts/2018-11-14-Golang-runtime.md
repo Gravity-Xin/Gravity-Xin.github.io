@@ -150,6 +150,15 @@ MemStats: 内存分配器的统计信息
     * network IO **实际上golang中，已经使用epoll将阻塞的network IO变为非阻塞**
     * blocking syscall
 
+* goroutine的状态
+  * Grunnable
+  * Grunning
+  * Gwaiting
+  * Gsyscall
+  * Gdead
+
+![协程状态转换](/images/Goroutine状态转换.jpg)
+
 * 特点
   * goroutine的动态栈
   * 抢占式调度，长时间对于运行状态的P会被其他的P抢占
