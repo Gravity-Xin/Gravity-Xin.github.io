@@ -24,16 +24,16 @@ net/http包提供了HTTP客户端和服务端的实现
 
 ## 常量
 
-DefaultMaxHeaderBytes HTTP请求头的默认最大大小，默认1MB
-DefaultMaxIdleConnsPerHost 默认的持久连接设置，HTTP请求对应每个服务的持久连接数，默认2
-TimeFormat HTTP头中的时间格式
+* DefaultMaxHeaderBytes HTTP请求头的默认最大大小，默认1MB
+* DefaultMaxIdleConnsPerHost 默认的持久连接设置，HTTP请求对应每个服务的持久连接数，默认2
+* TimeFormat HTTP头中的时间格式
 
 ## 对象
 
-Client
-    HTTP客户端
-    内部缓存了TCP连接(持久连接)，因此需要尽量复用该对象
-    管理HTTP的Cookie和Header信息在进行重定向时的细节
+* Client
+  * HTTP客户端
+  * 内部缓存了TCP连接(持久连接)，因此需要尽量复用该对象
+  * 管理HTTP的Cookie和Header信息在进行重定向时的细节
 
 ```Go
 type Client struct {
@@ -121,15 +121,15 @@ type Transport struct {
 }
 ```
 
-Header
-    HTTP头部的键值对
+* Header
+  * HTTP头部的键值对
 
 ```Go
 type Header map[string][]string
 ```
 
-Cookie
-    HTTP Cookie信息
+* Cookie
+  * HTTP Cookie信息
 
 ```Go
 type Cookie struct {
@@ -153,9 +153,9 @@ type Cookie struct {
 }
 ```
 
-Request
-    表示客户端发送出去或者服务端收到的HTTP请求
-    在客户端和服务端中可能会有不同的语义
+* Request
+  * 表示客户端发送出去或者服务端收到的HTTP请求
+  * 在客户端和服务端中可能会有不同的语义
 
 ```Go
 type Request struct {
@@ -220,10 +220,10 @@ type Request struct {
 }
 ```
 
-Handler
-    HTTP请求的处理器
-    实现了该接口的对象可以被注册的Server的ServerMux中，为特定的URL路径提供服务
-    FileServer()、StripPrefix()、NotFoundHandler()、RedirectHandler()、TimeoutHandler()分别提供了文件服务、去除URL前缀、NotFound、重定向和超时的处理器
+* Handler
+  * HTTP请求的处理器
+  * 实现了该接口的对象可以被注册的Server的ServerMux中，为特定的URL路径提供服务
+  * FileServer()、StripPrefix()、NotFoundHandler()、RedirectHandler()、TimeoutHandler()分别提供了文件服务、去除URL前缀、NotFound、重定向和超时的处理器
 
 ```Go
 type Handler interface {
@@ -231,8 +231,8 @@ type Handler interface {
 }
 ```
 
-HandlerFunc
-    实现将普通函数转换为Handler的适配器
+* HandlerFunc
+  * 实现将普通函数转换为Handler的适配器
 
 ```Go
 type HandlerFunc func(ResponseWriter, *Request) //将函数定义为对象，实现普通函数与Handler接口之间的转换
@@ -242,9 +242,9 @@ func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
 }
 ```
 
-ServeMux
-    HTTP请求的多路复用器，将URL和对应的Handler进行关联(路由)
-    实现了Handler接口
+* ServeMux
+  * HTTP请求的多路复用器，将URL和对应的Handler进行关联(路由)
+  * 实现了Handler接口
 
 ```Go
 type ServeMux struct {
@@ -254,8 +254,8 @@ type ServeMux struct {
 }
 ```
 
-Server
-    HTTP服务
+* Server
+  * HTTP服务
 
 ```Go
 type Server struct {
@@ -293,8 +293,8 @@ type Server struct {
 }
 ```
 
-ResponseWriter
-    HTTP响应的接口，用于在Handler中写入HTTP响应
+* ResponseWriter
+  * HTTP响应的接口，用于在Handler中写入HTTP响应
 
 ```Go
 type ResponseWriter interface {
@@ -306,8 +306,8 @@ type ResponseWriter interface {
 }
 ```
 
-Response
-    HTTP响应
+* Response
+  * HTTP响应
 
 ```Go
 type Response struct {
