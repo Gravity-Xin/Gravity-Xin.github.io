@@ -1,5 +1,5 @@
 ---
-title: CSAPP-第一章-计算机系统漫游
+title: CSAPP-Chapter 1-Introduction
 date: 2018-12-18 20:04:54
 categories:
 - CSAPP
