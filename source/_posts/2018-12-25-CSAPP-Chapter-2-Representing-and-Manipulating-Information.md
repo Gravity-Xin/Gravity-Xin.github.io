@@ -61,19 +61,74 @@ when byte ordering becomes a issue:
 * binary data is communicated over a network between different machines
 * programs are written that circumvent the normal types system
 
-### Representing Strins
+### Representing String
+
+in C, string is an array of characters terminated by the null character
 
 ### Representing Code
 
+different machine use different and incompatible instructions and encodings
+binary code is seldom portable across different combinations of machine and operating sytem
+
 ### Boolean Algebras and Rings
+
+boolean operations: ~ not, & and, | or, ^ exclusive or
+extend the boolean operations to also operate on bit vectors
 
 ### Bit-Level Operations in C
 
+C support bit-wise boolean operations, ~ & | ^
+can be applied to any "integral" data type
+
 ### Logical Operations in C
+
+C provide a set of logical operators, && || !
 
 ### Shift Operations in C
 
+C provide a set of shift operations for shifting bit patterns, << >>
+
+two forms of right shift:logical and arithmetic
+
 ## Integer Representations
+
+unsigned for negative, zero and positive numbers
+signed for nongative numbers
+
+### Integral Data Types
+
+C support a variety of integral data types, with an indication of unsigned
+
+### Unsigned and Two's Complement Encodings
+
+use two's complement form to represent signed numbers
+
+### Conversions Between Signed and Unsigned
+
+![signed to unsigned](/images/CSAPP_2.11.png)
+
+![unsigned to signed](/images/CSAPP_2.12.png)
+
+### Signed vs Unsigned in C
+
+C support both signed(default) and unsigned arithmetic of integer data
+
+C allow conversion between unsigned and signed, explicit and implicit conversion
+
+### Expanding the Bit Representation of a Number
+
+zero extension for unsigned number
+sign extension for signed number
+
+### Truncating Numbers
+
+drop the high-order bits
+
+### Advice on Signed vs Unsigned
+
+conversion between signed and unsigned leads to some nointuitive behavior
+
+* never use unsigned numbers
 
 ## Integer Arithmetic
 

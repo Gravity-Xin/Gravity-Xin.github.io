@@ -11,20 +11,6 @@ comments: true
 
 ## Basics
 
-curl support following protocals
-
-* FILE
-* FTP/FTPS
-* GOPHER
-* HTTP/HTTPS
-* IMAP/IMAPS
-* LDAP/LDAPS
-* POP3/POP3S
-* SCP/SFTP
-* SMTP/SMTPS
-* TELNET
-* and etc
-
 curl handle options and urls
 
 * options
@@ -42,8 +28,11 @@ curl handle options and urls
   * path
   * fragment
 
-* url globbing
-  * specify many urls
-  * [] and {}
-
 * use `curl --help` to list all options
+
+## Use Curl
+
+
+
+
+## HTTP with Curl
