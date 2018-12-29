@@ -9,85 +9,54 @@ tags:
 comments: true
 ---
 
-## Basics
+## 基本概念
 
-curl handle options and urls
+根据提供的选项来处理URL
 
-* options
-  * short options, like `-v`
-  * long options, like `--verbose`
-  * options with args, like `-d data`
-  * options with args contains space, like `-d '{"key":"value"}'`
-  * negative options, like `--no-verbose`
+* 选项
+  * 缩写形式, `-v`
+  * 原始形式, `--verbose`
+  * 带有参数值, `-d data`
+  * 带有空格的参数值, `-d '{"key": "value"}'`
+  * 使用 `curl --help` 来查看所有选项
 
-* urls
-  * scheme
-  * name and password
-  * host name or address
-  * port number
-  * path
-  * fragment
+* URL的组成
+  * 协议
+  * 用户名和密码
+  * 主机名称或地址
+  * 端口号码
+  * 资源地址
 
-* use `curl --help` to list all options
+## 使用方法
 
-## Use Curl
-
-* verbose mode
-
-    use `-v` or `--verbose` to get more information
-
-    use `--trace [filename]` and `--trace-ascii [filename]` to store complete stream into file
-
-    use `--trace-time` to store time
-
-    use `-s` or `--silent` to switch curl to silent mode
-
-* persistent connections
-
-    curl will always try to keep connections alive and reuse the existing connections
-
-* downloads
-
-    use `-o [filename]` to save the download to a file
-
-    use shell redirects `> [filename]` to save the download to a file
-
-    use `-O` to download a file named by the file name in url
-
-    use `-J`or `--remote-header-name` to get the file name from the response header
-
-    use `--compressed` to ask server to provide compressed version of the data and perform automatic decompression on arrival
-
-    use `--limit-rate [speed]` to setup the maximum average speed
-
-    use `--max-filesize` to set the maximum bytes of filesize
-
-    use `--retry [number]` to set retrying failed attempts
-
-    use  `--continue-at [number]` and `--range [start-end]` to resume downloads
-
-* upload
+* verbose模式
+    `-v` or `--verbose`: 获取更多细节信息
+    `--trace [filename]` and `--trace-ascii [filename]`: 将细节信息保存到文件中
+    `--trace-time`: 获取时间戳
+    `-s` or `--silent`: 切换到silent模式
+* 默认会复用之前的连接
+* 下载相关
+    `-o [filename]`: 指定保存的文件名称
+    `> [filename]`: 指定保存的文件名称
+    `-O`: 从URL获取保存的的文件名称
+    `-J`or `--remote-header-name`: 从响应头中的参数中获取保存的文件名称
+    `--compressed`: 要求服务器对响应结果进行压缩，然后在客户端进行解压
+    `--limit-rate [speed]`: 设置平均下载速率
+    `--max-filesize`: 设置下载文件大小的上线
+    `--retry [number]`: 设置出错之后的重试次数
+    `--continue-at [number]` and `--range [start-end]`: 断点续传
+* 上传相关
   * HTTP
-    use `-d` or `--data` to post data
-
-    use `-F` to post multipart form
-
-    use `-T` to put file
+    `-d` or `--data`: POST请求参数
+    `-F`: POST的multipart格式的参数
+    `-T`: PUT的文件参数
   * FTP
-    use `-T` to upload file
+    `-T`: 上传的文件参数
+* 连接相关
+    `--connect-timeout`: 建立连接的超时时间
+    `--no-keepalive` and `--keepalive-time`: 默认使用keeplive
+    `-m` or `--max-time`: 命令执行最大时间
 
-* connections
-
-    use `--connect-timeout` to set the connect timeout
-
-    use `--no-keepalive` and `--keepalive-time` to setup keepalive
-
-* timeout
-
-    use `-m` or `--max-time` to set the curl running time
-
-## HTTP with Curl
-
-GET is default, use `-d` or `-F` to POST, use `-I` to HEAD, use `-T` to PUT
+## 使用Curl进行HTTP请求
 
 ![http with curl](/images/HTTP_With_Curl.png)
