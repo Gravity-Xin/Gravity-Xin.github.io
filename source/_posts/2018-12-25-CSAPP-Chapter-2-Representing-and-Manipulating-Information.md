@@ -10,8 +10,8 @@ comments: true
 
 three most important encoding of numbers:
 
-* unsigned Integers
-* signed Integers
+* unsigned integers
+* signed integers
 * float-point number
 
 we need to focus on:
@@ -132,4 +132,42 @@ conversion between signed and unsigned leads to some nointuitive behavior
 
 ## Integer Arithmetic
 
+### Unsigned Addition
+
+may overflow, drop the higher order bit
+
+![overflow](/images/CSAPP_2.15.png)
+
+### Signed Addition
+
+may negative or positive overflow, drop the higher order bit
+
+![overflow](/images/CSAPP_2.17.png)
+
+### Signed Negation
+
+### Unsigned Multiplication
+
+### Signed Multiplication
+
+### Multiplying by Powers of Two
+
+### Dividing by Powers of Two
+
 ## Floating Point
+
+### Fractional Binary Numbers
+
+positional notation, like decimal
+
+### IEEE Floating-Point Representation
+
+V = (-1)^S × M × 2^E
+
+S: 符号位
+M: 有效数字，大于
+E: 指数位
+
+![32_bit](/images/CSAPP_32_Floating_Point.png)
+
+![64_bit](/images/CSAPP_64_Floating_Point.png)
