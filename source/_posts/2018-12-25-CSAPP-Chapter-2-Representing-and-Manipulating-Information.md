@@ -33,7 +33,7 @@ compiler use the pointer's type to generate machine code to access object's valu
 
 ### Hexadecimal Notation
 
-binary decimal and hexadecimal
+binary, decimal and hexadecimal
 
 write bit pattern as base-16 or hexadecimal number
 
@@ -148,11 +148,19 @@ may negative or positive overflow, drop the higher order bit
 
 ### Unsigned Multiplication
 
+may overflow, drop the higher order bit
+
 ### Signed Multiplication
+
+may overflow, drop the higher order bit
 
 ### Multiplying by Powers of Two
 
+use shift operation, shift to the left, drop the higher order bit
+
 ### Dividing by Powers of Two
+
+use shift operation, shift to the right
 
 ## Floating Point
 
