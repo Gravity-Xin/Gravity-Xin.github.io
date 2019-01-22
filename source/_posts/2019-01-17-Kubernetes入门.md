@@ -5,6 +5,9 @@ categories:
 - Docker/K8S
 tags: 
 - Kubernetes
+- Namespace
+- Pod
+- Service
 comments: true
 ---
 
@@ -42,7 +45,7 @@ comments: true
   - 大多数的资源都属于命名空间，如`Pod, Service, Replica, Deployment`等
   - 低级别的资源如`Node, PersistentVolume`则不属于任何命名空间
 
-- Pod: 系统中可以进行部署的最小对象，可以包含一个或多个容器
+- Pod: 系统中可以进行调度的最小对象，可以包含一个或多个容器
   - Pod在系统中会被分配一个唯一的IP地址
   - Pod中的多个容器共享网络和文件系统
   - Pod内部的容器之间可以通过`localhost`进行访问
@@ -77,7 +80,7 @@ master-slave结构
 
 - kubectl: 用户的命令行交互工具
 
-- K8S Control Plane(master): 管理整个集群
+- k8s control plane(master): 管理整个集群
   - 各个组件可以以分布式的形式在多台机器上运行
   - 主要组件包括:
     - api server
@@ -98,7 +101,7 @@ master-slave结构
       - DNS
       - dashboard
 
-- K8S Node(slave): Pod真正运行的机器
+- k8s node(slave): Pod真正运行的机器
   - 带有容器的运行时，比如Docker
   - 还包括以下组件
     - kubelet
