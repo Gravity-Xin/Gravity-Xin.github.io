@@ -4,10 +4,13 @@ date: 2019-02-12 13:47:19
 categories: 
 - Elasticsearch
 tags:
-- 
+- term
+- match
+- range
+- fuzzy
 ---
 
-- 基于字段匹配的简单查询
+- 简单的Query查询
 
 ```shell
 GET /index1/user/_search?q=name:zhangsan  //单字段匹配
@@ -96,4 +99,14 @@ GET /index1/user/_search
 ```shell
 GET /index1/user/_search
 {"query":{"fuzzy":{"name": "lii"}}}
+```
+
+- exist查询
+
+判断文档中的某个字段的字段值是否为空
+类似于SQL中的`IS NOT NULL`
+
+```shell
+GET /index1/user/_search
+{"query":{"exists":{"field":"age"}}}  // 获取age字段不为空的所有文档
 ```
