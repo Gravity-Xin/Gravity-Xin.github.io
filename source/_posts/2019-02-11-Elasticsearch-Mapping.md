@@ -8,7 +8,7 @@ tags:
 comments: true
 ---
 
-Mapping是用于描述文档schema的，即对文档中各个字段的数据类型以及该字段如何进行分词进行描述
+Mapping是用于描述文档schema的，即对文档中各个字段的数据类型、如何进行分词、是否建立索引等进行描述
 
 在添加文档时，ES会根据插入的文档，自动创建Mapping，可以使用`GET /index1/user/_mapping`来查看
 

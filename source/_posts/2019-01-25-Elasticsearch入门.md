@@ -12,7 +12,7 @@ tags:
 comments: true
 ---
 
-一个基于lucene的分布式多用户的全文搜索引擎，提供Restful接口
+一个基于lucene的分布式多用户的存储和全文搜索引擎，提供Restful接口
 
 ## 基本概念
 
@@ -50,4 +50,3 @@ comments: true
     - whitespace: 仅去除空格，不支持中文
     - language: 特定语言的分词器，不支持中文
   - 中文分词器: [ik](https://github.com/medcl/elasticsearch-analysis-ik/)
-  
