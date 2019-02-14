@@ -56,11 +56,9 @@ tags:
   - sicp
 
   2018美团技术年货，供大家参考
-【前端系列】下载链接：http://dpurl.cn/DWVhPpS
 【后台系列】下载链接：http://dpurl.cn/obtIVn
 【系统系列】下载链接：http://dpurl.cn/zTDWq8Q
 【算法系列】下载链接：http://dpurl.cn/ODj5qAB
 【运维系列】下载链接：http://dpurl.cn/6zjgHFj
-【测试系列】下载链接：http://dpurl.cn/wfKQqy
 【工程师成长系列】下载链接：http://dpurl.cn/p5sPoKT
 【2018年美团点评技术文章合辑】下载链接：http://dpurl.cn/iLGBtuS
