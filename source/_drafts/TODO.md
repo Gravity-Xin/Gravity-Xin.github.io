@@ -49,6 +49,8 @@ tags:
 
 - elasticsearch实战
 
+- 左耳朵耗子技术书籍清单
+
 - 书籍阅读
   - csapp
   - apue
