@@ -11,6 +11,12 @@ tags:
 comments: true
 ---
 
+容器编排的主流技术:
+
+- docker swarm
+- mesos + marathon
+- kubernetes
+
 ## 主要功能
 
 - 基于容器的应用部署、维护和滚动升级
