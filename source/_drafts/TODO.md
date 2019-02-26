@@ -16,6 +16,8 @@ tags:
   - 哈希 ->索引
   - bitset
 
+goleveldb
+
 - 有道云笔记迁移
 
 - db
@@ -68,3 +70,5 @@ tags:
 mac上的优秀应用:
 dash
 omniplan
+
+golang benchmark
