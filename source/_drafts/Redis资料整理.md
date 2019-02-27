@@ -2,3 +2,44 @@
 title: Redis资料整理
 tags:
 ---
+
+高性能的KV缓存和数据库
+
+- 支持数据持久化，数据可以保存在内存或磁盘中
+  - AOF: 将所有的写操作命令以redis命令协议的方式保存到日志文件中；但是AOF文件往往比较大，且恢复数据较慢
+  - RDB: 将内存快照写入到临时文件中，并可通过该文件进行恢复；但是由于是间隔一段时间进行持久化，有可能会发送数据的丢失
+- 支持的值的类型包括`string`,`list`,`hash`,`set`和`zset`
+  - string: int raw embstr
+    - 如果字符串内容可以转化为long，则转换为long类型的张数
+    - 当字符串长度小于39时，使用embstr；否则使用传统的raw
+  - list: ziplist linkedlist
+    - 当列表元素数量不大，元素也不大的时候使用ziplist
+    - 当列表元素数量较大时，使用linkedlist
+  - hash: ziplist hashtable
+    - ziplist按照key1 value1 key2 value2进行顺序存储
+    - hashtable则是用数组实现，每一个元素为KV对
+  - set: intset hashtable
+  - zset: ziplist skiplist+hashtable
+    - ziplist: 将data和score按顺序排放
+    - skiplist保证元素有序，hashtable保证可以快速查找元素
+- 单个数据操作是原子性的，同时支持通过`multi`, `exec`, `watch`, `unwatch`, `discard`等命令来实现事务
+- 支持Pipeline操作，将多个操作放在一起，减少客户端和服务端之间的通信次数，从而提高效率
+- 支持设置key的过期时间，内部通过定期删除和惰性删除的方式来进行过期key的删除
+  - 定期删除: 每隔一段时间，通过设置的算法从过期的键中删除一部分
+    - `volatile-lru`: 从过期键中选择最近最少使用的淘汰
+    - `volatile-ttl`: 从过期键中选择TTL(存活时间)较短的淘汰
+    - `volatile-random`: 从过期键中随机进行淘汰
+    - `allkeys-lru`: 从所有键中选择最近最少使用的淘汰
+    - `allkeys-random`: 从所有键中随机进行淘汰
+    - `noeviction`: 不进行淘汰，当操作导致内存不够用时，直接返回错误
+  - 惰性删除: 放任键过期不管，当读取该键时，判断键是否过期，如果过期则执行删除操作
+- 支持通过`pub`和`sub`实现发布订阅
+- 内部实现为单线程机制，基于操作系统提供的多路复用IO接口，将多个事件放入到一个队列中，并在单个线程上进行执行
+- 支持master-slave模式的高可用架构，用于读写分离和容灾恢复，使用sentinel哨兵来监控redis实例是否故障，实现自动主备切换
+- 常见使用场景
+  - mysql等关系型数据库中热点数据的存储，需要一套key命名规则 `表名:主键名:主键值:字段名`
+  - 使用list实现简单的消息队列
+  - 发布/订阅实现观察者模式
+  - 基于单线程架构实现分布式锁
+  - 基于set集合操作实现共同好友列表等
+  - 基于zset实现访问量排行等
