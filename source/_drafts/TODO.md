@@ -84,3 +84,8 @@ Kubernetes架构、核心组件、常用对象、网络、存储、认证、服�
 Google: sstable(leveldb) bigtable borg(k8s) grpc gfs
 
 linux网络基础
+- hostname /etc/hosts /etc/resolv.conf
+- ip命令 netns link
+- iptables 查看路由表
+- dns解析 nslookup
+- brctl
