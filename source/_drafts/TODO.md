@@ -47,6 +47,8 @@ goleveldb
   - yarn
   - glusterfs
 
+- 分布式计算
+
 - nginx100讲 极客时间
 
 - elasticsearch实战
