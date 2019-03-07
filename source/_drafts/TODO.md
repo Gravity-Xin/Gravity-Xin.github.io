@@ -89,3 +89,5 @@ linux网络基础
 - iptables 查看路由表
 - dns解析 nslookup
 - brctl
+
+mount命令查看挂载情况
