@@ -7,6 +7,10 @@ tags:
 - Kubernetes
 ---
 
+- kubeadm
+- minikube
+- 二进制文件
+
 ## 在Mac上部署minikube
 
 minikube提供了kubernetes的本地执行环境
