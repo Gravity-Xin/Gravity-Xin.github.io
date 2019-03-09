@@ -171,4 +171,4 @@ MemStats: 内存分配器的统计信息
 * 低延迟GC，代价是GC吞吐量的下降
 * 三色标记清除
 
-![Refer](https://making.pusher.com/golangs-real-time-gc-in-theory-and-practice/)
+[GoGC](https://making.pusher.com/golangs-real-time-gc-in-theory-and-practice/)
