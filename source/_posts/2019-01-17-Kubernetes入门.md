@@ -35,7 +35,7 @@ Master-Slave(Node)结构
 
 ![kubernetes architecture](/images/Kubernetes之系统架构.png)
 
-- Kubectl: 用户的命令行交互工具
+- `Kubectl`: 用户的命令行交互工具
 
 - K8S Control Plane(Master): 管理整个集群
   - 各个组件可以以分布式的形式在多台机器上运行
