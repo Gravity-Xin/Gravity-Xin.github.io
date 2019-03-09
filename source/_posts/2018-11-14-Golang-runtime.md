@@ -164,6 +164,8 @@ MemStats: 内存分配器的统计信息
   * 抢占式调度，长时间对于运行状态的P会被其他的P抢占
   * G与M之间时多对多的关系
 
+[协程调度](https://www.ardanlabs.com/blog/2018/08/scheduling-in-go-part1.html)
+
 ## GC
 
 * 低延迟GC，代价是GC吞吐量的下降
