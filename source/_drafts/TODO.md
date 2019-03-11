@@ -83,7 +83,10 @@ Kubernetes架构、核心组件、常用对象、网络、存储、认证、服�
 
 Google: sstable(leveldb) bigtable borg(k8s) grpc gfs
 
-linux网络基础
+linux网络基础，多台主机上容器的通信方式
+  - 桥接
+  - nat 地址转换
+  - overlay 叠加网络
 - hostname /etc/hosts /etc/resolv.conf
 - ip命令 netns link
 - iptables 查看路由表
@@ -91,3 +94,5 @@ linux网络基础
 - brctl
 
 mount命令查看挂载情况
+
+僵尸进程和孤儿进程 https://www.jb51.net/article/115940.htm
