@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="计算机基础  操作系统 CPU多级缓存 进程/线程/协程 系统空间/用户空间 I/O模型 Block IO Non Block IO Multiplex IO (Reactor) select poll epoll   Async IO (Proactor)   Linux原理   体系机构 数据结构 队列 集合 链表、数组 字典、关联数组 栈 树 二叉树 完全二叉树 平衡二叉树 二叉查找时 红">
+<meta property="og:type" content="article">
+<meta property="og:title" content="架构师必备的技术栈">
+<meta property="og:url" content="http://yoursite.com/2019/02/14/架构师必备的技术栈/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="计算机基础  操作系统 CPU多级缓存 进程/线程/协程 系统空间/用户空间 I/O模型 Block IO Non Block IO Multiplex IO (Reactor) select poll epoll   Async IO (Proactor)   Linux原理   体系机构 数据结构 队列 集合 链表、数组 字典、关联数组 栈 树 二叉树 完全二叉树 平衡二叉树 二叉查找时 红">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-11T10:18:22.659Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="架构师必备的技术栈">
+<meta name="twitter:description" content="计算机基础  操作系统 CPU多级缓存 进程/线程/协程 系统空间/用户空间 I/O模型 Block IO Non Block IO Multiplex IO (Reactor) select poll epoll   Async IO (Proactor)   Linux原理   体系机构 数据结构 队列 集合 链表、数组 字典、关联数组 栈 树 二叉树 完全二叉树 平衡二叉树 二叉查找时 红">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/02/14/架构师必备的技术栈/">
+
+
+
+
+
+  <title>架构师必备的技术栈 | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/14/架构师必备的技术栈/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">架构师必备的技术栈</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T10:44:26+08:00">
+                2019-02-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Others/" itemprop="url" rel="index">
+                    <span itemprop="name">Others</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/14/架构师必备的技术栈/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/14/架构师必备的技术栈/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <ul>
+<li><p>计算机基础</p>
+<ul>
+<li>操作系统<ul>
+<li>CPU多级缓存</li>
+<li>进程/线程/协程</li>
+<li>系统空间/用户空间</li>
+<li>I/O模型<ul>
+<li>Block IO</li>
+<li>Non Block IO</li>
+<li>Multiplex IO (Reactor)<ul>
+<li>select</li>
+<li>poll</li>
+<li>epoll</li>
+</ul>
+</li>
+<li>Async IO (Proactor)</li>
+</ul>
+</li>
+<li>Linux原理</li>
+</ul>
+</li>
+<li>体系机构</li>
+<li>数据结构<ul>
+<li>队列</li>
+<li>集合</li>
+<li>链表、数组</li>
+<li>字典、关联数组</li>
+<li>栈</li>
+<li>树<ul>
+<li>二叉树</li>
+<li>完全二叉树</li>
+<li>平衡二叉树</li>
+<li>二叉查找时</li>
+<li>红黑树</li>
+<li>B, B+, B*树</li>
+<li>LSM树</li>
+</ul>
+</li>
+<li>BitSet</li>
+</ul>
+</li>
+<li>算法<ul>
+<li>排序<ul>
+<li>选择排序</li>
+<li>冒泡排序</li>
+<li>插入排序</li>
+<li>快速排序</li>
+<li>归并排序</li>
+<li>希尔排序</li>
+<li>堆排序</li>
+<li>计数排序</li>
+<li>桶排序</li>
+<li>基数排序</li>
+</ul>
+</li>
+<li>查找<ul>
+<li>二分查找</li>
+</ul>
+</li>
+<li>布隆过滤器</li>
+<li>字符串比较<ul>
+<li>KMP算法</li>
+</ul>
+</li>
+<li>深度/广度优先</li>
+<li>贪心算法</li>
+<li>回溯算法</li>
+<li>剪枝算法</li>
+<li>动态规划</li>
+<li>朴素贝叶斯</li>
+<li>推荐算法</li>
+<li>最小生成树</li>
+<li>最短路径</li>
+</ul>
+</li>
+<li>数据库<ul>
+<li>关系型<ul>
+<li>三大范式</li>
+</ul>
+</li>
+<li>Nosql</li>
+</ul>
+</li>
+<li>计算机网络<ul>
+<li>TCP/IP</li>
+<li>HTTP</li>
+<li>短连接/长连接</li>
+<li>序列化框架<ul>
+<li>Protobuf</li>
+</ul>
+</li>
+<li>WebSocket</li>
+</ul>
+</li>
+<li>编程语言<ul>
+<li>静态语言</li>
+<li>动态语言</li>
+<li>函数式</li>
+</ul>
+</li>
+<li>设计模式<ul>
+<li>六大原则</li>
+<li>23种常见设计模式与应用场景</li>
+<li>MVC</li>
+<li>UML</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>常用中间件</p>
+<ul>
+<li>RelationDB<ul>
+<li>Mysql<ul>
+<li>InnoDB/MyISAM</li>
+<li>优化</li>
+<li>索引<ul>
+<li>聚集/非聚集索引</li>
+<li>复合索引</li>
+</ul>
+</li>
+<li>Explain</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>搜索引擎<ul>
+<li>Lucene</li>
+<li>Solr</li>
+<li>Elasticsearch</li>
+<li>Sphinx</li>
+</ul>
+</li>
+<li>WebServer<ul>
+<li>Nginx</li>
+<li>Tomcat</li>
+</ul>
+</li>
+<li>Nosql<ul>
+<li>Redis</li>
+<li>Memcache</li>
+<li>HBase</li>
+</ul>
+</li>
+<li>消息队列<ul>
+<li>消息总线</li>
+<li>Kafka</li>
+<li>Redis</li>
+<li>ZeroMQ</li>
+<li>RabbitMQ</li>
+<li>NSQ</li>
+</ul>
+</li>
+<li>RPC<ul>
+<li>gRPC</li>
+<li>Thrit</li>
+</ul>
+</li>
+<li>日志系统<ul>
+<li>ELK</li>
+</ul>
+</li>
+<li>配置中心<ul>
+<li>Zookeeper</li>
+<li>Etcd</li>
+<li>Consul</li>
+</ul>
+</li>
+<li>大数据<ul>
+<li>流式计算<ul>
+<li>Storm</li>
+<li>Flink</li>
+<li>Kafka Stream</li>
+</ul>
+</li>
+<li>Hadoop<ul>
+<li>HDFS</li>
+<li>MapReduce</li>
+<li>Yarn</li>
+</ul>
+</li>
+<li>Spark</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>高性能问题</p>
+<ul>
+<li>高并发问题<ul>
+<li>多线程/多协程</li>
+<li>线程/协程安全</li>
+<li>I/O模型 Reactor/Proactor</li>
+<li>一致性与事务<ul>
+<li>ACID</li>
+<li>事务的隔离级别</li>
+<li>MVCC</li>
+</ul>
+</li>
+<li>锁<ul>
+<li>悲观/乐观锁</li>
+<li>读写锁</li>
+<li>可重入/不可重入</li>
+<li>RingBuffer</li>
+<li>CopyOnWrite</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>负载均衡</li>
+<li>读写分离</li>
+<li>分库分表</li>
+<li>Nosql</li>
+</ul>
+</li>
+<li><p>高可用问题</p>
+</li>
+<li><p>高可扩展性</p>
+</li>
+<li><p>分布式</p>
+</li>
+<li><p>微服务</p>
+<ul>
+<li>ServiceMesh</li>
+</ul>
+</li>
+<li><p>安全</p>
+<ul>
+<li>Web安全<ul>
+<li>XSS</li>
+<li>CSRF</li>
+<li>SQL注入</li>
+<li>脚本注入</li>
+</ul>
+</li>
+<li>DDos防范</li>
+<li>加密解密<ul>
+<li>对称加密</li>
+<li>非对称加密</li>
+</ul>
+</li>
+<li>授权认证<ul>
+<li>RBAC</li>
+<li>JWT</li>
+<li>OAuth2.0</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>运维部署</p>
+<ul>
+<li>监控</li>
+<li>CI/CD</li>
+<li>运维自动化</li>
+<li>容器技术<ul>
+<li>Docker</li>
+<li>K8S</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>项目管理</p>
+<ul>
+<li>架构评审</li>
+<li>重构</li>
+<li>代码规范</li>
+<li>代码审查</li>
+<li>看板管理</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/12/TCP-IP协议/" rel="next" title="TCP/IP协议">
+                <i class="fa fa-chevron-left"></i> TCP/IP协议
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/15/Golang-defer/" rel="prev" title="Golang-defer">
+                Golang-defer <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2019/02/14/架构师必备的技术栈/" data-title="架构师必备的技术栈" data-url="http://yoursite.com/2019/02/14/架构师必备的技术栈/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">123</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

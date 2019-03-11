@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="tcp,ip,udp,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="TCP/IP是一个协议簇，有多个协议组成从上往下，可以将TCP/IP分为四层，分别为  应用层: 负责向用户提供具体的应用服务 HTTP/DNS/FTP等 应用层数据 传输层: 负责两台计算机间的数据传输 TCP/UDP TCP TCP报文段(Segment) 提供字节流服务，使用包序号和重传机制实现可靠数据传输 面向连接，使用SYNC、ACK标志位进行握手，使用FIN、ACK标志位进行挥手 使用">
+<meta name="keywords" content="tcp,ip,udp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP&#x2F;IP协议">
+<meta property="og:url" content="http://yoursite.com/2019/02/12/TCP-IP协议/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="TCP/IP是一个协议簇，有多个协议组成从上往下，可以将TCP/IP分为四层，分别为  应用层: 负责向用户提供具体的应用服务 HTTP/DNS/FTP等 应用层数据 传输层: 负责两台计算机间的数据传输 TCP/UDP TCP TCP报文段(Segment) 提供字节流服务，使用包序号和重传机制实现可靠数据传输 面向连接，使用SYNC、ACK标志位进行握手，使用FIN、ACK标志位进行挥手 使用">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/TCP%20IP之七层与四层模型.png">
+<meta property="og:image" content="http://yoursite.com/images/TCP%20IP之数据通信过程.png">
+<meta property="og:image" content="http://yoursite.com/images/TCP首部格式.png">
+<meta property="og:image" content="http://yoursite.com/images/TCP三次握手.gif">
+<meta property="og:image" content="http://yoursite.com/images/TCP四次挥手.gif">
+<meta property="og:updated_time" content="2019-03-11T10:18:22.658Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TCP&#x2F;IP协议">
+<meta name="twitter:description" content="TCP/IP是一个协议簇，有多个协议组成从上往下，可以将TCP/IP分为四层，分别为  应用层: 负责向用户提供具体的应用服务 HTTP/DNS/FTP等 应用层数据 传输层: 负责两台计算机间的数据传输 TCP/UDP TCP TCP报文段(Segment) 提供字节流服务，使用包序号和重传机制实现可靠数据传输 面向连接，使用SYNC、ACK标志位进行握手，使用FIN、ACK标志位进行挥手 使用">
+<meta name="twitter:image" content="http://yoursite.com/images/TCP%20IP之七层与四层模型.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/02/12/TCP-IP协议/">
+
+
+
+
+
+  <title>TCP/IP协议 | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/12/TCP-IP协议/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TCP/IP协议</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-12T17:36:12+08:00">
+                2019-02-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index">
+                    <span itemprop="name">Network</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/12/TCP-IP协议/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/12/TCP-IP协议/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>TCP/IP是一个协议簇，有多个协议组成<br>从上往下，可以将TCP/IP分为四层，分别为</p>
+<ul>
+<li>应用层: 负责向用户提供具体的应用服务 HTTP/DNS/FTP等 <strong>应用层数据</strong></li>
+<li>传输层: 负责两台计算机间的数据传输 TCP/UDP<ul>
+<li>TCP <strong>TCP报文段(Segment)</strong><ul>
+<li>提供字节流服务，使用包序号和重传机制实现可靠数据传输</li>
+<li>面向连接，使用SYNC、ACK标志位进行握手，使用FIN、ACK标志位进行挥手</li>
+<li>使用滑动窗口实现流量控制</li>
+<li>使用慢开始、拥塞避免、快重传和快恢复进行拥塞控制</li>
+</ul>
+</li>
+<li>UDP<ul>
+<li>提供数据保温服务，不可靠</li>
+<li>不面向连接</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>网络层: 负责根据IP地址、MAC地址、ARP协议和路由对网络上数据包进行寻址 IP、TGMP、ICMP <strong>IP数据报(Datagram)</strong></li>
+<li>数据链路层: 负责网络连接的硬件部分 ARP、RARP和Ethernet等 <strong>帧(Frame)</strong></li>
+</ul>
+<p><img src="/images/TCP IP之七层与四层模型.png" alt="七层与四层模型"></p>
+<p>数据的流动在发送端为自上向下，在接收端为自下向上<br>在发送端的层与层之间传输数据时，每经过一层时会增加一个该层的首部信息；反之在接收端层与层之间传输时，每经过一层会把该层对应的首部消去</p>
+<p><img src="/images/TCP IP之数据通信过程.png" alt="数据通信过程"></p>
+<ul>
+<li>TCP首部格式</li>
+</ul>
+<p><img src="/images/TCP首部格式.png" alt="TCP首部"></p>
+<ul>
+<li>TCP的三次握手<ul>
+<li>TCP服务器进程创建传输控制块TCB, 时刻准备接受客户端进程的连接请求, 进入了LISTEN状态</li>
+<li>TCP客户端进程创建传输控制块TCB, 然后向服务器发出连接请求报文，报文首部中的同步标志位SYN=1，同时选择一个初始序列号seq=x，此时TCP客户端进程进入了SYN-SENT状态</li>
+<li>TCP服务器收到请求报文后, 如果同意连接, 则发出确认报文。确认报文中的ACK=1，SYN=1，ack=x+1，同时也要为自己初始化一个序列号seq=y，此时TCP服务器进程进入SYN-RCVD状态</li>
+<li>TCP客户端进程收到确认后向服务器给出确认报文，报文的ACK=1，ack=y+1，seq=x+1</li>
+<li>TCP连接建立，客户端进入ESTABLISHED状态。当服务器收到客户端的确认后也进入ESTABLISHED状态，此后双方就可以开始通信</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/TCP三次握手.gif" alt="TCP三次握手"></p>
+<p>为什么不用两次握手?</p>
+<p>为了防止已经失效的连接请求报文突然又传送到了服务器，从而产生错误和浪费服务器资源。假设有这样一种场景，客户端发送的第一个请求连接并且没有丢失，只是因为在网络中滞留的时间太长了，由于TCP的客户端迟迟没有收到确认报文，以为服务器没有收到，此时重新向服务器发送这条报文，此后客户端和服务器经过两次握手完成连接，传输数据，然后关闭连接。此时之前滞留的那一次请求连接，因为网络通畅了, 到达了服务器，这个报文本该是失效的，但是，两次握手的机制将会让客户端和服务器再次建立连接，这将导致不必要的错误和资源的浪费。如果采用的是三次握手，就算是那一次失效的报文传送过来了，服务端接受到了那条失效报文并且回复了确认报文，但是客户端不会再次发出确认。由于服务器收不到确认，就知道客户端并没有请求连接。</p>
+<ul>
+<li>TCP的四次挥手<ul>
+<li>客户端进程发出连接释放报文，并且停止发送数据。报文首部FIN=1，seq=u此时客户端进入FIN-WAIT-1（终止等待1）状态</li>
+<li>服务器收到连接释放报文，发出确认报文ACK=1，ack=u+1，并且带上自己的序列号seq=v，此时服务端就进入了CLOSE-WAIT（关闭等待）状态</li>
+<li>TCP服务器通知上层的应用进程，客户端向服务器的方向释放，此时处于半关闭状态，即客户端已经没有数据要发送了；但服务器若发送数据，客户端依然要接受。这个状态还要持续一段时间，也就是整个CLOSE-WAIT状态持续的时间</li>
+<li>客户端收到服务器的确认请求后，此时客户端就进入FIN-WAIT-2（终止等待2）状态，等待服务器发送连接释放报文（在这之前还需要接受服务器发送的最终数据）</li>
+<li>服务器将最后的数据发送完毕后，就向客户端发送连接释放报文FIN=1，确认序号为v+1，由于在半关闭状态，服务器很可能又发送了一些数据，假定此时的序列号为seq=w，此时服务器就进入了LAST-ACK（最后确认）状态，等待客户端的确认报文</li>
+<li>客户端收到服务器的连接释放报文后，必须发出确认报文ACK=1，ack=w+1，seq=u+1，此时客户端就进入了TIME-WAIT（时间等待）状态。注意此时TCP连接还没有释放，必须经过2∗MSL（最长报文段寿命）的时间后，当客户端撤销相应的TCB后，才进入CLOSED状态</li>
+<li>服务器只要收到了客户端发出的确认，立即进入CLOSED状态。同样撤销TCB后，就结束了这次的TCP连接。可以看到，服务器结束TCP连接的时间要比客户端早一些</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/TCP四次挥手.gif" alt="TCP四次挥手"></p>
+<p>为什么最后客户端还要等待2*MSL的时间呢?</p>
+<p>MSL（Maximum Segment Lifetime），这是一个IP数据包能生存的最长时间，TCP允许不同的实现可以设置不同的MSL值。第一，保证客户端发送的最后一个ACK报文能够到达服务器，因为这个ACK报文可能丢失，站在服务器的角度看来，我已经发送了FIN+ACK报文请求断开了，客户端还没有给我回应，应该是我发送的请求断开报文它没有收到，于是服务器又会重新发送一次，而客户端就能在这个2MSL时间段内收到这个重传的报文，接着给出回应报文，并且会重启2MSL计时器。第二，防止类似与“三次握手”中提到了的“已经失效的连接请求报文段”出现在本连接中。客户端发送完最后一个确认报文后，在这个2MSL时间中，就可以使本连接持续的时间内所产生的所有报文段都从网络中消失。这样新的连接中不会出现旧连接的请求报文</p>
+<ul>
+<li>IP分片机制和TCP分段机制</li>
+</ul>
+<p>MTU（Max Transmision Unit，最大传输单元，以太网一般为1500字节），数据链路层的数据帧的最大长度；IP分片机制主要就是为了解决不同物理网络MTU不同造成的问题<br>IP协议在传输数据包时，如果IP数据包+数据帧头部之后的长度大于MTU的话，会在发送端将数据报文分为若干片进行传输，在接收端将这些分片进行重组，这个过程称为分片<br>IP分片机制对于传输层是透明的，每一个分片中包含IP首部，IP数据包的ID、该分片相对于数据包的偏移量、是否还有新分片的标识位，IP层使用这些信息进行分片重组<br>IP分片在到达发送端时，这些分片可能是乱序的，由于IP层没有重传和超时机制，因此当来自TCP的部分IP分片丢失时，需要整个TCP数据包进行重传 <strong>影响传输效率</strong></p>
+<p>MSS（Max Segmentation Size最大分段长度，以太网一般为1460字节）为TCP数据包每次能够传输的最大数据长度，一般通过传输双方在建立连接时协商确定；TCP分段的原因是为了满足MSS的要求<br>一般来讲，MTU往往大于MSS，从而避免IP分片；由于UDP没有限定数据包大小，因此IP分片往往发生在UDP传输中</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/tcp/" rel="tag"># tcp</a>
+          
+            <a href="/tags/ip/" rel="tag"># ip</a>
+          
+            <a href="/tags/udp/" rel="tag"># udp</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/12/图解HTTP/" rel="next" title="图解HTTP">
+                <i class="fa fa-chevron-left"></i> 图解HTTP
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/14/架构师必备的技术栈/" rel="prev" title="架构师必备的技术栈">
+                架构师必备的技术栈 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2019/02/12/TCP-IP协议/" data-title="TCP/IP协议" data-url="http://yoursite.com/2019/02/12/TCP-IP协议/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">123</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

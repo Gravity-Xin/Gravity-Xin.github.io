@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="NSQ,MQ,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Why MQ优点:  模块解耦 模块间不存在直接依赖 异步调用 将耗时的请求异步处理，不影响主流程，提高响应速度 流量削峰 将请求缓存，慢慢处理  缺点:  需要保证MQ的高可用，否则会降低系统的可用性 可能存在消息丢失，消息重复等问题，降低系统稳定性  NSQ中的基本概念分布式实时消息架构，具有分布式和去中心化拓扑结构，具有无单点故障、故障容错、高可用和保证消息可靠传递的特点。  topic 消">
+<meta name="keywords" content="NSQ,MQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NSQ入门">
+<meta property="og:url" content="http://yoursite.com/2018/11/15/NSQ入门/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="Why MQ优点:  模块解耦 模块间不存在直接依赖 异步调用 将耗时的请求异步处理，不影响主流程，提高响应速度 流量削峰 将请求缓存，慢慢处理  缺点:  需要保证MQ的高可用，否则会降低系统的可用性 可能存在消息丢失，消息重复等问题，降低系统稳定性  NSQ中的基本概念分布式实时消息架构，具有分布式和去中心化拓扑结构，具有无单点故障、故障容错、高可用和保证消息可靠传递的特点。  topic 消">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/NSQ之基本组成.png">
+<meta property="og:image" content="http://yoursite.com/images/NSQ之消息传递流程.gif">
+<meta property="og:image" content="http://yoursite.com/images/NSQ之消费者与NSQD的交互.png">
+<meta property="og:updated_time" content="2019-03-11T10:18:22.651Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NSQ入门">
+<meta name="twitter:description" content="Why MQ优点:  模块解耦 模块间不存在直接依赖 异步调用 将耗时的请求异步处理，不影响主流程，提高响应速度 流量削峰 将请求缓存，慢慢处理  缺点:  需要保证MQ的高可用，否则会降低系统的可用性 可能存在消息丢失，消息重复等问题，降低系统稳定性  NSQ中的基本概念分布式实时消息架构，具有分布式和去中心化拓扑结构，具有无单点故障、故障容错、高可用和保证消息可靠传递的特点。  topic 消">
+<meta name="twitter:image" content="http://yoursite.com/images/NSQ之基本组成.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/15/NSQ入门/">
+
+
+
+
+
+  <title>NSQ入门 | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/15/NSQ入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">NSQ入门</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-15T17:38:37+08:00">
+                2018-11-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NSQ/" itemprop="url" rel="index">
+                    <span itemprop="name">NSQ</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/15/NSQ入门/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/11/15/NSQ入门/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Why-MQ"><a href="#Why-MQ" class="headerlink" title="Why MQ"></a>Why MQ</h2><p>优点:</p>
+<ul>
+<li>模块解耦 模块间不存在直接依赖</li>
+<li>异步调用 将耗时的请求异步处理，不影响主流程，提高响应速度</li>
+<li>流量削峰 将请求缓存，慢慢处理</li>
+</ul>
+<p>缺点:</p>
+<ul>
+<li>需要保证MQ的高可用，否则会降低系统的可用性</li>
+<li>可能存在消息丢失，消息重复等问题，降低系统稳定性</li>
+</ul>
+<h2 id="NSQ中的基本概念"><a href="#NSQ中的基本概念" class="headerlink" title="NSQ中的基本概念"></a>NSQ中的基本概念</h2><p>分布式实时消息架构，具有分布式和去中心化拓扑结构，具有无单点故障、故障容错、高可用和保证消息可靠传递的特点。</p>
+<ul>
+<li><p>topic <strong>消息主题</strong></p>
+<p>  用topic对消息进行分类</p>
+</li>
+<li><p>channel <strong>消费者组</strong></p>
+<p>  与消费者相关，多个消费者组成一个消费者组。当发布者发送一条消息到一个topic上时，消息会被复制到所有消费者连接的channel上，消费者通过这个channel读取消息。同一条消息只会被消费者组里面的一个消费者所消费。如果消费者来不及消费消息，则消息首先会在内存中排队，当量超过一定限制后会保存到磁盘上。</p>
+</li>
+<li><p>message <strong>消息对象</strong></p>
+<p>  消费者可以在获取消息后，可以选择结束消息，表明消息已被正常处理；也可将消息重新入队待到后面再处理。</p>
+</li>
+</ul>
+<h2 id="NSQ的主要组成"><a href="#NSQ的主要组成" class="headerlink" title="NSQ的主要组成"></a>NSQ的主要组成</h2><p><img src="/images/NSQ之基本组成.png" alt="image"></p>
+<ul>
+<li><p>nsqlookupd</p>
+<p>  管理nsqd节点拓扑信息并提供最终一致性的发现服务的守护进程。<br>  类似于zk/etcd一样的kv存储服务，存储了producer/topic/channel/consumer的信息。<br>  提供两个接口。TCP接口用来进行广播，HTTP接口给消费者进行服务发现和管理,客户端可以根据特定的topic查询nsqlookupd来发现nsqd生产者及nsqd广播topic和channel信息。</p>
+</li>
+<li><p>nsqd <strong>推荐一个生产者部署一个nsqd</strong></p>
+<p>  负责接收、排队、转发消息到客户端的守护进程。可以独立运行，并且定时向nsqlookupd服务发送心跳。</p>
+</li>
+<li><p>nsqadmin</p>
+<p>  nsq的web统计界面，可以实时查看集群的统计数据和执行某些管理任务。</p>
+</li>
+<li><p>tools</p>
+<ul>
+<li><p>nsq_stat</p>
+<p>查看指定topic/channel的状态</p>
+</li>
+<li><p>nsq_tail</p>
+<p>消费指定topic/channel的消息，并将其打印到stdout中</p>
+</li>
+<li><p>nsq_to_file</p>
+<p>消费指定topic/channel，并将消息写到文件中，并且有选择的滚动和压缩文件</p>
+</li>
+<li><p>nsq_to_http</p>
+<p>消费指定topic/channel，执行HTTP Request到指定的端点</p>
+</li>
+<li><p>nsq_to_nsq</p>
+<p>消费指定topic/channel，通过TCP将消息重发到指定目的地</p>
+</li>
+<li><p>to_nsq</p>
+<p>从std中获取输入并通过TCP将消息发布到指定nsqd中</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="消息传递流程"><a href="#消息传递流程" class="headerlink" title="消息传递流程"></a>消息传递流程</h2><p>Topic/Channel/Consumer</p>
+<p><img src="/images/NSQ之消息传递流程.gif" alt="image"></p>
+<p>消费者与NSQD的交互</p>
+<p><img src="/images/NSQ之消费者与NSQD的交互.png" alt="image"></p>
+<h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><ul>
+<li><p>消息传递担保</p>
+<p>  保证消息将至少交付一次<br>  如果消费者收到消息并成功执行，则返回给nsqd<code>FIN</code>，代表消息成功执行，此时nsqd将channel中的消息删除；如果消费者处理消息发生异常，则返回给nsqd<code>REQ</code>，此时nsqd将消息重新入队列，等待下次推送；如果消费者长时间没有响应导致超过了最大等待时间，则nsqd同样执行重入队列操作。<strong>因此消费者必须保证消息处理的幂等性</strong></p>
+</li>
+<li><p>重试次数</p>
+<p>  nsqd推送的消息中包含<code>attempts</code>字段，表示尝试的次数。每次重入队列后再次推送过来的消息中<code>attempts</code>字段都会加1，消费者可以根据实际需求对重试次数进行限制。</p>
+</li>
+<li><p>消息顺序</p>
+<p>  nsqd推送过来的消息是无序的。</p>
+</li>
+<li><p>Push or Pull</p>
+<p>  nsqd采用push，push好处在于消息处理更加实时，因此nsqd选择将消息放到内存中，只有当队列里的消息数量超过<code>--mem-queue-size</code>时才会对消息进行持久化，刷到磁盘中<br>  push+内存存储 or pull+磁盘存储</p>
+</li>
+<li><p>Push的流量控制</p>
+<p>  消费者和nsqd建立好连接之后，当准备好接收消息时，给nsqd发送一个<code>RDY</code>的响应，同时带上<code>rdy_count</code>表示准备接受的消息的数量，于是nsqd会给消费者推送<code>rdy_count</code>条消息；当消费者觉得自己可以接受更多消息时，只需要再次发送一次<code>RDY</code>命令更新<code>rdy_count</code>的值。</p>
+</li>
+<li><p>单点故障</p>
+</li>
+<li><p>可扩展性</p>
+</li>
+<li><p>可靠性</p>
+</li>
+<li><p>性能</p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/NSQ/" rel="tag"># NSQ</a>
+          
+            <a href="/tags/MQ/" rel="tag"># MQ</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/14/Golang-资源池/" rel="next" title="Golang-资源池">
+                <i class="fa fa-chevron-left"></i> Golang-资源池
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/15/NSQD运行流程分析/" rel="prev" title="NSQD运行流程分析">
+                NSQD运行流程分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2018/11/15/NSQ入门/" data-title="NSQ入门" data-url="http://yoursite.com/2018/11/15/NSQ入门/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">123</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-MQ"><span class="nav-number">1.</span> <span class="nav-text">Why MQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NSQ中的基本概念"><span class="nav-number">2.</span> <span class="nav-text">NSQ中的基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NSQ的主要组成"><span class="nav-number">3.</span> <span class="nav-text">NSQ的主要组成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息传递流程"><span class="nav-number">4.</span> <span class="nav-text">消息传递流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特性"><span class="nav-number">5.</span> <span class="nav-text">特性</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

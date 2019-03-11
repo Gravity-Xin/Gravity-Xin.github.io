@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Docker,Image,Container,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Docker镜像包含启动一个容器所需要的文件系统及其内容 镜像和容器的本质 采用分层构建机制，最底层为bootfs，其上为rootfs  bootfs: 用于系统引导的文件系统，包括bootloader和kernel，容器启动完成后会被卸载以节约内存资源 rootfs: 位于bootfs之上，是容器的根文件系统；rootfs由内核挂载为只读模式，然后通过联合挂载技术额为挂载一个可写层   一个镜像">
+<meta name="keywords" content="Docker,Image,Container">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker镜像容器基础">
+<meta property="og:url" content="http://yoursite.com/2019/02/28/Docker镜像容器基础/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="Docker镜像包含启动一个容器所需要的文件系统及其内容 镜像和容器的本质 采用分层构建机制，最底层为bootfs，其上为rootfs  bootfs: 用于系统引导的文件系统，包括bootloader和kernel，容器启动完成后会被卸载以节约内存资源 rootfs: 位于bootfs之上，是容器的根文件系统；rootfs由内核挂载为只读模式，然后通过联合挂载技术额为挂载一个可写层   一个镜像">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/Docker之镜像的本质.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之镜像层.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之容器的本质.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之镜像和容器的区别.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之运行的容器的本质.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之容器对文件的修改.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之image%20ls命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之image%20ls%20-a命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之image%20rm命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之image%20build命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之image%20save命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之image%20history命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之container%20create命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之container%20start命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之container%20run命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之container%20ls命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之container%20ls%20-a命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之container%20stop命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之container%20kill命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之container%20pause命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之container%20rm命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之container%20commit命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之container%20exec命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之container%20image%20inspect命令.png">
+<meta property="og:image" content="http://yoursite.com/images/Docker之container%20export命令.png">
+<meta property="og:updated_time" content="2019-03-11T10:18:22.660Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker镜像容器基础">
+<meta name="twitter:description" content="Docker镜像包含启动一个容器所需要的文件系统及其内容 镜像和容器的本质 采用分层构建机制，最底层为bootfs，其上为rootfs  bootfs: 用于系统引导的文件系统，包括bootloader和kernel，容器启动完成后会被卸载以节约内存资源 rootfs: 位于bootfs之上，是容器的根文件系统；rootfs由内核挂载为只读模式，然后通过联合挂载技术额为挂载一个可写层   一个镜像">
+<meta name="twitter:image" content="http://yoursite.com/images/Docker之镜像的本质.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/02/28/Docker镜像容器基础/">
+
+
+
+
+
+  <title>Docker镜像容器基础 | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/28/Docker镜像容器基础/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Docker镜像容器基础</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-28T10:03:40+08:00">
+                2019-02-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker-K8S/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker/K8S</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/28/Docker镜像容器基础/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/28/Docker镜像容器基础/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Docker镜像包含启动一个容器所需要的文件系统及其内容</p>
+<h2 id="镜像和容器的本质"><a href="#镜像和容器的本质" class="headerlink" title="镜像和容器的本质"></a>镜像和容器的本质</h2><ul>
+<li><p>采用分层构建机制，最底层为bootfs，其上为rootfs</p>
+<ul>
+<li>bootfs: 用于系统引导的文件系统，包括bootloader和kernel，容器启动完成后会被卸载以节约内存资源</li>
+<li>rootfs: 位于bootfs之上，是容器的根文件系统；rootfs由内核挂载为只读模式，然后通过<code>联合挂载</code>技术额为挂载一个可写层</li>
+</ul>
+</li>
+<li><p>一个镜像可以看做包含多个只读层，然后通过联合文件系统(Union File System)技术将不同的层整合成一个文件系统</p>
+<ul>
+<li>多个只读层对用户是透明的，用户看到的就是一个文件系统</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之镜像的本质.png" alt="img"></p>
+<ul>
+<li>由此，提出了镜像层的概念<ul>
+<li>一个镜像可以看做包含多个镜像层，可以使用<code>docker image history</code>来查看镜像层信息</li>
+<li>每一层除了包含自身内容，还包含一些元数据信息和指向下一层的指针，可以使用<code>docker image inspect</code>来查看元数据信息</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之镜像层.png" alt="img"></p>
+<ul>
+<li>一个未被运行的容器的定义几乎和镜像是一模一样，唯一区别在于<strong>容器的最上面的镜像层是可读写的</strong></li>
+</ul>
+<p><img src="/images/Docker之容器的本质.png" alt="img"></p>
+<ul>
+<li>因此，未被运行的容器 = 镜像 + 读写层</li>
+</ul>
+<p><img src="/images/Docker之镜像和容器的区别.png" alt="img"></p>
+<ul>
+<li>一个处于运行状态的容器被定义为一个可读写的文件系统、隔离的进程空间及其中包含的进程</li>
+</ul>
+<p><img src="/images/Docker之运行的容器的本质.png" alt="img"></p>
+<ul>
+<li>通过文件系统隔离技术，容器中的进程对文件系统的修改、删除和创建等操作，仅仅作用于最上层的可读写镜像层，不会影响下层</li>
+</ul>
+<p><img src="/images/Docker之容器对文件的修改.png" alt="img"></p>
+<h2 id="对镜像和容器操作命令的理解"><a href="#对镜像和容器操作命令的理解" class="headerlink" title="对镜像和容器操作命令的理解"></a>对镜像和容器操作命令的理解</h2><h3 id="Image"><a href="#Image" class="headerlink" title="Image"></a>Image</h3><ul>
+<li><code>docker image ls</code><ul>
+<li>列出所有镜像中的镜像层信息</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之image ls命令.png" alt="img"></p>
+<p><img src="/images/Docker之image ls -a命令.png" alt="img"></p>
+<ul>
+<li><code>docker image rm</code><ul>
+<li>将镜像中的只读层软删除(当该层不再被使用时才会真正删除)</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之image rm命令.png" alt="img"></p>
+<ul>
+<li><code>docker image build</code><ul>
+<li>反复执行<code>docker container run</code>, 修改可读写层、<code>docker commit</code></li>
+<li>在每一次循环中生成一个新的层，最终得到一个镜像</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之image build命令.png" alt="img"></p>
+<ul>
+<li><code>docker image save</code><ul>
+<li>将镜像中的镜像层进行压缩，同时保存每一层的元数据信息</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之image save命令.png" alt="img"></p>
+<ul>
+<li><code>docker image history</code><ul>
+<li>递归输出镜像中的各个镜像层</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之image history命令.png" alt="img"></p>
+<h3 id="Container"><a href="#Container" class="headerlink" title="Container"></a>Container</h3><ul>
+<li><code>docker container create</code><ul>
+<li>在指定的镜像最上层添加一个可读写层，生成一个新的容器</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之container create命令.png" alt="img"></p>
+<ul>
+<li><code>docker container start</code><ul>
+<li>为容器中的文件系统创建一个进程隔离空间，并在其中运行进程</li>
+<li>一个容器只可以有一个进程隔离空间</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之container start命令.png" alt="img"></p>
+<ul>
+<li><code>docker container run</code><ul>
+<li>先添加可读写层；再创建进程隔离空间并运行进程</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之container run命令.png" alt="img"></p>
+<ul>
+<li><code>docker container ls</code><ul>
+<li>列出所有容器D</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之container ls命令.png" alt="img"></p>
+<p><img src="/images/Docker之container ls -a命令.png" alt="img"></p>
+<ul>
+<li><code>docker container stop</code><ul>
+<li>向容器进程隔离空间中进程发送SIGTERM信号，然后停止所有的进程</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之container stop命令.png" alt="img"></p>
+<ul>
+<li><code>docker container kill</code><ul>
+<li>向容器进程隔离空间中进程发送SIGKILL信号</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之container kill命令.png" alt="img"></p>
+<ul>
+<li><code>docker container pause</code><ul>
+<li>使用cgroups的特性将容器的进程隔离空间暂停</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之container pause命令.png" alt="img"></p>
+<ul>
+<li><code>docker container rm</code><ul>
+<li>将容器中的可读写层删除，只可以对处于非运行状态的容器执行</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之container rm命令.png" alt="img"></p>
+<ul>
+<li><code>docker container commit</code><ul>
+<li>将容器中的可读写层转换为只读层，从而将容器转换为镜像</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之container commit命令.png" alt="img"></p>
+<ul>
+<li><code>docker container exec</code><ul>
+<li>在容器的进程隔离空间中启动一个新进程</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之container exec命令.png" alt="img"></p>
+<ul>
+<li><code>docker container|image inspect</code><ul>
+<li>提取容器或镜像中最顶层镜像层的元数据信息</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之container image inspect命令.png" alt="img"></p>
+<ul>
+<li><code>docker container export</code><ul>
+<li>将容器中的镜像层进行整合，移除不必要的层和元数据，得到一个层</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Docker之container export命令.png" alt="img"></p>
+<h2 id="分层镜像与联合挂载技术"><a href="#分层镜像与联合挂载技术" class="headerlink" title="分层镜像与联合挂载技术"></a>分层镜像与联合挂载技术</h2><ul>
+<li>Aufs</li>
+<li>overlayfs</li>
+<li>btrfs</li>
+<li>devicemapper</li>
+<li>vfs</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Docker/" rel="tag"># Docker</a>
+          
+            <a href="/tags/Image/" rel="tag"># Image</a>
+          
+            <a href="/tags/Container/" rel="tag"># Container</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/22/SkipList/" rel="next" title="SkipList">
+                <i class="fa fa-chevron-left"></i> SkipList
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/28/Docker网络基础/" rel="prev" title="Docker网络基础">
+                Docker网络基础 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2019/02/28/Docker镜像容器基础/" data-title="Docker镜像容器基础" data-url="http://yoursite.com/2019/02/28/Docker镜像容器基础/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">123</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像和容器的本质"><span class="nav-number">1.</span> <span class="nav-text">镜像和容器的本质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对镜像和容器操作命令的理解"><span class="nav-number">2.</span> <span class="nav-text">对镜像和容器操作命令的理解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Image"><span class="nav-number">2.1.</span> <span class="nav-text">Image</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Container"><span class="nav-number">2.2.</span> <span class="nav-text">Container</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分层镜像与联合挂载技术"><span class="nav-number">3.</span> <span class="nav-text">分层镜像与联合挂载技术</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

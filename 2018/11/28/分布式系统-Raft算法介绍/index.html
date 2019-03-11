@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Raft,Leader Election,Log Replication,Consensus,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="主节点与副本节点通过副本节点保证系统可用性是分布式系统的一种常见的形式每一个节点都存储有序的LogEntry，LogEntry的内容为节点需要执行的命令因此要保证各个节点的一致性，只需要保证各个节点的Log一致性 Raft算法的设计Paxos算法存在难以理解和难以实现的问题因此Raft算法的设计原则是保证算法的可理解性，从而让算法更容易实现  问题分解  Raft算法将分布式一致性的问题拆分为选主">
+<meta name="keywords" content="Raft,Leader Election,Log Replication,Consensus">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式系统-Raft算法介绍">
+<meta property="og:url" content="http://yoursite.com/2018/11/28/分布式系统-Raft算法介绍/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="主节点与副本节点通过副本节点保证系统可用性是分布式系统的一种常见的形式每一个节点都存储有序的LogEntry，LogEntry的内容为节点需要执行的命令因此要保证各个节点的一致性，只需要保证各个节点的Log一致性 Raft算法的设计Paxos算法存在难以理解和难以实现的问题因此Raft算法的设计原则是保证算法的可理解性，从而让算法更容易实现  问题分解  Raft算法将分布式一致性的问题拆分为选主">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/Raft之Term周期.png">
+<meta property="og:image" content="http://yoursite.com/images/Raft之节点状态转换.png">
+<meta property="og:image" content="http://yoursite.com/images/Raft之Joint%20Consensus.png">
+<meta property="og:image" content="http://yoursite.com/images/Raft之总结.png">
+<meta property="og:updated_time" content="2019-03-11T10:18:22.652Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分布式系统-Raft算法介绍">
+<meta name="twitter:description" content="主节点与副本节点通过副本节点保证系统可用性是分布式系统的一种常见的形式每一个节点都存储有序的LogEntry，LogEntry的内容为节点需要执行的命令因此要保证各个节点的一致性，只需要保证各个节点的Log一致性 Raft算法的设计Paxos算法存在难以理解和难以实现的问题因此Raft算法的设计原则是保证算法的可理解性，从而让算法更容易实现  问题分解  Raft算法将分布式一致性的问题拆分为选主">
+<meta name="twitter:image" content="http://yoursite.com/images/Raft之Term周期.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/28/分布式系统-Raft算法介绍/">
+
+
+
+
+
+  <title>分布式系统-Raft算法介绍 | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/28/分布式系统-Raft算法介绍/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">分布式系统-Raft算法介绍</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-28T10:23:46+08:00">
+                2018-11-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Distributed-System/" itemprop="url" rel="index">
+                    <span itemprop="name">Distributed System</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/28/分布式系统-Raft算法介绍/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/11/28/分布式系统-Raft算法介绍/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="主节点与副本节点"><a href="#主节点与副本节点" class="headerlink" title="主节点与副本节点"></a>主节点与副本节点</h2><p>通过副本节点保证系统可用性是分布式系统的一种常见的形式<br>每一个节点都存储有序的LogEntry，LogEntry的内容为节点需要执行的命令<br>因此要保证各个节点的一致性，只需要保证各个节点的Log一致性</p>
+<h2 id="Raft算法的设计"><a href="#Raft算法的设计" class="headerlink" title="Raft算法的设计"></a>Raft算法的设计</h2><p>Paxos算法存在难以理解和难以实现的问题<br>因此Raft算法的设计原则是保证算法的可理解性，从而让算法更容易实现</p>
+<ul>
+<li>问题分解</li>
+</ul>
+<p>Raft算法将分布式一致性的问题拆分为<code>选主(异常情况)</code>、<code>日志复制与心跳(正常情况)</code>、<code>一致性保证</code>、<code>成员变更</code>四个问题</p>
+<ul>
+<li>减少节点内部可能出现的状态</li>
+</ul>
+<h2 id="Raft算法的细节"><a href="#Raft算法的细节" class="headerlink" title="Raft算法的细节"></a>Raft算法的细节</h2><h3 id="基本流程"><a href="#基本流程" class="headerlink" title="基本流程"></a>基本流程</h3><p>Raft算法首先需要从集群(推荐节点总数为5个)中选主一个Leader节点，该节点对需要复制的Log具有完全的控制权，集群中的所有节点可以处于Leader、Follower和Candidate三种状态<br>系统正常运行时，Leader节点对来自Client的LogEntry在Follower节点上进行复制<br>当Leader节点异常时，Follower节点变为Candidate节点，选主算法会在Candidate节点中选择出一个新的Leader节点，然后继续进行上述流程<br>只要集群中半数以上的节点正常，整个集群便可以正常对Client提供服务</p>
+<p>每一次的选主开始的时间周期称之为一个Term，该Term在下一次选主开始前结束，Raft保证每一次选主要么失败，要么只会选择出一个新Leader</p>
+<p>Term的变化过程</p>
+<p><img src="/images/Raft之Term周期.png" alt="img"></p>
+<p>每一个节点都存储了自己所在的Term，并利用Term值进行状态转换<br>节点的状态转换过程</p>
+<p><img src="/images/Raft之节点状态转换.png" alt="img"></p>
+<p>Raft中集群节点间的通信方式为RPC，RPC的类型包括</p>
+<ul>
+<li>RequestVote(选主)</li>
+<li>AppendEntries(日志复制和心跳)</li>
+<li>ServerRetry(日志同步)</li>
+<li>InstallSnapshot(Snapshot同步)</li>
+</ul>
+<h3 id="选主"><a href="#选主" class="headerlink" title="选主"></a>选主</h3><ul>
+<li>触发机制</li>
+</ul>
+<p>Leader节点通过不带LogEntries信息的AppendEntries RPC向Follower发送心跳<br>节点启动时，默认为Follower状态，当节点超过一段时间没有收到Leader的心跳信息之后，发生<code>Heartbeat Timeout</code>，触发选主操作</p>
+<ul>
+<li>执行流程</li>
+</ul>
+<p>节点将自己变为Candidate状态、将自己的Term加1、向自己投票并同时并行的向其他节点发送RequestVote RPC<br>集群中的每一个节点按照<code>谁先来，投谁票</code>+<code>Log检查</code> + <code>最小超时时间检查</code>的原则进行投票，并且在每一个Term中只能投一票<br>节点的选主可能会有三个结果：<code>赢得选举，成为Leader节点</code>，<code>输掉选举，成为Follower节点</code>，<code>选主超时，进行下一轮的选主</code></p>
+<ul>
+<li>结果分析</li>
+</ul>
+<p>赢得选举： 每一个节点只要获得集群内超过半数节点的投票即表明赢得了选举，赢得选举之后，该节点便可以向其他节点发送AppendEntries RPC心跳信息来表明自己为Leader</p>
+<p>输掉选举： 在节点等待投票结果的过程中，有可能会收到了其他节点的AppendEntries RPC请求，此时当前节点会根据该请求中的Term信息来决定自己是输掉选举还是再次发起选举。如果其它节点的Term值大于等于当前节点的Term值，则表明当前节点输掉了选举，节点变为Follower状态；反之，当前节点继续保持Candidate状态，并对RPC请求返回reject</p>
+<p>选主超时：如果同时有多个节点都变为了Candidate状态并发起选举投票，那么有可能会导致没有任何一个节点能够获得超过一半的投票数，此时将会发生<code>Election Timeout</code>，此时节点将会重新发起新一轮的选主操作</p>
+<ul>
+<li>随机超时时间</li>
+</ul>
+<p>当发生<code>选主超时</code>时，如果不进行干预操作，那么该情况可能会永远发生下去<br>Raft使用随机超时时间来尽量避免出现该情况，并在出现该情况时能够及时修复<br>首先是使用随机的<code>Heartbeat Timeout</code>，减少多个节点同时变为Candidate的情况<br>其次是使用随机的<code>Election Timeout</code>，减少多个节点同时再次进行选举的情况</p>
+<h3 id="日志复制与心跳"><a href="#日志复制与心跳" class="headerlink" title="日志复制与心跳"></a>日志复制与心跳</h3><ul>
+<li>Log的组成</li>
+</ul>
+<p>Log由有序的LogEntry列表组成，LogEntry包含<code>操作命令</code>、<code>来源的Term</code>、<code>在LogEntry列表中的下标Index</code>组成</p>
+<ul>
+<li>Log复制过程</li>
+</ul>
+<p>当Follower收到Client请求后，会将请求转发到Leader中<br>当Leader收到Client请求后，使用AppendEntries RPC向Follower发送请求来进行日志复制<br>该该请求被超过半数的节点正确执行后，Leader决定将LogEntry加入到集群中，LogEntry变为已提交状态，对于没有正确执行该LogEntry的节点，Leader会持续发起请求<br>在AppendEntries RPC中包含Leader节点上已提交的LogEntry的最大Index和对应的Term，如果Follower发现该Index和Term与自己内部的Logs不相同，则拒绝该请求(<strong>AppendEntries RPC会进行Leader与Follower的一致性检查</strong>)，否则Follower根据该值决定是否将自己内部的LogEntry变为已提交状态</p>
+<ul>
+<li>Leader与Follower的一致性检查</li>
+</ul>
+<p>当Leader或Follower异常之后，可能会导致节点间出现Logs不一致的情况，如Follower中比新Leader多出一些未提交的LogEntries、Follower中缺少新Leader中的某些Entries<br>Raft通过让Leader节点<code>要求Follower节点复制自己内部Logs</code>的形式来解决上述不一致的情况</p>
+<p>Leader的内部维护了对于每一个Follower的nextIndex值，表示下一次发起AppendEntries RPC请求时，要发送给Follower的LogEntry的下标<br>当新Leader在出现时，每一个Follower的nextIndex被设置为Leader内Log总数加1，当某个Follower与Leader不一致时，该Follower会拒绝Leader下一次的AppendEntries RPC，此时Leader将Follower对应的nextIndex减1。重复上述过程，直到AppendEntries RPC的一致性检查通过，然后Follower会将内部与Leader不一致的LogEntry删除，并添加来自Leader的LogEntry，最终Follower于Leader达到一致</p>
+<h3 id="一致性保证"><a href="#一致性保证" class="headerlink" title="一致性保证"></a>一致性保证</h3><ul>
+<li>保证已提交的LogEntry不会丢失</li>
+</ul>
+<p>选主得到的新Leader需要包含之前所有Term中已提交的LogEntry，这样LogEntry只会从Leader流向Follower，并且Leader永远不会重写自己的LogEntry<br>节点在进行选主而发起的RequestVote RPC中，包含了自己内部Log的最大Term和最大Index的信息，当其他节点收到该请求时，将自己的Log与其进行比较，如果自己的Log更新一点，则拒绝为其投票<br>Log的比较规则为：不同Term，Term大的更新；同一Term，Index更大的更新</p>
+<ul>
+<li>已经在多数节点上被复制的LogEntry有可能会丢失</li>
+</ul>
+<p>当Leader进行LogEntry复制之后、尚未进行提交之前发生异常时，新Leader并不会尝试提交之前Term里面的LogEntry</p>
+<h3 id="成员变更"><a href="#成员变更" class="headerlink" title="成员变更"></a>成员变更</h3><ul>
+<li>手动实现 -&gt; 导致集群不可用</li>
+</ul>
+<p>关闭集群服务<br>修改配置<br>启动集群</p>
+<ul>
+<li><p>自动实现 -&gt; 在变更过程中，需要防止出现两个Leader的情况</p>
+<ul>
+<li><p>单次变更</p>
+<p>通过Leader向Follower发送一条特殊的LogEntry，告知集群配置信息，当该LogEntry已提交之后，单次变更结束<br>每次只可以添加或删除一个节点，避免出现两个Leader的情况<br>对于Follower，当LogEntry尚未提交时，不接受新的单次变更的LogEntry</p>
+</li>
+<li><p>多次变更</p>
+<p>引入<code>Joint Consensus</code>状态,称为C-old,new,即新旧Configuration共存状态</p>
+<p>当Leader收到变更的请求之后向Follower发送一条特殊的C-new,old LogEntry，告知集群配置信息<br>Follower在收到LogEntry之后，不管该LogEntry是否已提交，直接使用新的配置，<strong>但此时C-new是不可以进行投票的</strong><br>如果此时Leader异常，根据新Leader是否收到了LogEntry，该Leader要么在C-old中，要么在C-old,new中</p>
+<p>当该LogEntry被提交之后，Leader将所有Log复制到C-old和C-new节点中，同时选主算法保证了此时选主得到的Leader一定是包含了C-new,old LogEntry的节点<br>此时Leader向所有C-new节点发送一条特殊的C-new LogEntry，当该LogEntry被提交之后，整个集群完成变更，c-old节点便可以直接关闭</p>
+<p>在上述过程中，不会出现c-old或c-new单边进行投票或日志复制的情况，因此可以保证不会出现两个Leader</p>
+<p>虽然多次变更方法很有效，但是比较难以理解，因此etcd实际使用的是单次变更的方式</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Raft之Joint Consensus.png" alt="img"></p>
+<ul>
+<li><p>多次变更的问题与优化</p>
+<ul>
+<li><p>Learner</p>
+<p>成员变更时，新加入的节点在复制数据时比较耗时(Snapshot机制可以缓解)，如果此时需要进行选主或日志复制，该节点可能响应速度较慢导致整个集群的不可用<br>新加入的节点设置为Learner状态，没有选主和日志复制的投票权，当该节点与Leader日志同步完成之后，变为Follower状态</p>
+</li>
+<li><p>Leader不在C-new中</p>
+<p>在上述多次变更的运行过程中，有可能集群的Leader节点并不在新的集群配置当中<br>该Leader节点在C-new LogEntry被提交之后，会进入Follower状态</p>
+</li>
+<li><p>从集群中删除的节点</p>
+<p>这些节点由于不会受到Leader的心跳，会触发选主的操作<br>节点在收到RequestVote RPC请求时，如果收到请求时间与Leader发送心跳的时间没有小于Heartbeat Timeout的最小值，则拒绝投票</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="日志压缩"><a href="#日志压缩" class="headerlink" title="日志压缩"></a>日志压缩</h3><p>随着系统的运行，Log所占的空间会不断增长，导致系统的可用性下降，因此需要某种机制对Log的存储进行优化</p>
+<ul>
+<li>Snapshot</li>
+</ul>
+<p>将内部的最新状态持久化到可靠存储上，然后删除到当前为止的Log</p>
+<p>在Raft中，每一个节点单独对已提交的LogEntry进行Snapshot操作，同时存储相应的元数据，包括<code>last included index</code>和<code>last included term</code><br><code>last included index</code>表示Snapshot之后被删除的最大的Log下标，<code>last included term</code>为该LogEntry对应的Term</p>
+<p>由于各个节点是独立完成Snapshot的，当某个Follower长期处于异常或者运行异常缓慢的时候，就会出现某条LogEntry Leader已经通过Snapshot将其删除但是还未在Follower对其进行复制的情况，此时需要通过InstallSnapshot RPC对Follower同步Snapshot</p>
+<ul>
+<li>Log Cleaning与Log-Structured Merge Trees(LSM)</li>
+</ul>
+<p>实现机制比SnapShot复杂，所以Raft算法未考虑</p>
+<h3 id="Client与Raft集群的交互"><a href="#Client与Raft集群的交互" class="headerlink" title="Client与Raft集群的交互"></a>Client与Raft集群的交互</h3><ul>
+<li><p>Client总是与Leader进行交互，如果Client与Follower交互时，Follower将会拒绝并向其发送Leader地址信息</p>
+</li>
+<li><p>Client向Leader发送的命令包含唯一的序号，Leader中包含每一个Client的最新序号值，如果用户发送的命令的序号值已存在，则Leader不进行处理</p>
+</li>
+</ul>
+<h2 id="Raft算法的总结"><a href="#Raft算法的总结" class="headerlink" title="Raft算法的总结"></a>Raft算法的总结</h2><p><img src="/images/Raft之总结.png" alt="img"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Raft/" rel="tag"># Raft</a>
+          
+            <a href="/tags/Leader-Election/" rel="tag"># Leader Election</a>
+          
+            <a href="/tags/Log-Replication/" rel="tag"># Log Replication</a>
+          
+            <a href="/tags/Consensus/" rel="tag"># Consensus</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/27/分布式系统-基本概念/" rel="next" title="分布式系统-基本概念">
+                <i class="fa fa-chevron-left"></i> 分布式系统-基本概念
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/28/一致性哈希/" rel="prev" title="一致性哈希">
+                一致性哈希 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2018/11/28/分布式系统-Raft算法介绍/" data-title="分布式系统-Raft算法介绍" data-url="http://yoursite.com/2018/11/28/分布式系统-Raft算法介绍/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">123</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#主节点与副本节点"><span class="nav-number">1.</span> <span class="nav-text">主节点与副本节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Raft算法的设计"><span class="nav-number">2.</span> <span class="nav-text">Raft算法的设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Raft算法的细节"><span class="nav-number">3.</span> <span class="nav-text">Raft算法的细节</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本流程"><span class="nav-number">3.1.</span> <span class="nav-text">基本流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选主"><span class="nav-number">3.2.</span> <span class="nav-text">选主</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#日志复制与心跳"><span class="nav-number">3.3.</span> <span class="nav-text">日志复制与心跳</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一致性保证"><span class="nav-number">3.4.</span> <span class="nav-text">一致性保证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#成员变更"><span class="nav-number">3.5.</span> <span class="nav-text">成员变更</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#日志压缩"><span class="nav-number">3.6.</span> <span class="nav-text">日志压缩</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Client与Raft集群的交互"><span class="nav-number">3.7.</span> <span class="nav-text">Client与Raft集群的交互</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Raft算法的总结"><span class="nav-number">4.</span> <span class="nav-text">Raft算法的总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

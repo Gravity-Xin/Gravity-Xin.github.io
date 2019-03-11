@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="二叉树,二叉查找树,AVL,红黑树,B树,B+树,B*树,Trie树,Huffman树,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="二叉树 定义:每一个节点至多有两颗子树，子树有左右之分  特点  第i层最多含有2^(i-1)个节点 深度为k的二叉树，最多还有2^k-1个节点 如果叶子节点数为n0，度为2的节点数为n2，则n0=n2+1   满二叉树: 除了最后一层节点无子节点外，其他所有节点都有两个子节点  完全二叉树: 除最后一层外，其他层的所有节点数都达到最大数量，且最后一层的所有节点都连续集中在最左边     遍历">
+<meta name="keywords" content="二叉树,二叉查找树,AVL,红黑树,B树,B+树,B*树,Trie树,Huffman树">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tree">
+<meta property="og:url" content="http://yoursite.com/2019/03/05/Tree/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="二叉树 定义:每一个节点至多有两颗子树，子树有左右之分  特点  第i层最多含有2^(i-1)个节点 深度为k的二叉树，最多还有2^k-1个节点 如果叶子节点数为n0，度为2的节点数为n2，则n0=n2+1   满二叉树: 除了最后一层节点无子节点外，其他所有节点都有两个子节点  完全二叉树: 除最后一层外，其他层的所有节点数都达到最大数量，且最后一层的所有节点都连续集中在最左边     遍历">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/Tree数据结构之满-完全二叉树.png">
+<meta property="og:image" content="http://yoursite.com/images/Tree数据结构之顺序存储.png">
+<meta property="og:image" content="http://yoursite.com/images/Tree数据结构之链式存储.png">
+<meta property="og:image" content="http://yoursite.com/images/Tree数据结构之二叉查找树的删除1.png">
+<meta property="og:image" content="http://yoursite.com/images/Tree数据结构之二叉查找树的删除2.png">
+<meta property="og:image" content="http://yoursite.com/images/Tree数据结构之二叉查找树的删除3.png">
+<meta property="og:image" content="http://yoursite.com/images/Tree数据结构之红黑树.png">
+<meta property="og:image" content="http://yoursite.com/images/Tree数据结构之B树.png">
+<meta property="og:image" content="http://yoursite.com/images/Tree数据结构之B+树.png">
+<meta property="og:image" content="http://yoursite.com/images/Tree数据结构之单次查找树.png">
+<meta property="og:image" content="http://yoursite.com/images/Tree数据结构之霍夫曼树.png">
+<meta property="og:image" content="http://yoursite.com/images/Tree数据结构之霍夫曼编码.png">
+<meta property="og:updated_time" content="2019-03-11T10:18:22.661Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tree">
+<meta name="twitter:description" content="二叉树 定义:每一个节点至多有两颗子树，子树有左右之分  特点  第i层最多含有2^(i-1)个节点 深度为k的二叉树，最多还有2^k-1个节点 如果叶子节点数为n0，度为2的节点数为n2，则n0=n2+1   满二叉树: 除了最后一层节点无子节点外，其他所有节点都有两个子节点  完全二叉树: 除最后一层外，其他层的所有节点数都达到最大数量，且最后一层的所有节点都连续集中在最左边     遍历">
+<meta name="twitter:image" content="http://yoursite.com/images/Tree数据结构之满-完全二叉树.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/05/Tree/">
+
+
+
+
+
+  <title>Tree | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/05/Tree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Tree</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-05T15:19:27+08:00">
+                2019-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algo-DS/" itemprop="url" rel="index">
+                    <span itemprop="name">Algo/DS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/05/Tree/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/05/Tree/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><ul>
+<li><p>定义:每一个节点至多有两颗子树，子树有左右之分</p>
+</li>
+<li><p>特点</p>
+<ul>
+<li>第i层最多含有2^(i-1)个节点</li>
+<li>深度为k的二叉树，最多还有2^k-1个节点</li>
+<li>如果叶子节点数为n0，度为2的节点数为n2，则n0=n2+1</li>
+</ul>
+</li>
+<li><p>满二叉树: 除了最后一层节点无子节点外，其他所有节点都有两个子节点</p>
+</li>
+<li><p>完全二叉树: 除最后一层外，其他层的所有节点数都达到最大数量，且最后一层的所有节点都连续集中在最左边</p>
+</li>
+</ul>
+<p><img src="/images/Tree数据结构之满-完全二叉树.png" alt="img"></p>
+<ul>
+<li><p>遍历</p>
+<ul>
+<li>先序遍历: 根 左子树 右子树</li>
+<li>中序遍历: 左子树 根 右子树</li>
+<li>后序遍历: 左子树 右子树 根</li>
+</ul>
+</li>
+<li><p>存储方式</p>
+<ul>
+<li>顺序存储: 利用数组来存储，仅仅适用于完全二叉树，如堆数据结构，此时父子节点的编号存在对应关系<br><img src="/images/Tree数据结构之顺序存储.png" alt="img"></li>
+<li>链式存储: 最常见的存储方式，由于子节点可能为空，所以该方式比较浪费存储空间<br><img src="/images/Tree数据结构之链式存储.png" alt="img"></li>
+</ul>
+</li>
+</ul>
+<h2 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h2><ul>
+<li><p>定义</p>
+<ul>
+<li>如果左子树不为空，则左子树上所有节点的值都小于根节点的值</li>
+<li>如果右子树不为空，则右子树上所有节点的值都大于根节点的值</li>
+<li>左右子树本身也是一颗二叉查找树</li>
+</ul>
+</li>
+<li><p>特点</p>
+<ul>
+<li>对其进行中序遍历，则得到一个有序的序列</li>
+<li>插入/查找操作的时间复杂度为O(logn)，最坏情况下为O(n) <strong>原因在于在插入和删除元素时，没有保持树的平衡</strong></li>
+<li>二叉查找树的高度决定了二叉查找树的效率</li>
+</ul>
+</li>
+<li><p>查找过程</p>
+<ul>
+<li>如果根节点为空，则返回查找失败</li>
+<li>如果根节点的值等于查找值，返回成功</li>
+<li>如果查找的元素小于根节点，则到左子树中查找</li>
+<li>如果查找的元素大于根节点，则到右子树中查找</li>
+</ul>
+</li>
+<li><p>插入过程</p>
+<ul>
+<li>如果根节点为空，则插入的元素为根节点</li>
+<li>如果根节点的值等于查找值，返回失败</li>
+<li>如果插入的元素小于根节点，则插入到左子树中</li>
+<li>如果插入的元素大于根节点，则插入到右子树中</li>
+</ul>
+</li>
+<li><p>删除过程</p>
+<ul>
+<li>使用查找过程找到对应的节点P</li>
+<li>如果P节点的左右子树都为空，直接删除该节点并修改其父节点的指针值<br><img src="/images/Tree数据结构之二叉查找树的删除1.png" alt="img"></li>
+<li>如果P节点的左子树或右子树为空，则让P节点的子节点与父节点相连，然后删除P节点即可<br><img src="/images/Tree数据结构之二叉查找树的删除2.png" alt="img"></li>
+<li>如果P节点左右子树均不为空，则找到P右子树中最小的元素或者找到左子树中最大的元素，然后将其放到P节点位置即可<br><img src="/images/Tree数据结构之二叉查找树的删除3.png" alt="img"></li>
+</ul>
+</li>
+</ul>
+<h2 id="平衡二叉树"><a href="#平衡二叉树" class="headerlink" title="平衡二叉树"></a>平衡二叉树</h2><ul>
+<li>定义<ul>
+<li>是对二叉查找树的改进，通过<strong>在插入和删除过程中进行自平衡的操作，保证二叉树的高度为logn，从而提高查找效率</strong></li>
+<li>任意节点的左右两个子树的高度差的绝对值不超过1</li>
+<li>左右子树本身也是平衡二叉树</li>
+</ul>
+</li>
+</ul>
+<h3 id="AVL树"><a href="#AVL树" class="headerlink" title="AVL树"></a>AVL树</h3><p>平衡二叉树的一种</p>
+<ul>
+<li>特点<ul>
+<li>插入/删除/查找的时间复杂度O(logn)</li>
+<li>在进行插入和删除时，需要通过一次或多次旋转操作来保持平衡，该树结构是高度平衡的</li>
+</ul>
+</li>
+</ul>
+<h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>平衡二叉树的一种</p>
+<ul>
+<li>特点<ul>
+<li>插入/删除/查找的时间复杂度O(logn)，需要通过自平衡操作来保证平衡</li>
+<li>每一个节点带有颜色属性，红色或黑色</li>
+<li>根节点和所有叶子节点都是黑色</li>
+<li>每一个红色节点必须含有两个黑色的子节点 <strong>即从根节点要叶子节点之间的所有路径中不可以有两个连续的红色节点，即红节点的孩子不能是红节点</strong></li>
+<li><strong>从任一节点到其每一个叶子节点的所有路径中都包含相同数目的黑色节点</strong></li>
+<li><strong>从根节点到叶子节点的最长路径不多于最短路径的两倍</strong>，该树结构是大致平衡的</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Tree数据结构之红黑树.png" alt="img"></p>
+<h2 id="B树"><a href="#B树" class="headerlink" title="B树"></a>B树</h2><ul>
+<li>定义<ul>
+<li>中间节点最多只有M个子节点，M&gt;2</li>
+<li>根节点的子节点数为[2, M]</li>
+<li>中间节点的子节点数为[M/2, M]</li>
+<li>每一个节点上存放至少M/2-1(向上取整)和至多M-1个关键字</li>
+<li>中间节点的关键字数量=指向子节点的指针数量-1</li>
+<li>中间节点的关键字为K[1], K[2], … ,k[M-1]，且K[i]&lt;K[i+1]</li>
+<li>中间节点指向子节点的指针为P[1], P[2], … , P[M]，其中P[1]指向关键字小于K[1]的子树，P[M]指向关键字大于K[M-1]的子树，其他P[i]指向关键字属于(K[i-1], K[i])的子树</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Tree数据结构之B树.png" alt="img"></p>
+<ul>
+<li><p>特点</p>
+<ul>
+<li>是一种用于查找的平衡树，但不是二叉树。节点的子节点数量可以超过2个，是一个更为一般的二叉查找树</li>
+<li>用于对排序后的数据进行存储，插入/删除/查找的时间复杂度为O(logn)</li>
+<li><strong>平衡二叉树是通过在插入/删除过程中进行自平衡的操作保持树的平衡，从而提高查找效率；而B树是通过增加子节点的数量，减少树的高度来提高查找效率</strong></li>
+</ul>
+</li>
+<li><p>查找过程</p>
+<ul>
+<li>如果根节点为空，则返回查找失败</li>
+<li>如果根节点的值等于查找值，返回成功</li>
+<li>由于根节点的子节点是有序的，因此在根节点的子节点中进行顺序或者二分查找，如果找到查找值，返回成功；否则确定查找值位于Ki与Ki+1之间，此时Pi为根节点的第i个子节点</li>
+<li>取Pi作为根节点，重复上述查找过程</li>
+</ul>
+</li>
+</ul>
+<h2 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h2><ul>
+<li>定义<ul>
+<li>是B树的变体，也是用于查找的平衡树，定义除了以下几点，其他与B树基本相同</li>
+<li>中间节点的指针数和关键字相同</li>
+<li>中间节点的子树指针P[i], 指向关键字属于[K[i], K[i+1])的子树</li>
+<li>所有叶子节点增加一个链指针</li>
+<li>所有关键字都出现在叶子节点</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Tree数据结构之B+树.png" alt="img"></p>
+<ul>
+<li><p>特点</p>
+<ul>
+<li>所有关键字都出现在叶子节点，因此在进行查找时必须到达叶子节点才能命中，而B树可以在非叶子节点命中</li>
+<li>所有叶子节点之间形成一个链表，且链表中的关键字是有序的</li>
+<li>中间节点可以看做是叶子节点的索引层，叶子节点可以看做是存储关键字(数据)的数据层</li>
+<li><strong>由于根节点和中间节点不存储数据，因此占用空间较小，更适合进行外部存储，比如磁盘，因为一次磁盘IO可以读取更多的节点数。同时，由于所有数据都在叶子节点上，可以方便进行范围查找，并且可以通过磁盘预读的方式和局部性原理减少磁盘IO的次数，提高查找效率</strong></li>
+</ul>
+</li>
+<li><p>查找过程</p>
+<ul>
+<li>和B树相同，只不过只有在叶子节点上才会命中</li>
+</ul>
+</li>
+</ul>
+<h2 id="单词查找树"><a href="#单词查找树" class="headerlink" title="单词查找树"></a>单词查找树</h2><ul>
+<li>定义<ul>
+<li>又叫Trie树，主要用于统计、排序和存储大量的字符串，常被搜索引擎用于文本词频统计</li>
+<li><strong>使用字符串的公共前缀来减少查询时间</strong>，最大限度减少无谓的字符串比较</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Tree数据结构之单次查找树.png" alt="img"></p>
+<ul>
+<li>特点<ul>
+<li>根节点不包含字符，其他节点只包含一个字符，即每一个节点最多有26个子节点</li>
+<li>从根节点到某一个节点，路径上经过的字符连接起来即为该节点对应的字符串</li>
+<li>每一个节点的所有子节点包含的字符都不相同</li>
+</ul>
+</li>
+</ul>
+<h2 id="霍夫曼树"><a href="#霍夫曼树" class="headerlink" title="霍夫曼树"></a>霍夫曼树</h2><ul>
+<li><p>定义</p>
+<ul>
+<li>构造所有节点的带权路径之和最小的二叉树</li>
+<li>可用于进行霍夫曼编码</li>
+</ul>
+</li>
+<li><p>构造过程</p>
+</li>
+</ul>
+<p><img src="/images/Tree数据结构之霍夫曼树.png" alt="img"></p>
+<ul>
+<li>霍夫曼编码</li>
+</ul>
+<p><img src="/images/Tree数据结构之霍夫曼编码.png" alt="img"></p>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><ul>
+<li>AVL、红黑树和B树、B+树的区别</li>
+</ul>
+<p>都是用于查找的树结构，<strong>AVL和红黑树是平衡二叉树，通过自平衡操作来实现树的平衡，提高查找效率；而B树、B+树是多叉树，通过降低树的高度来提交查找效率</strong></p>
+<p>当数据量较小时，AVL和红黑树的性能很好；但是当数据量很大时，如数据库中的数据，性能则不够理想</p>
+<p>原因在于当数据里很大时，此时内存不够用，需要将大部分的数据存储到磁盘之中，此时磁盘的IO就成为了性能瓶颈。AVL和红黑树的数据结构无法迎合磁盘IO中的预读机制，导致<strong>在查询过程中需要h次磁盘IO，h为树的高度</strong>。同时AVL和红黑树在插入和删除过程中需要进行自平衡的操作，如果此时部分数据在内存、部分数据在磁盘中时<strong>无法完成自平衡操作</strong></p>
+<p>而B树和B+树的设计迎合的磁盘IO的预读机制。通过在节点上添加多个子节点，<strong>降低了树的高度，需要的磁盘IO次数变小</strong>；同时在新建节点时，可以将<strong>多个节点的大小等于磁盘上的一页，这样便可以通过磁盘预读机制，一次性读取多个节点，减少磁盘IO次数</strong></p>
+<ul>
+<li>B树和B+树的区别</li>
+</ul>
+<p>B+树只在叶子节点上存放数据，因此查找时间复杂度固定为O(logn)，而B树查询的时间复杂度不定，与关键字在树中的位置有关，最好为O(1)</p>
+<p>B+树叶子节点使用链表来组织，可以充分利用磁盘预读的空间局部性原理，减少磁盘IO数，同时可方便的进行<strong>范围查询</strong>；而B-树不方便进行范围查询</p>
+<p>B+树的中间节点不存放数据，<strong>节点占用空间更小，因此单次磁盘IO可以读取的节点数更大</strong>，因此查找效率更高</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/二叉树/" rel="tag"># 二叉树</a>
+          
+            <a href="/tags/二叉查找树/" rel="tag"># 二叉查找树</a>
+          
+            <a href="/tags/AVL/" rel="tag"># AVL</a>
+          
+            <a href="/tags/红黑树/" rel="tag"># 红黑树</a>
+          
+            <a href="/tags/B树/" rel="tag"># B树</a>
+          
+            <a href="/tags/B-树/" rel="tag"># B+树</a>
+          
+            <a href="/tags/B-树/" rel="tag"># B*树</a>
+          
+            <a href="/tags/Trie树/" rel="tag"># Trie树</a>
+          
+            <a href="/tags/Huffman树/" rel="tag"># Huffman树</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/04/计算机中的存储模型/" rel="next" title="计算机中的存储模型">
+                <i class="fa fa-chevron-left"></i> 计算机中的存储模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/07/Docker容器的资源管理/" rel="prev" title="Docker容器的资源管理">
+                Docker容器的资源管理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2019/03/05/Tree/" data-title="Tree" data-url="http://yoursite.com/2019/03/05/Tree/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">123</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#二叉树"><span class="nav-number">1.</span> <span class="nav-text">二叉树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二叉查找树"><span class="nav-number">2.</span> <span class="nav-text">二叉查找树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#平衡二叉树"><span class="nav-number">3.</span> <span class="nav-text">平衡二叉树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AVL树"><span class="nav-number">3.1.</span> <span class="nav-text">AVL树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#红黑树"><span class="nav-number">3.2.</span> <span class="nav-text">红黑树</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B树"><span class="nav-number">4.</span> <span class="nav-text">B树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-树"><span class="nav-number">5.</span> <span class="nav-text">B+树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单词查找树"><span class="nav-number">6.</span> <span class="nav-text">单词查找树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#霍夫曼树"><span class="nav-number">7.</span> <span class="nav-text">霍夫曼树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FAQ"><span class="nav-number">8.</span> <span class="nav-text">FAQ</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="leveldb,sstable,memtable,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="特点 可以持久化的本地KV存储系统，当内存占用较大时，会将部分数据存储到磁盘中 存入的数据按照key值进行有序排序，相邻的key在存储文件中顺序存储；可以自定义key比较规则 提供基本的读、写、删除操作，也提供针对多个key的批量原子操作 支持数据快照(snapshot)功能，支持数据压缩功能 写操作远远快于读操作，顺序读写操作远远快于随机读写操作  整体结构 静态角度 内存中的Memtable:">
+<meta name="keywords" content="leveldb,sstable,memtable">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LevelDB入门">
+<meta property="og:url" content="http://yoursite.com/2019/03/01/LevelDB入门/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="特点 可以持久化的本地KV存储系统，当内存占用较大时，会将部分数据存储到磁盘中 存入的数据按照key值进行有序排序，相邻的key在存储文件中顺序存储；可以自定义key比较规则 提供基本的读、写、删除操作，也提供针对多个key的批量原子操作 支持数据快照(snapshot)功能，支持数据压缩功能 写操作远远快于读操作，顺序读写操作远远快于随机读写操作  整体结构 静态角度 内存中的Memtable:">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/LevelDB之整体结构.png">
+<meta property="og:image" content="http://yoursite.com/images/LevelDB之Log文件.png">
+<meta property="og:image" content="http://yoursite.com/images/LevelDB之Record.png">
+<meta property="og:image" content="http://yoursite.com/images/LevelDB之SSTable的物理布局.png">
+<meta property="og:image" content="http://yoursite.com/images/LevelDB之SSTable的逻辑布局.png">
+<meta property="og:image" content="http://yoursite.com/images/LevelDB之数据存储区.png">
+<meta property="og:image" content="http://yoursite.com/images/LevelDB之数据KV记录.png">
+<meta property="og:image" content="http://yoursite.com/images/LevelDB之数据索引区.png">
+<meta property="og:image" content="http://yoursite.com/images/LevelDB之文件尾部区.png">
+<meta property="og:image" content="http://yoursite.com/images/LevelDB之写入操作.png">
+<meta property="og:image" content="http://yoursite.com/images/LevelDB之读取操作.png">
+<meta property="og:image" content="http://yoursite.com/images/LevelDB之压缩操作.png">
+<meta property="og:image" content="http://yoursite.com/images/LevelDB之Table缓存.png">
+<meta property="og:image" content="http://yoursite.com/images/LevelDB之Block缓存.png">
+<meta property="og:updated_time" content="2019-03-11T10:18:22.660Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LevelDB入门">
+<meta name="twitter:description" content="特点 可以持久化的本地KV存储系统，当内存占用较大时，会将部分数据存储到磁盘中 存入的数据按照key值进行有序排序，相邻的key在存储文件中顺序存储；可以自定义key比较规则 提供基本的读、写、删除操作，也提供针对多个key的批量原子操作 支持数据快照(snapshot)功能，支持数据压缩功能 写操作远远快于读操作，顺序读写操作远远快于随机读写操作  整体结构 静态角度 内存中的Memtable:">
+<meta name="twitter:image" content="http://yoursite.com/images/LevelDB之整体结构.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/01/LevelDB入门/">
+
+
+
+
+
+  <title>LevelDB入门 | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/01/LevelDB入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">LevelDB入门</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-01T14:27:34+08:00">
+                2019-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/LevelDB/" itemprop="url" rel="index">
+                    <span itemprop="name">LevelDB</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/01/LevelDB入门/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/01/LevelDB入门/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ul>
+<li>可以持久化的本地KV存储系统，当内存占用较大时，会将部分数据存储到磁盘中</li>
+<li>存入的数据按照key值进行有序排序，相邻的key在存储文件中顺序存储；可以自定义key比较规则</li>
+<li>提供基本的读、写、删除操作，也提供针对多个key的批量原子操作</li>
+<li>支持数据快照(snapshot)功能，支持数据压缩功能</li>
+<li>写操作远远快于读操作，顺序读写操作远远快于随机读写操作</li>
+</ul>
+<h2 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h2><p><img src="/images/LevelDB之整体结构.png" alt="img"></p>
+<h2 id="静态角度"><a href="#静态角度" class="headerlink" title="静态角度"></a>静态角度</h2><ul>
+<li>内存中的Memtable: 写入操作的KV记录先保存在其中；占用的内存大小有上限</li>
+<li>内存中的Immutable Memtable: 只可读，不可写和删除</li>
+<li>磁盘中的Current文件: 记录当前Manifest文件名称，因为Manifest文件随着LevelDB的运行和SSTable的变化，会生成新的Manifest文件来记录该变化</li>
+<li>磁盘中的Manifest文件: 记录各个SSTable文件的管理信息，如文件所属level、文件名称、最小和最大Key等</li>
+<li>磁盘中的Log文件: 对写入操作进行记录；当系统崩溃后，如果内存中的某些数据尚未保存到磁盘中，可以使用其进行数据的恢复</li>
+<li>磁盘中的SSTable文件: 文件中的Key是有序的 <strong>level0的SSTable文件(后缀为.sst)和其它level的文件相比有特殊性，该层级内的多个.sst文件可能存在key重叠</strong></li>
+</ul>
+<h3 id="Log文件"><a href="#Log文件" class="headerlink" title="Log文件"></a>Log文件</h3><p>Log文件:</p>
+<p><img src="/images/LevelDB之Log文件.png" alt="img"></p>
+<p>Record:</p>
+<p><img src="/images/LevelDB之Record.png" alt="img"></p>
+<ul>
+<li>物理上来看，是以32KB为单位的物理Block，每一个Block为基本读取单位；一个Log文件就是连续32KB大小的Block构成的</li>
+<li>逻辑上来看，一条KV记录看做是一条Record<ul>
+<li>CheckSum: 对类型字段和数据字段的校验码</li>
+<li>记录长度: 数据的大小</li>
+<li>类型: 每条记录的逻辑结构和Log文件物理Block之间的关系</li>
+<li>数据: KV对</li>
+</ul>
+</li>
+</ul>
+<h3 id="SSTable文件"><a href="#SSTable文件" class="headerlink" title="SSTable文件"></a>SSTable文件</h3><p>Log文件中的Key是无序的，凡是SSTable文件中的Key是有序的</p>
+<p>物理布局:</p>
+<p><img src="/images/LevelDB之SSTable的物理布局.png" alt="img"></p>
+<p>逻辑布局:</p>
+<p><img src="/images/LevelDB之SSTable的逻辑布局.png" alt="img"></p>
+<ul>
+<li><p>物理上来看，与Log文件一样，分为固定大小的Block</p>
+<ul>
+<li>数据存储区</li>
+<li>压缩算法类型</li>
+<li>数据校验码</li>
+</ul>
+</li>
+<li><p>逻辑上来看，分为数据存储区和数据管理区</p>
+<ul>
+<li>数据存储区: 存放实际的KV对<ul>
+<li>有序的KV记录</li>
+<li>重启点信息: 由于Key有序，相邻Key有可能部分内容存在重叠，为了减少存储空间，可以将相同部分记录在第一个Key中，后续Key只需要记录不同部分。<code>重启点</code>表示从这条记录开始，不再采取只记录不同Key部分，而是重新记录所有的Key值</li>
+<li>重启点数量</li>
+</ul>
+</li>
+<li>数据管理区: 索引指针等管理数据，方便快速查找相应记录<ul>
+<li>元数据区</li>
+<li>元数据区索引</li>
+<li>数据索引区: 红色部分记录大于等于数据块i中最大Key值的那个Key，第二个字段指出数据块i在SSTable文件中的起始位置，第三个字段指出数据块i的大小</li>
+<li>文件尾部区</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>数据存储区:</p>
+<p><img src="/images/LevelDB之数据存储区.png" alt="img"></p>
+<p>KV记录:</p>
+<p><img src="/images/LevelDB之数据KV记录.png" alt="img"></p>
+<p>数据索引区:</p>
+<p><img src="/images/LevelDB之数据索引区.png" alt="img"></p>
+<p>文件尾部区:</p>
+<p><img src="/images/LevelDB之文件尾部区.png" alt="img"></p>
+<h3 id="Memtable-Immutable-Memtable"><a href="#Memtable-Immutable-Memtable" class="headerlink" title="Memtable/Immutable Memtable"></a>Memtable/Immutable Memtable</h3><p>Memtable和Immutable Memtable的结构是完全相同的，唯一区别在于后者是可读但不可写和删除</p>
+<p>提供了读、写和删除的操作接口；实际上并不会真正进行删除操作，而是将删除操作作为插入一条记录而实现的，同时将Key加上删除标记，真正的删除操作在后续写入磁盘的压缩操作中进行</p>
+<p>Memtable中的Key是有序的，<strong>实际实现的数据结构是SkipList</strong></p>
+<h2 id="动态角度"><a href="#动态角度" class="headerlink" title="动态角度"></a>动态角度</h2><p>读、写、删除操作的执行过程，数据压缩的过程以及系统崩溃后的恢复过程</p>
+<ul>
+<li>写入<ul>
+<li>先对Log文件进行追加写操作，成功后写入到Memtable中(更新跳跃表结构)；一次写入涉及一次磁盘顺序写和一次内存写入，故写入操作速度快</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/LevelDB之写入操作.png" alt="img"></p>
+<ul>
+<li><p>删除</p>
+<ul>
+<li>与写入操作相同，但不是真正执行删除操作，而是写入<code>Key:删除标记</code>，在后台的压缩操作中真正执行删除操作</li>
+</ul>
+</li>
+<li><p>读取</p>
+<ul>
+<li>依次从Memtable、Immutable Memtable和SSTable进行读取</li>
+<li>按照数据的新鲜程度来决定查找顺序，Level i+1的数据时Level i的数据经过压缩操作后得到的</li>
+<li>Level 0和其它Level中查找某个key的过程是不一样的。因为Level 0下的不同文件可能key的范围有重叠，某个要查询的key有可能多个文件都包含，这样的查找策略是先找出Level 0中哪些文件包含这个key(通过Manifest问卷)，之后按照文件的新鲜程度排序，依次查找，读出key对应的value。而如果是非Level 0的话，因为这个Level的文件之间key是不重叠的，所以只需要从一个文件就可以找到key对应的value</li>
+<li>对于SSTable，LevelDB具体的查找过程: 先在内存中的Cache中查找是否包含这个文件的缓存记录，如果包含，则从缓存中读取;如果不包含，则打开SSTable文件，同时将这个文件的索引部分加载到内存中并放入Cache中。这样Cache里面就有了这个SSTable的缓存项，但是只有索引部分在内存中，之后LevelDB根据索引定位到哪个内容Block会包含这条key，从文件中读出这个Block的内容，在根据记录一一比较，如果找到则返回结果，如果没有找到，那么说明这个Level的SSTable文件并不包含这个key，然后到下一级别的SSTable中去查找</li>
+<li>读取操作涉及的操作较多，效率没有写入快 <strong>因此LevelDB更适合写操作大于读操作，顺序读取较多的情况</strong></li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/LevelDB之读取操作.png" alt="img"></p>
+<ul>
+<li>压缩<ul>
+<li>当Memtable占用的内存大小达到上限时，需要将内存中的数据保存到磁盘中。此时，会生成新的Log文件和Memtable，原先的Memtable变为Immutable Memtable，而后续到来的数据将被保存到新的Log文件和Memtable中</li>
+<li>将Immutable Memtable中的数据导入至磁盘中，并进行压缩操作，最终形成一个SSTable文件</li>
+<li>SSTable文件随着内存数据的不断导出和压缩，形成一种层级结构，这也是称为LevelDB的原因</li>
+<li>压缩操作主要用来删除无效Key，减少数据规模，降低磁盘占用</li>
+<li>压缩的类型包括两种<ul>
+<li>minor<ul>
+<li>将Immutable Memtable中的数据直接导入到SSTable文件中</li>
+<li>由于Immutable Table是一个多层级的跳跃表，其中的记录是根据key有序排列的，所以minor压缩就是按照Key由小到大遍历，并依次写入一个Level 0 的新建SSTable文件中，写完后建立文件的index数据</li>
+<li>由此可以看出Level 0的多个文件中，可能存在key范围的重叠</li>
+</ul>
+</li>
+<li>major<ul>
+<li>当某个Level下的SSTable文件数目超过一定值后，会从这个Level的SSTable中选择一个或多个文件，将其和Level+1的SSTable文件合并</li>
+<li>对于大于Level 0的层级，选择其中一个文件就行；但是对于Level 0来说，如果指定一个文件的话，本Level中很可能有其他SSTable文件的key范围和这个文件有重叠，因此需要找出所有有重叠的文件和Level 1的文件进行合并</li>
+<li>对多个文件采用多路归并排序的方式进行合并</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/LevelDB之压缩操作.png" alt="img"></p>
+<ul>
+<li>缓存<ul>
+<li>如果读取操作如果没有在Memtable中找到记录，则要多次进行磁盘访问操作；使用缓存来降低磁盘访问次数，提高查找效率</li>
+<li>引入了两个不同的缓存<ul>
+<li>Table Cache<ul>
+<li>Key值是SSTable的文件名称</li>
+<li>Value<ul>
+<li>指向磁盘打开的SSTable文件的文件指针</li>
+<li>指向内存中这个SSTable文件对应的Table结构指针，其中保存了SSTable的Index内容以及用来指示Block Cache的CacheID</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Block Cache<ul>
+<li>Key是文件的CacheID加上Block在文件中的起始位置BlockOffset</li>
+<li>Value是Block的内容</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>如果读取的数据的局部性比较好，则大部分内容都能在Cache中读到，可以提高读取效率；如果是随机读取，则性能较差</li>
+</ul>
+</li>
+</ul>
+<p>Table Cache:</p>
+<p><img src="/images/LevelDB之Table缓存.png" alt="img"></p>
+<p>Block Cache:</p>
+<p><img src="/images/LevelDB之Block缓存.png" alt="img"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/leveldb/" rel="tag"># leveldb</a>
+          
+            <a href="/tags/sstable/" rel="tag"># sstable</a>
+          
+            <a href="/tags/memtable/" rel="tag"># memtable</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/28/Docker网络基础/" rel="next" title="Docker网络基础">
+                <i class="fa fa-chevron-left"></i> Docker网络基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/04/优秀博客收藏/" rel="prev" title="优秀博客收藏">
+                优秀博客收藏 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2019/03/01/LevelDB入门/" data-title="LevelDB入门" data-url="http://yoursite.com/2019/03/01/LevelDB入门/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">123</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#特点"><span class="nav-number">1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#整体结构"><span class="nav-number">2.</span> <span class="nav-text">整体结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#静态角度"><span class="nav-number">3.</span> <span class="nav-text">静态角度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Log文件"><span class="nav-number">3.1.</span> <span class="nav-text">Log文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSTable文件"><span class="nav-number">3.2.</span> <span class="nav-text">SSTable文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Memtable-Immutable-Memtable"><span class="nav-number">3.3.</span> <span class="nav-text">Memtable/Immutable Memtable</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态角度"><span class="nav-number">4.</span> <span class="nav-text">动态角度</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,2383 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Yihang&#39;s Blog">
+<meta property="og:url" content="http://yoursite.com/page/4/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:locale" content="zh-Hans">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Yihang&#39;s Blog">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/page/4/">
+
+
+
+
+
+  <title>Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left 
+  page-home">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+  <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/16/Golang-实现简单的https服务器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/16/Golang-实现简单的https服务器/" itemprop="url">Golang-实现简单的https服务器</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-16T17:05:47+08:00">
+                2019-01-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/16/Golang-实现简单的https服务器/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/16/Golang-实现简单的https服务器/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="加密、签名和数字证书"><a href="#加密、签名和数字证书" class="headerlink" title="加密、签名和数字证书"></a>加密、签名和数字证书</h2><ul>
+<li><p>对称加密: 加密和解密的密钥是相同的</p>
+<ul>
+<li>需要使用安全的渠道在通信双方首次通信时协商一个共同的密钥</li>
+<li>密钥的数目多了之后比较难于管理</li>
+<li>常见对称加密算法有: <code>DES</code></li>
+</ul>
+</li>
+<li><p>非对称加密: 加密和解密的密钥是不同的，分为私钥和公钥。其中公钥是公开的，任何人都可以获取，而私钥是私有的。使用公钥加密的数据可以使用私钥来解密；使用私钥加密的数据可以使用公钥来解密</p>
+<ul>
+<li>通信A方将自己的公钥公开，得到该公钥的B方使用其对发送数据进行加密，A方收到数据后再使用自己的私钥进行解密</li>
+<li>常见非对称加密算法有: <code>RSA</code></li>
+</ul>
+</li>
+<li><p>签名: 在发送的数据之后增加一段内容，用于证明数据未被修改。一般是通过对数据进行一个Hash计算得到，是不可逆的。签名和要数据会被一起发送出去</p>
+</li>
+<li><p>数字证书: 确保数字证书里面的公钥确实是这个证书的所有者的，即用证书来确认对方的身份</p>
+<ul>
+<li>如果客户端需要对服务器进行验证，则需要服务器提供数字证书</li>
+<li>如果服务器需要对客户端进行验证，则需要客户端提供数字证书</li>
+<li>证书的主要内容<ul>
+<li><code>Issuer</code>: 证书颁发机构</li>
+<li><code>Valid From、Valid To</code>: 证书的有效期</li>
+<li><code>Public Key</code>: 公钥</li>
+<li><code>Subject</code>: 证书的所有者，一般为某人、某公司名称、某网站地址等</li>
+</ul>
+</li>
+<li>由权威的第三方机构颁发</li>
+</ul>
+</li>
+</ul>
+<h2 id="TLS协议"><a href="#TLS协议" class="headerlink" title="TLS协议"></a>TLS协议</h2><p>https协议使用TLS(Transport Layer Security, 传输层安全协议)来保证通信的安全性和数据的完整性，该协议工作在TCP协议之上，可以看做是SSL协议的升级版</p>
+<p>TLS基于X.509来进行认证，然后使用非对称加密算法来进行通信双方的身份认证，然后进行公钥的交换，并使用公钥对通信双方的数据进行加密</p>
+<p>HTTPS连接的建立过程: 使用非对称加密来交换对称加密的密钥</p>
+<p><img src="/images/HTTPs的建立过程.png" alt="img"></p>
+<h2 id="生成证书"><a href="#生成证书" class="headerlink" title="生成证书"></a>生成证书</h2><ul>
+<li>生成服务端证书</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 生成私钥</span><br><span class="line">openssl genrsa -out server.key 2048</span><br><span class="line"><span class="meta">#</span> 生成证书</span><br><span class="line">openssl req -new -x509 -key server.key -out server.pem -days 3650</span><br></pre></td></tr></table></figure>
+<p>或者直接使用go内置工具</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go run $GOROOT/src/crypto/tls/generate_cert.go --host localhost</span><br></pre></td></tr></table></figure>
+<ul>
+<li>生成客户端证书</li>
+</ul>
+<p>并不是必须的<br>但在某些需要验证客户端身份的场景下，服务器需要客户端提供证书</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 生成私钥</span><br><span class="line">openssl genrsa -out client.key 2048</span><br><span class="line"><span class="meta">#</span> 生成证书</span><br><span class="line">openssl req -new -x509 -key client.key -out client.pem -days 3650</span><br></pre></td></tr></table></figure>
+<h2 id="证书的使用"><a href="#证书的使用" class="headerlink" title="证书的使用"></a>证书的使用</h2><p>golang的<code>crypto/tls</code>实现了TLS1.2的功能，<code>crypto/x509</code>实现了证书管理的功能</p>
+<ul>
+<li>TCP服务器</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cert, err := tls.LoadX509KeyPair(<span class="string">"server.pem"</span>, <span class="string">"server.key"</span>) <span class="comment">// 获取服务端证书</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    certBytes, err := ioutil.ReadFile(<span class="string">"client.pem"</span>) <span class="comment">// 读取客户端证书</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(<span class="string">"Unable to read cert.pem"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    clientCertPool := x509.NewCertPool()</span><br><span class="line">    ok := clientCertPool.AppendCertsFromPEM(certBytes)</span><br><span class="line">    <span class="keyword">if</span> !ok &#123;</span><br><span class="line">        <span class="built_in">panic</span>(<span class="string">"failed to parse root certificate"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    config := &amp;tls.Config&#123;</span><br><span class="line">        Certificates: []tls.Certificate&#123;cert&#125;,</span><br><span class="line">        ClientAuth:   tls.RequireAndVerifyClientCert, <span class="comment">// 设置需要对客户端身份进行认证</span></span><br><span class="line">        ClientCAs:    clientCertPool, <span class="comment">// 添加客户端证书池</span></span><br><span class="line">    &#125;</span><br><span class="line">    config := &amp;tls.Config&#123;Certificates: []tls.Certificate&#123;cert&#125;&#125; <span class="comment">// 创建tls配置</span></span><br><span class="line">    ln, err := tls.Listen(<span class="string">"tcp"</span>, <span class="string">":443"</span>, config) <span class="comment">// 开启监听</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">defer</span> ln.Close()</span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        conn, err := ln.Accept() <span class="comment">// 建立连接</span></span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Println(err)</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">go</span> handleConn(conn) <span class="comment">// 处理请求</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">handleConn</span><span class="params">(conn net.Conn)</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> conn.Close()</span><br><span class="line">    r := bufio.NewReader(conn)</span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        msg, err := r.ReadString(<span class="string">'\n'</span>)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Println(err)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        log.Println(msg)</span><br><span class="line">        n, err := conn.Write([]<span class="keyword">byte</span>(<span class="string">"world\n"</span>))</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Println(n, err)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>TCP客户端</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cert, err := tls.LoadX509KeyPair(<span class="string">"client.pem"</span>, <span class="string">"client.key"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    certBytes, err := ioutil.ReadFile(<span class="string">"client.pem"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(<span class="string">"Unable to read cert.pem"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    clientCertPool := x509.NewCertPool()</span><br><span class="line">    ok := clientCertPool.AppendCertsFromPEM(certBytes)</span><br><span class="line">    <span class="keyword">if</span> !ok &#123;</span><br><span class="line">        <span class="built_in">panic</span>(<span class="string">"failed to parse root certificate"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    conf := &amp;tls.Config&#123;</span><br><span class="line">        RootCAs:            clientCertPool,</span><br><span class="line">        Certificates:       []tls.Certificate&#123;cert&#125;, <span class="comment">// 在tls配置中添加客户端证书信息</span></span><br><span class="line">        InsecureSkipVerify: <span class="literal">true</span>, <span class="comment">// 设置为true，则不会校验服务器证书以及证书中的主机名和服务器主机名是否一致</span></span><br><span class="line">    &#125;</span><br><span class="line">    conn, err := tls.Dial(<span class="string">"tcp"</span>, <span class="string">"127.0.0.1:443"</span>, conf) <span class="comment">// 建立连接</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">defer</span> conn.Close()</span><br><span class="line">    n, err := conn.Write([]<span class="keyword">byte</span>(<span class="string">"hello\n"</span>)) <span class="comment">// 写数据</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(n, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">100</span>)</span><br><span class="line">    n, err = conn.Read(buf) <span class="comment">// 读数据</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(n, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    log.Println(<span class="keyword">string</span>(buf[:n]))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>HTTPs服务器</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    http.HandleFunc(<span class="string">"/hello"</span>, helloServerfunc)</span><br><span class="line">    server := &amp;http.Server&#123;</span><br><span class="line">        Addr: <span class="string">":443"</span>,</span><br><span class="line">        TLSConfig: &amp;tls.Config&#123;</span><br><span class="line">            ClientAuth: tls.RequestClientCert, <span class="comment">// 配置需要对客户端证书进行验证</span></span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;</span><br><span class="line">    err := server.ListenAndServeTLS(<span class="string">"cert/server.pem"</span>, <span class="string">"cert/server.key"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Fatal(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">helloServerfunc</span><span class="params">(rw http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    rw.Header().Set(<span class="string">"Content-Type"</span>, <span class="string">"text/plain"</span>)</span><br><span class="line">    rw.Write([]<span class="keyword">byte</span>(<span class="string">"This is an example server.\n"</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在浏览器中输入<code>https://localhost/hello</code>即可访问</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/15/Golang-container/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/15/Golang-container/" itemprop="url">Golang-container</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-15T17:35:52+08:00">
+                2019-01-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/15/Golang-container/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/15/Golang-container/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="container-heap"><a href="#container-heap" class="headerlink" title="container/heap"></a>container/heap</h2><p>实现了堆数据结构: <a href="https://gravity-xin.github.io/2018/11/12/Heap/" target="_blank" rel="noopener">heap</a></p>
+<p>提供了<code>heap.Interface</code>接口，同时提供了<code>Init、Push、Pop、Remove、Fix</code>方法对堆对象进行操作</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Interface 堆对象需要实现的接口</span></span><br><span class="line"><span class="keyword">type</span> Interface <span class="keyword">interface</span> &#123;</span><br><span class="line">    sort.Interface <span class="comment">// 排序接口</span></span><br><span class="line">    Push(x <span class="keyword">interface</span>&#123;&#125;) <span class="comment">// 向堆中加入元素，作为第Len()个元素</span></span><br><span class="line">    Pop() <span class="keyword">interface</span>&#123;&#125;   <span class="comment">// 从堆中删除元素，并返回Len()-1个元素</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Init 对提供的满足heap.Interface接口的对象进行建立最小堆的操作</span></span><br><span class="line"><span class="comment">// 时间复杂度为O(h.Len())</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Init</span><span class="params">(h Interface)</span></span> &#123;</span><br><span class="line">    n := h.Len()</span><br><span class="line">    <span class="keyword">for</span> i := n/<span class="number">2</span> - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i-- &#123;</span><br><span class="line">        down(h, i, n) <span class="comment">// 对堆中的元素下溯，调整堆</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Push 向堆底中增加元素，并通过上溯调整堆</span></span><br><span class="line"><span class="comment">// 时间复杂度O(log(h.Len()))</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Push</span><span class="params">(h Interface, x <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    h.Push(x)</span><br><span class="line">    up(h, h.Len()<span class="number">-1</span>) <span class="comment">// 对堆中元素进行上溯，调整堆</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Pop 从堆顶删除元素，将堆尾元素放入堆顶，并通过下溯调整堆</span></span><br><span class="line"><span class="comment">// 时间复杂度为时间复杂度O(log(h.Len()))</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Pop</span><span class="params">(h Interface)</span> <span class="title">interface</span></span>&#123;&#125; &#123;</span><br><span class="line">    n := h.Len() - <span class="number">1</span></span><br><span class="line">    h.Swap(<span class="number">0</span>, n) <span class="comment">// 将堆尾部元素放入堆顶</span></span><br><span class="line">    down(h, <span class="number">0</span>, n) <span class="comment">// 对堆中元素下溯吗，调整堆</span></span><br><span class="line">    <span class="keyword">return</span> h.Pop()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Remove 从堆中任意位置(数组下标)删除元素</span></span><br><span class="line"><span class="comment">// 时间复杂度为时间复杂度O(log(h.Len()))</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Remove</span><span class="params">(h Interface, i <span class="keyword">int</span>)</span> <span class="title">interface</span></span>&#123;&#125; &#123;</span><br><span class="line">    n := h.Len() - <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> n != i &#123;</span><br><span class="line">        h.Swap(i, n)</span><br><span class="line">        <span class="keyword">if</span> !down(h, i, n) &#123;</span><br><span class="line">            up(h, i)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> h.Pop()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Fix 当位于i的位置的值发生变化后，调整堆</span></span><br><span class="line"><span class="comment">// 时间复杂度为时间复杂度O(log(h.Len()))</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Fix</span><span class="params">(h Interface, i <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> !down(h, i, h.Len()) &#123;</span><br><span class="line">        up(h, i)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因此，我们只需要实现heap.Interface接口，便可以通过heap包提供的方法对堆进行各种操作</p>
+<p>基于heap实现优先级队列</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// Item 堆中的元素</span></span><br><span class="line"><span class="keyword">type</span> Item <span class="keyword">struct</span> &#123;</span><br><span class="line">    value    <span class="keyword">string</span> <span class="comment">// 元素值</span></span><br><span class="line">    priority <span class="keyword">int</span>    <span class="comment">// 元素的优先级</span></span><br><span class="line">    index    <span class="keyword">int</span>    <span class="comment">// 元素在堆中的索引(数组下标)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PriorityQueue 实现了heap.Interface的堆对象，本质上是一个数组</span></span><br><span class="line"><span class="keyword">type</span> PriorityQueue []*Item</span><br><span class="line"></span><br><span class="line"><span class="comment">// Len 返回PriorityQueue内置数组的长度</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq PriorityQueue)</span> <span class="title">Len</span><span class="params">()</span> <span class="title">int</span></span> &#123; <span class="keyword">return</span> <span class="built_in">len</span>(pq) &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Less 返回PriorityQueue中元素优先级的比较结果</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq PriorityQueue)</span> <span class="title">Less</span><span class="params">(i, j <span class="keyword">int</span>)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> pq[i].priority &gt; pq[j].priority <span class="comment">// 最大堆</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Swap 对PriorityQueue中的任意两个元素进行替换</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq PriorityQueue)</span> <span class="title">Swap</span><span class="params">(i, j <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    pq[i], pq[j] = pq[j], pq[i]</span><br><span class="line">    pq[i].index = i <span class="comment">// 更新元素索引</span></span><br><span class="line">    pq[j].index = j</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Push 向PriorityQueue添加元素，放入数组末尾</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq *PriorityQueue)</span> <span class="title">Push</span><span class="params">(x <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    n := <span class="built_in">len</span>(*pq)</span><br><span class="line">    item := x.(*Item)</span><br><span class="line">    item.index = n</span><br><span class="line">    *pq = <span class="built_in">append</span>(*pq, item)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Pop 从PriorityQueue删除元素，删除数组尾部元素</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq *PriorityQueue)</span> <span class="title">Pop</span><span class="params">()</span> <span class="title">interface</span></span>&#123;&#125; &#123;</span><br><span class="line">    old := *pq</span><br><span class="line">    n := <span class="built_in">len</span>(old)</span><br><span class="line">    item := old[n<span class="number">-1</span>]</span><br><span class="line">    item.index = <span class="number">-1</span></span><br><span class="line">    *pq = old[<span class="number">0</span> : n<span class="number">-1</span>]</span><br><span class="line">    <span class="keyword">return</span> item</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过heap.Fix方法处理堆中元素优先级变化的情况</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq *PriorityQueue)</span> <span class="title">update</span><span class="params">(item *Item, value <span class="keyword">string</span>, priority <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    item.value = value</span><br><span class="line">    item.priority = priority</span><br><span class="line">    heap.Fix(pq, item.index)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="container-list"><a href="#container-list" class="headerlink" title="container/list"></a>container/list</h2><p>实现了双向链表的数据结构</p>
+<p>提供了<code>list.New()</code>方法来创建双向链表，同时链表还提供了<code>Init、Back、Front、InsertAfter、InsertFront、Len</code>等链表操作方法</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Element 双向链表中的元素</span></span><br><span class="line"><span class="keyword">type</span> Element <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="comment">// 当前元素的前一个和后一个元素 next.Front()=prev.Back()=e</span></span><br><span class="line">    <span class="comment">// 实际是一个环</span></span><br><span class="line">    next, prev *Element</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 当前元素所属的链表对象</span></span><br><span class="line">    list *List</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 当前元素存储的实际值</span></span><br><span class="line">    Value <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Next 返回元素在链表中的下一个元素或者返回nil</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(e *Element)</span> <span class="title">Next</span><span class="params">()</span> *<span class="title">Element</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> p := e.next; e.list != <span class="literal">nil</span> &amp;&amp; p != &amp;e.list.root &#123;</span><br><span class="line">        <span class="keyword">return</span> p</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Prev 返回元素在链表中的前一个元素或者返回nil</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(e *Element)</span> <span class="title">Prev</span><span class="params">()</span> *<span class="title">Element</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> p := e.prev; e.list != <span class="literal">nil</span> &amp;&amp; p != &amp;e.list.root &#123;</span><br><span class="line">        <span class="keyword">return</span> p</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// List 双向链表</span></span><br><span class="line"><span class="keyword">type</span> List <span class="keyword">struct</span> &#123;</span><br><span class="line">    root Element <span class="comment">// root元素，作为哨兵 root.prev链表尾部元素 root.next链表头部元素</span></span><br><span class="line">    <span class="built_in">len</span>  <span class="keyword">int</span>     <span class="comment">// 链表长度，不包含root元素</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Init 初始化或者清空链表</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Init</span><span class="params">()</span> *<span class="title">List</span></span> &#123;</span><br><span class="line">    l.root.next = &amp;l.root</span><br><span class="line">    l.root.prev = &amp;l.root</span><br><span class="line">    l.<span class="built_in">len</span> = <span class="number">0</span></span><br><span class="line">    <span class="keyword">return</span> l</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// New 返回一个已初始化的链表对象</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">()</span> *<span class="title">List</span></span> &#123; <span class="keyword">return</span> <span class="built_in">new</span>(List).Init() &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Len 返回链表的长度</span></span><br><span class="line"><span class="comment">// 时间复杂度是O(1)</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Len</span><span class="params">()</span> <span class="title">int</span></span> &#123; <span class="keyword">return</span> l.<span class="built_in">len</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Front 返回链表的头部元素，如果链表为空则返回nil</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Front</span><span class="params">()</span> *<span class="title">Element</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> l.<span class="built_in">len</span> == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l.root.next</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Back 返回链表的尾部元素，如果链表为空则返回nil</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Back</span><span class="params">()</span> *<span class="title">Element</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> l.<span class="built_in">len</span> == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l.root.prev</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Remove 从链表中删除元素e，返回元素e中的值</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Remove</span><span class="params">(e *Element)</span> <span class="title">interface</span></span>&#123;&#125; &#123;</span><br><span class="line">    <span class="keyword">if</span> e.list == l &#123;</span><br><span class="line">        l.remove(e)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> e.Value</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PushFront 在链表头部插入值</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">PushFront</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;)</span> *<span class="title">Element</span></span> &#123;</span><br><span class="line">    l.lazyInit()</span><br><span class="line">    <span class="keyword">return</span> l.insertValue(v, &amp;l.root)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PushBack 在链表尾部插入值</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">PushBack</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;)</span> *<span class="title">Element</span></span> &#123;</span><br><span class="line">    l.lazyInit()</span><br><span class="line">    <span class="keyword">return</span> l.insertValue(v, l.root.prev)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// InsertBefore 在元素mark之前插入值</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">InsertBefore</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;, mark *Element)</span> *<span class="title">Element</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> mark.list != l &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l.insertValue(v, mark.prev)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// InsertAfter 在元素mark之后插入值</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">InsertAfter</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;, mark *Element)</span> *<span class="title">Element</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> mark.list != l &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l.insertValue(v, mark)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MoveToFront 将链表中的某个元素插入到链表头部</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">MoveToFront</span><span class="params">(e *Element)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> e.list != l || l.root.next == e &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    l.insert(l.remove(e), &amp;l.root)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MoveToBack 将链表中的某个元素插入到链表尾部</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">MoveToBack</span><span class="params">(e *Element)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> e.list != l || l.root.prev == e &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// see comment in List.Remove about initialization of l</span></span><br><span class="line">    l.insert(l.remove(e), l.root.prev)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MoveBefore 将链表中的元素插入到元素mark之前</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">MoveBefore</span><span class="params">(e, mark *Element)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> e.list != l || e == mark || mark.list != l &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    l.insert(l.remove(e), mark.prev)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MoveAfter 将链表中的元素插入到元素mark之后</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">MoveAfter</span><span class="params">(e, mark *Element)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> e.list != l || e == mark || mark.list != l &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    l.insert(l.remove(e), mark)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PushBackList 将另一个链表中的元素依次插入到当前链表的尾部</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">PushBackList</span><span class="params">(other *List)</span></span> &#123;</span><br><span class="line">    l.lazyInit()</span><br><span class="line">    <span class="keyword">for</span> i, e := other.Len(), other.Front(); i &gt; <span class="number">0</span>; i, e = i<span class="number">-1</span>, e.Next() &#123; <span class="comment">// 对链表进行遍历</span></span><br><span class="line">        l.insertValue(e.Value, l.root.prev)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PushFrontList 将另一个链表中的元素依次插入到当前链表的头部</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">PushFrontList</span><span class="params">(other *List)</span></span> &#123;</span><br><span class="line">    l.lazyInit()</span><br><span class="line">    <span class="keyword">for</span> i, e := other.Len(), other.Back(); i &gt; <span class="number">0</span>; i, e = i<span class="number">-1</span>, e.Prev() &#123;</span><br><span class="line">        l.insertValue(e.Value, &amp;l.root)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="container-ring"><a href="#container-ring" class="headerlink" title="container/ring"></a>container/ring</h2><p>实现了环形链表的数据结构</p>
+<p>提供了<code>ring.New()</code>来创建环形链表，同时链表还提供了<code>Next、Prev、Move</code>等方法对链表进行操作</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Ring 环形链表元素，同时也是环形链表对象</span></span><br><span class="line"><span class="comment">// 环形链表没有头部或尾部元素，可以从环中任一个元素开始对整个环进行遍历</span></span><br><span class="line"><span class="keyword">type</span> Ring <span class="keyword">struct</span> &#123;</span><br><span class="line">    next, prev *Ring</span><br><span class="line">    Value      <span class="keyword">interface</span>&#123;&#125; <span class="comment">// 元素的具体值</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Next 获取环中当前元素的下一个元素</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Ring)</span> <span class="title">Next</span><span class="params">()</span> *<span class="title">Ring</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> r.next == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> r.init()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> r.next</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Prev 获取环中当前元素的前一个元素</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Ring)</span> <span class="title">Prev</span><span class="params">()</span> *<span class="title">Ring</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> r.next == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> r.init()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> r.prev</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Move 返回环形链表中后面 (n &gt; 0) 或者前面 (n &lt; 0) 第 n % r.Len() 个元素</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Ring)</span> <span class="title">Move</span><span class="params">(n <span class="keyword">int</span>)</span> *<span class="title">Ring</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> r.next == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> r.init()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">switch</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> n &lt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">for</span> ; n &lt; <span class="number">0</span>; n++ &#123;</span><br><span class="line">            r = r.prev</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">case</span> n &gt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">for</span> ; n &gt; <span class="number">0</span>; n-- &#123;</span><br><span class="line">            r = r.next</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> r</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// New 创建包含n个元素的环形链表</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">(n <span class="keyword">int</span>)</span> *<span class="title">Ring</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> n &lt;= <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    r := <span class="built_in">new</span>(Ring)</span><br><span class="line">    p := r</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span>; i &lt; n; i++ &#123;</span><br><span class="line">        p.next = &amp;Ring&#123;prev: p&#125;</span><br><span class="line">        p = p.next</span><br><span class="line">    &#125;</span><br><span class="line">    p.next = r <span class="comment">// 首尾相连</span></span><br><span class="line">    r.prev = p</span><br><span class="line">    <span class="keyword">return</span> r</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Link 将环形链表r和s相连接</span></span><br><span class="line"><span class="comment">// 如果r和s为同一个环形链表，则删除r和s中之间的元素，并返回被删除的元素构成的子环形链表</span></span><br><span class="line"><span class="comment">// 如果r和s不为同一个环形链表，则创建一个新的环形链表使得 r.Next() = s</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Ring)</span> <span class="title">Link</span><span class="params">(s *Ring)</span> *<span class="title">Ring</span></span> &#123;</span><br><span class="line">    n := r.Next()</span><br><span class="line">    <span class="keyword">if</span> s != <span class="literal">nil</span> &#123;</span><br><span class="line">        p := s.Prev()</span><br><span class="line">        <span class="comment">// Note: Cannot use multiple assignment because</span></span><br><span class="line">        <span class="comment">// evaluation order of LHS is not specified.</span></span><br><span class="line">        r.next = s</span><br><span class="line">        s.prev = r</span><br><span class="line">        n.prev = p</span><br><span class="line">        p.next = n</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> n</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Unlink 删除环形链表中 n % r.Len() 个元素,从r.Next()开始，返回的是被删除的环形链表</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Ring)</span> <span class="title">Unlink</span><span class="params">(n <span class="keyword">int</span>)</span> *<span class="title">Ring</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> n &lt;= <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> r.Link(r.Move(n + <span class="number">1</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Len 返回环形链表的长度</span></span><br><span class="line"><span class="comment">// 时间复杂度o(n)</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Ring)</span> <span class="title">Len</span><span class="params">()</span> <span class="title">int</span></span> &#123;</span><br><span class="line">    n := <span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> r != <span class="literal">nil</span> &#123;</span><br><span class="line">        n = <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> p := r.Next(); p != r; p = p.next &#123;</span><br><span class="line">            n++</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> n</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Do 向前遍历环形链表的元素，并元素值执行f函数操作</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Ring)</span> <span class="title">Do</span><span class="params">(f <span class="keyword">func</span>(<span class="keyword">interface</span>&#123;&#125;)</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> r != <span class="literal">nil</span> &#123;</span><br><span class="line">        f(r.Value)</span><br><span class="line">        <span class="keyword">for</span> p := r.Next(); p != r; p = p.next &#123;</span><br><span class="line">            f(p.Value)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/03/计算机操作耗时时间/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/03/计算机操作耗时时间/" itemprop="url">计算机操作耗时时间</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-03T20:11:03+08:00">
+                2019-01-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Code-Design/" itemprop="url" rel="index">
+                    <span itemprop="name">Code Design</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/03/计算机操作耗时时间/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/03/计算机操作耗时时间/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <table>
+<thead>
+<tr>
+<th style="text-align:center">操作</th>
+<th style="text-align:center">耗时</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">L1缓存读写</td>
+<td style="text-align:center">1ns</td>
+</tr>
+<tr>
+<td style="text-align:center">分支预测错误</td>
+<td style="text-align:center">5ns</td>
+</tr>
+<tr>
+<td style="text-align:center">L2缓存读写</td>
+<td style="text-align:center">7ns</td>
+</tr>
+<tr>
+<td style="text-align:center">互斥锁定与解锁Mutex Lock/Unlock</td>
+<td style="text-align:center">25ns</td>
+</tr>
+<tr>
+<td style="text-align:center">在长度为100的slice上进行线性查找</td>
+<td style="text-align:center">80ns</td>
+</tr>
+<tr>
+<td style="text-align:center">主存读写</td>
+<td style="text-align:center">100ns</td>
+</tr>
+<tr>
+<td style="text-align:center">Golang sync.Mutex Lock/Unlock</td>
+<td style="text-align:center">100ns</td>
+</tr>
+<tr>
+<td style="text-align:center">Golang chan Send/Receive</td>
+<td style="text-align:center">300ns</td>
+</tr>
+<tr>
+<td style="text-align:center">Golang native Map 读取</td>
+<td style="text-align:center">350ns</td>
+</tr>
+<tr>
+<td style="text-align:center">Golang native Map 写入</td>
+<td style="text-align:center">1000ns</td>
+</tr>
+<tr>
+<td style="text-align:center">Golang 通过反射进行方法调用</td>
+<td style="text-align:center">1000ns</td>
+</tr>
+<tr>
+<td style="text-align:center">用Zippy压缩1K字节</td>
+<td style="text-align:center">10,000ns</td>
+</tr>
+<tr>
+<td style="text-align:center">通过1Gbps网络发送2K字节</td>
+<td style="text-align:center">20,000ns</td>
+</tr>
+<tr>
+<td style="text-align:center">从主存中读取1MB字节</td>
+<td style="text-align:center">250,000ns</td>
+</tr>
+<tr>
+<td style="text-align:center">跨数据中心的往返路程</td>
+<td style="text-align:center">500,000ns</td>
+</tr>
+<tr>
+<td style="text-align:center">Memcache读取写入</td>
+<td style="text-align:center">3,000,000ns</td>
+</tr>
+<tr>
+<td style="text-align:center">数据库写入</td>
+<td style="text-align:center">6,000,000ns</td>
+</tr>
+<tr>
+<td style="text-align:center">数据库读取</td>
+<td style="text-align:center">6,000,000ns</td>
+</tr>
+<tr>
+<td style="text-align:center">数据库查询</td>
+<td style="text-align:center">6,500,000ns</td>
+</tr>
+<tr>
+<td style="text-align:center">磁盘寻道</td>
+<td style="text-align:center">10,000,000ns</td>
+</tr>
+<tr>
+<td style="text-align:center">从网络连续读取1MB</td>
+<td style="text-align:center">10,000,000ns</td>
+</tr>
+<tr>
+<td style="text-align:center">从磁盘连续读取1MB</td>
+<td style="text-align:center">30,000,000ns</td>
+</tr>
+<tr>
+<td style="text-align:center">跨越大西洋向荷兰发包再返回</td>
+<td style="text-align:center">150,000,000ns</td>
+</tr>
+</tbody>
+</table>
+<p>1s = 1000ms = 1000,000us = 1000,000,000ns</p>
+<ul>
+<li>术语参考</li>
+</ul>
+<p><img src="https://zhuanlan.zhihu.com/p/22469702" alt="分支错误预测"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/03/Golang-减少GC压力的方法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/03/Golang-减少GC压力的方法/" itemprop="url">Golang-减少GC压力的方法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-03T20:03:10+08:00">
+                2019-01-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/03/Golang-减少GC压力的方法/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/03/Golang-减少GC压力的方法/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="TODO"><a href="#TODO" class="headerlink" title="TODO:"></a>TODO:</h1><p>bytes.Buffer<br>sync.Pool<br>使用benchmark进行对比</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/03/Golang-Effective-Go/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/03/Golang-Effective-Go/" itemprop="url">Golang-Effective Go</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-03T10:20:55+08:00">
+                2019-01-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/03/Golang-Effective-Go/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/03/Golang-Effective-Go/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="代码格式"><a href="#代码格式" class="headerlink" title="代码格式"></a>代码格式</h2><p>使用<code>gofmt</code>工具</p>
+<h2 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h2><p>使用 <code>//</code>进行代码行注释<br>使用<code>/* */</code>进行代码块注释</p>
+<p>使用<code>godoc</code>工具生成说明文档</p>
+<h2 id="标识符"><a href="#标识符" class="headerlink" title="标识符"></a>标识符</h2><p>包名: 小写，单个单词，不要与包内部导出的对象名称重复<br>接口名称: 以<code>er</code>结尾<br>变量名称: 驼峰式</p>
+<h2 id="分号"><a href="#分号" class="headerlink" title="分号"></a>分号</h2><p>不需要在源码中添加分号，词法分析器会自动添加</p>
+<h2 id="控制语句"><a href="#控制语句" class="headerlink" title="控制语句"></a>控制语句</h2><p><code>if else</code> and <code>switch</code><br><code>switch t := t.(type)</code> 类型推断<br><code>for</code>, <code>break</code>, <code>continue</code> and <code>range</code><br><code>select</code></p>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>多个返回值<br>返回值可以进行命名<br><code>defer</code>进行资源回收，多个<code>defer</code>以<code>LIFO</code>的顺序执行</p>
+<h2 id="数据分配"><a href="#数据分配" class="headerlink" title="数据分配"></a>数据分配</h2><p>使用<code>make</code>和<code>new</code><br><code>make(T, args)</code>用于对slice、map和chan类型进行内存分配和初始化，并可以增加参数来指定对象的初始状态，返回类型T<br><code>new(T)</code>用于对其他类型进行内存分配，返回类型T的零值，返回类型为*T</p>
+<p>使用自定义函数<code>NewXXX</code>来进行对象内存分配和初始化</p>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p>常量: 编译期创建，可以使用<code>iota</code>进行递增<br>变量: 包级别变量<br>init函数: 包级别初始化函数</p>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><p>方法接受者可以为对象或对象的指针</p>
+<h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2><p>鸭子类型<br>使用类型推断确定接口的具体类型<br>函数对象也可以增加方法，如<code>http.HandlerFunc</code>，从而让函数对象实现了某个接口</p>
+<h2 id="空占位符"><a href="#空占位符" class="headerlink" title="空占位符"></a>空占位符</h2><p>函数包含多返回值，使用<code>_</code>忽略不需要的返回值<br>使用<code>_</code>来忽略未被使用的导入包</p>
+<h2 id="组合"><a href="#组合" class="headerlink" title="组合"></a>组合</h2><p>在struct和interface中使用组合来进行扩展</p>
+<h2 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h2><p>不要通过共享来通信，而是通过通信来共享<br>使用goroutine和channel(buffered and unbuffered)<br>使用带缓冲的channel来模拟信号量</p>
+<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h2><p>根据具体场景对error对象进行扩展<br>使用<code>panic</code>和<code>recover</code>来进行运行时异常处理和恢复</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://golang.org/doc/effective_go.html" target="_blank" rel="noopener">Effective Go</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/27/Linux-Shell-ifconfig/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/27/Linux-Shell-ifconfig/" itemprop="url">Linux Shell ifconfig</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-27T20:31:12+08:00">
+                2018-12-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux-Shell/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux Shell</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/27/Linux-Shell-ifconfig/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/12/27/Linux-Shell-ifconfig/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>查看和修改网络接口配置信息<br>格式: ifconfig [网络设备] [命令参数与选项]</p>
+<p>命令参数:</p>
+<ul>
+<li>up: 启动指定网络设备/网卡</li>
+<li>down: 关闭指定网络设备/网卡</li>
+<li>mtu [字节数]: 设置网络设备的最大传输单元</li>
+<li>netmask [子网掩码]: 设置网络设备的子网掩码</li>
+<li>broadcast [地址]: 设置网络设备的广播地址</li>
+<li>address [地址]: 设置网络设备的IPv4地址</li>
+<li>arp: 设置网络设备是否支持ARP协议</li>
+</ul>
+<p>ifconfig修改的网络参数配置在系统重启之后失效，如果需要配置新永远生效，需要修改网卡的配置文件</p>
+<p>实例:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ifconfig en0</span><br><span class="line">en0: flags=8863&lt;UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST&gt; mtu 1500</span><br><span class="line">    ether f0:18:98:4e:79:0c</span><br><span class="line">    inet6 fe80::53:26b5:4333:1d67%en0 prefixlen 64 secured scopeid 0xa</span><br><span class="line">    inet 10.100.39.238 netmask 0xfffffc00 broadcast 10.100.39.255</span><br><span class="line">    nd6 options=201&lt;PERFORMNUD,DAD&gt;</span><br><span class="line">    media: autoselect</span><br><span class="line">    status: active</span><br></pre></td></tr></table></figure>
+<p>en0: 网卡<br>UP: 网卡开启<br>RUNNING: 代表网卡的网线被接上<br>MULTICAST: 网卡支持组播<br>ether: 网卡的mac地址<br>inet6: ipv6地址<br>inet: ipv4地址<br>netmask: 子网掩码<br>broadcast: 广播地址</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/25/Linux-Shell-top/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/25/Linux-Shell-top/" itemprop="url">Linux Shell top</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-25T19:12:37+08:00">
+                2018-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/25/Linux-Shell-top/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/12/25/Linux-Shell-top/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>TODO:</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/25/Linux-Shell-curl/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/25/Linux-Shell-curl/" itemprop="url">Linux Shell curl</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-25T16:53:10+08:00">
+                2018-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux-Shell/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux Shell</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/25/Linux-Shell-curl/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/12/25/Linux-Shell-curl/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>根据提供的选项来处理URL</p>
+<ul>
+<li><p>选项</p>
+<ul>
+<li>缩写形式, <code>-v</code></li>
+<li>原始形式, <code>--verbose</code></li>
+<li>带有参数值, <code>-d data</code></li>
+<li>带有空格的参数值, <code>-d &#39;{&quot;key&quot;: &quot;value&quot;}&#39;</code></li>
+<li>使用 <code>curl --help</code> 来查看所有选项</li>
+</ul>
+</li>
+<li><p>URL的组成</p>
+<ul>
+<li>协议</li>
+<li>用户名和密码</li>
+<li>主机名称或地址</li>
+<li>端口号码</li>
+<li>资源地址</li>
+</ul>
+</li>
+</ul>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><ul>
+<li>verbose模式<br>  <code>-v</code> or <code>--verbose</code>: 获取更多细节信息<br>  <code>--trace [filename]</code> and <code>--trace-ascii [filename]</code>: 将细节信息保存到文件中<br>  <code>--trace-time</code>: 获取时间戳<br>  <code>-s</code> or <code>--silent</code>: 切换到silent模式</li>
+<li>默认会复用之前的连接</li>
+<li>下载相关<br>  <code>-o [filename]</code>: 指定保存的文件名称<br>  <code>&gt; [filename]</code>: 指定保存的文件名称<br>  <code>-O</code>: 从URL获取保存的的文件名称<br>  <code>-J</code>or <code>--remote-header-name</code>: 从响应头中的参数中获取保存的文件名称<br>  <code>--compressed</code>: 要求服务器对响应结果进行压缩，然后在客户端进行解压<br>  <code>--limit-rate [speed]</code>: 设置平均下载速率<br>  <code>--max-filesize</code>: 设置下载文件大小的上线<br>  <code>--retry [number]</code>: 设置出错之后的重试次数<br>  <code>--continue-at [number]</code> and <code>--range [start-end]</code>: 断点续传</li>
+<li>上传相关<ul>
+<li>HTTP<br><code>-d</code> or <code>--data</code>: POST请求参数<br><code>-F</code>: POST的multipart格式的参数<br><code>-T</code>: PUT的文件参数</li>
+<li>FTP<br><code>-T</code>: 上传的文件参数</li>
+</ul>
+</li>
+<li>连接相关<br>  <code>--connect-timeout</code>: 建立连接的超时时间<br>  <code>--no-keepalive</code> and <code>--keepalive-time</code>: 默认使用keeplive<br>  <code>-m</code> or <code>--max-time</code>: 命令执行最大时间</li>
+</ul>
+<h2 id="使用Curl进行HTTP请求"><a href="#使用Curl进行HTTP请求" class="headerlink" title="使用Curl进行HTTP请求"></a>使用Curl进行HTTP请求</h2><p><img src="/images/HTTP_With_Curl.png" alt="http with curl"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/25/CSAPP-Chapter-2-Representing-and-Manipulating-Information/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/25/CSAPP-Chapter-2-Representing-and-Manipulating-Information/" itemprop="url">CSAPP-Chapter 2-Representing and Manipulating Information</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-25T14:08:34+08:00">
+                2018-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CSAPP/" itemprop="url" rel="index">
+                    <span itemprop="name">CSAPP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/25/CSAPP-Chapter-2-Representing-and-Manipulating-Information/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/12/25/CSAPP-Chapter-2-Representing-and-Manipulating-Information/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>three most important encoding of numbers:</p>
+<ul>
+<li>unsigned integers</li>
+<li>signed integers</li>
+<li>float-point number</li>
+</ul>
+<p>we need to focus on:</p>
+<ul>
+<li>the ranges of values that can be represented<ul>
+<li>overflow</li>
+<li>roundoff</li>
+</ul>
+</li>
+<li>the properties of different arithmetic operations<ul>
+<li>integer arithmetic satisfy commutative and associative</li>
+<li>float-point arithmetic is commutative, but not associative</li>
+</ul>
+</li>
+</ul>
+<h2 id="Information-Storage"><a href="#Information-Storage" class="headerlink" title="Information Storage"></a>Information Storage</h2><p>virtual memory -&gt; larger bytes array -&gt; bytes -&gt; block of eight bits<br>virtual address space -&gt; each memory bytes has a unique number</p>
+<p>in C, pointer’s value is the virtual address of the object’s first bytes<br>compiler use the pointer’s type to generate machine code to access object’s value</p>
+<h3 id="Hexadecimal-Notation"><a href="#Hexadecimal-Notation" class="headerlink" title="Hexadecimal Notation"></a>Hexadecimal Notation</h3><p>binary, decimal and hexadecimal</p>
+<p>write bit pattern as base-16 or hexadecimal number</p>
+<h3 id="Words"><a href="#Words" class="headerlink" title="Words"></a>Words</h3><p>word size of a computer indicates the noraml size of integer and pointer data<br>virtual address is encoded by a word, the word size is the maximum size of the virtual address space<br>n word size -&gt; [0, 2^n] virtual address space</p>
+<h3 id="Data-Sizes"><a href="#Data-Sizes" class="headerlink" title="Data Sizes"></a>Data Sizes</h3><p>different data type may have different size depend on the machine and compiler</p>
+<h3 id="Addressing-and-Byte-Ordering"><a href="#Addressing-and-Byte-Ordering" class="headerlink" title="Addressing and Byte Ordering"></a>Addressing and Byte Ordering</h3><p>object that span multiple bytes, we must establish two conventions:</p>
+<ul>
+<li>what will be the address of the object: smallest address of the bytes used</li>
+<li>how will we order the bytes in memory: big endian and little endian</li>
+</ul>
+<p><img src="/images/CSAPP_2.1.png" alt="big endian vs little endian"></p>
+<p>when byte ordering becomes a issue:</p>
+<ul>
+<li>binary data is communicated over a network between different machines</li>
+<li>programs are written that circumvent the normal types system</li>
+</ul>
+<h3 id="Representing-String"><a href="#Representing-String" class="headerlink" title="Representing String"></a>Representing String</h3><p>in C, string is an array of characters terminated by the null character</p>
+<h3 id="Representing-Code"><a href="#Representing-Code" class="headerlink" title="Representing Code"></a>Representing Code</h3><p>different machine use different and incompatible instructions and encodings<br>binary code is seldom portable across different combinations of machine and operating sytem</p>
+<h3 id="Boolean-Algebras-and-Rings"><a href="#Boolean-Algebras-and-Rings" class="headerlink" title="Boolean Algebras and Rings"></a>Boolean Algebras and Rings</h3><p>boolean operations: ~ not, &amp; and, | or, ^ exclusive or<br>extend the boolean operations to also operate on bit vectors</p>
+<h3 id="Bit-Level-Operations-in-C"><a href="#Bit-Level-Operations-in-C" class="headerlink" title="Bit-Level Operations in C"></a>Bit-Level Operations in C</h3><p>C support bit-wise boolean operations, ~ &amp; | ^<br>can be applied to any “integral” data type</p>
+<h3 id="Logical-Operations-in-C"><a href="#Logical-Operations-in-C" class="headerlink" title="Logical Operations in C"></a>Logical Operations in C</h3><p>C provide a set of logical operators, &amp;&amp; || !</p>
+<h3 id="Shift-Operations-in-C"><a href="#Shift-Operations-in-C" class="headerlink" title="Shift Operations in C"></a>Shift Operations in C</h3><p>C provide a set of shift operations for shifting bit patterns, &lt;&lt; &gt;&gt;</p>
+<p>two forms of right shift:logical and arithmetic</p>
+<h2 id="Integer-Representations"><a href="#Integer-Representations" class="headerlink" title="Integer Representations"></a>Integer Representations</h2><p>unsigned for negative, zero and positive numbers<br>signed for nongative numbers</p>
+<h3 id="Integral-Data-Types"><a href="#Integral-Data-Types" class="headerlink" title="Integral Data Types"></a>Integral Data Types</h3><p>C support a variety of integral data types, with an indication of unsigned</p>
+<h3 id="Unsigned-and-Two’s-Complement-Encodings"><a href="#Unsigned-and-Two’s-Complement-Encodings" class="headerlink" title="Unsigned and Two’s Complement Encodings"></a>Unsigned and Two’s Complement Encodings</h3><p>use two’s complement form to represent signed numbers</p>
+<h3 id="Conversions-Between-Signed-and-Unsigned"><a href="#Conversions-Between-Signed-and-Unsigned" class="headerlink" title="Conversions Between Signed and Unsigned"></a>Conversions Between Signed and Unsigned</h3><p><img src="/images/CSAPP_2.11.png" alt="signed to unsigned"></p>
+<p><img src="/images/CSAPP_2.12.png" alt="unsigned to signed"></p>
+<h3 id="Signed-vs-Unsigned-in-C"><a href="#Signed-vs-Unsigned-in-C" class="headerlink" title="Signed vs Unsigned in C"></a>Signed vs Unsigned in C</h3><p>C support both signed(default) and unsigned arithmetic of integer data</p>
+<p>C allow conversion between unsigned and signed, explicit and implicit conversion</p>
+<h3 id="Expanding-the-Bit-Representation-of-a-Number"><a href="#Expanding-the-Bit-Representation-of-a-Number" class="headerlink" title="Expanding the Bit Representation of a Number"></a>Expanding the Bit Representation of a Number</h3><p>zero extension for unsigned number<br>sign extension for signed number</p>
+<h3 id="Truncating-Numbers"><a href="#Truncating-Numbers" class="headerlink" title="Truncating Numbers"></a>Truncating Numbers</h3><p>drop the high-order bits</p>
+<h3 id="Advice-on-Signed-vs-Unsigned"><a href="#Advice-on-Signed-vs-Unsigned" class="headerlink" title="Advice on Signed vs Unsigned"></a>Advice on Signed vs Unsigned</h3><p>conversion between signed and unsigned leads to some nointuitive behavior</p>
+<ul>
+<li>never use unsigned numbers</li>
+</ul>
+<h2 id="Integer-Arithmetic"><a href="#Integer-Arithmetic" class="headerlink" title="Integer Arithmetic"></a>Integer Arithmetic</h2><h3 id="Unsigned-Addition"><a href="#Unsigned-Addition" class="headerlink" title="Unsigned Addition"></a>Unsigned Addition</h3><p>may overflow, drop the higher order bit</p>
+<p><img src="/images/CSAPP_2.15.png" alt="overflow"></p>
+<h3 id="Signed-Addition"><a href="#Signed-Addition" class="headerlink" title="Signed Addition"></a>Signed Addition</h3><p>may negative or positive overflow, drop the higher order bit</p>
+<p><img src="/images/CSAPP_2.17.png" alt="overflow"></p>
+<h3 id="Signed-Negation"><a href="#Signed-Negation" class="headerlink" title="Signed Negation"></a>Signed Negation</h3><h3 id="Unsigned-Multiplication"><a href="#Unsigned-Multiplication" class="headerlink" title="Unsigned Multiplication"></a>Unsigned Multiplication</h3><p>may overflow, drop the higher order bit</p>
+<h3 id="Signed-Multiplication"><a href="#Signed-Multiplication" class="headerlink" title="Signed Multiplication"></a>Signed Multiplication</h3><p>may overflow, drop the higher order bit</p>
+<h3 id="Multiplying-by-Powers-of-Two"><a href="#Multiplying-by-Powers-of-Two" class="headerlink" title="Multiplying by Powers of Two"></a>Multiplying by Powers of Two</h3><p>use shift operation, shift to the left, drop the higher order bit</p>
+<h3 id="Dividing-by-Powers-of-Two"><a href="#Dividing-by-Powers-of-Two" class="headerlink" title="Dividing by Powers of Two"></a>Dividing by Powers of Two</h3><p>use shift operation, shift to the right</p>
+<h2 id="Floating-Point"><a href="#Floating-Point" class="headerlink" title="Floating Point"></a>Floating Point</h2><h3 id="Fractional-Binary-Numbers"><a href="#Fractional-Binary-Numbers" class="headerlink" title="Fractional Binary Numbers"></a>Fractional Binary Numbers</h3><p>positional notation, like decimal</p>
+<h3 id="IEEE-Floating-Point-Representation"><a href="#IEEE-Floating-Point-Representation" class="headerlink" title="IEEE Floating-Point Representation"></a>IEEE Floating-Point Representation</h3><p>V = (-1)^S × M × 2^E</p>
+<p>S: 符号位<br>M: 有效数字，大于<br>E: 指数位</p>
+<p><img src="/images/CSAPP_32_Floating_Point.png" alt="32_bit"></p>
+<p><img src="/images/CSAPP_64_Floating_Point.png" alt="64_bit"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/25/GDB-LLDB-Debugger/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/25/GDB-LLDB-Debugger/" itemprop="url">GDB/LLDB Debugger</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-25T09:51:56+08:00">
+                2018-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Debugger/" itemprop="url" rel="index">
+                    <span itemprop="name">Debugger</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/25/GDB-LLDB-Debugger/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/12/25/GDB-LLDB-Debugger/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Debugger"><a href="#Debugger" class="headerlink" title="Debugger"></a>Debugger</h2><p>a debugger is a program that simulates/runs another program and allows you to:</p>
+<ul>
+<li>pause and continue its execution</li>
+<li>set break points or conditions where the execution pauses so you can look at its state</li>
+<li>view and watch variable values</li>
+<li>step through the program line-by-line</li>
+</ul>
+<h2 id="Use-GDB"><a href="#Use-GDB" class="headerlink" title="Use GDB"></a>Use GDB</h2><p>gdb is a GNU Debugger</p>
+<ul>
+<li>compile</li>
+</ul>
+<p>to use gdb for debugging, you need use <code>-g</code> flag to compile<br><code>-g</code> flag preserves the identifiers and symbols</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -Wall -g main.c</span><br></pre></td></tr></table></figure>
+<ul>
+<li>start debugging</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gdb a.out</span><br><span class="line"><span class="meta">#</span> 增加程序的启动参数</span><br><span class="line">gdb --args a.out arg1 arg2</span><br></pre></td></tr></table></figure>
+<ul>
+<li>useful gdb commands<ul>
+<li>file: set executable file</li>
+<li>refresh: refresh the display</li>
+<li>set args PARAM: set args</li>
+<li>run: run your program</li>
+<li>backtrace full: see the crash stack</li>
+<li>layout next: see your source code</li>
+<li>list: list part of source code</li>
+<li>break POINT: set a break point, use file_name:line_number, function_names and etc</li>
+<li>condition: enter break point when condition is true</li>
+<li>delete POINT: delete a break point</li>
+<li>clear POINT: clear a break point</li>
+<li>next: go to next step</li>
+<li>continue: continue to next break point</li>
+<li>step: step inside the function</li>
+<li>print VARIABLE: print a variable’s value</li>
+<li>print *ARRAY@SIZE: print a array’s value</li>
+<li>watch VARIABLE: watch a variable for change</li>
+<li>quit: quit debugger</li>
+<li>help: show help of command</li>
+</ul>
+</li>
+</ul>
+<h2 id="Use-LLDB"><a href="#Use-LLDB" class="headerlink" title="Use LLDB"></a>Use LLDB</h2>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+
+          
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">123</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

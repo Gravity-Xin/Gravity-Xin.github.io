@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Golang,Gitlab,CI,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="基本概念 Pipeline  构建任务，可以包含多个流程(Stage)，比如安装依赖、编译、测试、部署等  任何提交和Merge操作都会触发Pipeline  Stage  构建阶段，即上述的流程  所有的Stage按顺序执行，某一个Stage执行失败后，不再执行后续的Stage  所有Stage执行成功之后，Pipeline才算成功  Job  Stage中的具体任务  所有的Job并行执行，某">
+<meta name="keywords" content="Golang,Gitlab,CI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang-Gitlab-CI">
+<meta property="og:url" content="http://yoursite.com/2018/11/19/Golang-Gitlab-CI/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="基本概念 Pipeline  构建任务，可以包含多个流程(Stage)，比如安装依赖、编译、测试、部署等  任何提交和Merge操作都会触发Pipeline  Stage  构建阶段，即上述的流程  所有的Stage按顺序执行，某一个Stage执行失败后，不再执行后续的Stage  所有Stage执行成功之后，Pipeline才算成功  Job  Stage中的具体任务  所有的Job并行执行，某">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-11T10:18:22.651Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Golang-Gitlab-CI">
+<meta name="twitter:description" content="基本概念 Pipeline  构建任务，可以包含多个流程(Stage)，比如安装依赖、编译、测试、部署等  任何提交和Merge操作都会触发Pipeline  Stage  构建阶段，即上述的流程  所有的Stage按顺序执行，某一个Stage执行失败后，不再执行后续的Stage  所有Stage执行成功之后，Pipeline才算成功  Job  Stage中的具体任务  所有的Job并行执行，某">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/19/Golang-Gitlab-CI/">
+
+
+
+
+
+  <title>Golang-Gitlab-CI | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/19/Golang-Gitlab-CI/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Golang-Gitlab-CI</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-19T16:08:24+08:00">
+                2018-11-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CI-CD/" itemprop="url" rel="index">
+                    <span itemprop="name">CI/CD</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/19/Golang-Gitlab-CI/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/11/19/Golang-Gitlab-CI/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
+<li><p>Pipeline<br>  构建任务，可以包含多个流程(Stage)，比如安装依赖、编译、测试、部署等<br>  任何提交和Merge操作都会触发Pipeline</p>
+</li>
+<li><p>Stage<br>  构建阶段，即上述的流程<br>  所有的Stage<strong>按顺序执行</strong>，某一个Stage执行失败后，不再执行后续的Stage<br>  所有Stage执行成功之后，Pipeline才算成功</p>
+</li>
+<li><p>Job<br>  Stage中的具体任务<br>  所有的Job<strong>并行执行</strong>，某一个Job执行失败，则Stage执行失败<br>  所有的Job执行成功之后，Stage才算成功</p>
+</li>
+<li><p>Runner<br>  Runner是构建任务的实际执行者，通过项目根目录下的<code>.gitlab-ci.yml</code>文件来告知Runner要执行的构建任务</p>
+<ul>
+<li><p>根关键字</p>
+<ul>
+<li>image: 声明构建任务的runner使用的docker镜像地址</li>
+<li>services: docker镜像使用的服务，通过链接的方式来调用所需要的服务</li>
+<li>stages: 定义构建任务包含哪些阶段，其中元素的顺序决定了对应各个Stage执行的顺序</li>
+<li>before_script: 每一个Job执行之前的脚本</li>
+<li>after_script: 每一个Job执行之后的脚本</li>
+<li>variables: 定义变量</li>
+<li>cache: 定义与后续Job之间应缓存的文件，全局缓存，所有的Job都可以使用该缓存</li>
+</ul>
+</li>
+<li><p>Job中的关键字</p>
+<ul>
+<li>image: 任务使用的docker镜像，为空时使用根中的定义</li>
+<li>services: 任务中docker镜像使用的服务</li>
+<li>stage: 任务所属的阶段</li>
+<li>before_script: Job运行之前的脚本</li>
+<li>script: Job执行的脚本，必须填写</li>
+<li>after_script: Job运行之后的脚本</li>
+<li>variables: 任务中使用的变量</li>
+<li>cache: 与后续Job之间应缓存的文件</li>
+<li>only: 指定应用的git分支，可以是分支名称，也可以是tags来指定增加标签的分支</li>
+<li>except: 排除应用的git分支</li>
+<li>tags: 指定执行Gitlab-Runner的标签</li>
+<li>allow_failure: 是否允许失败，默认不允许失败</li>
+<li>when: 定义何时执行任务 on_success | on_failure | always | manual</li>
+<li>dependencies: 定义Job依赖关系，这样他们就可以互相传递artifacts</li>
+<li>artifacts: 定义哪些目录会被压缩和打包</li>
+<li>environment: 定义环境</li>
+<li>coverage: 定义给定Job的代码覆盖率设置</li>
+</ul>
+</li>
+<li><p>缓存配置</p>
+<ul>
+<li>untracked: 缓存未被git跟踪的文件</li>
+<li>paths: 缓存目录和文件</li>
+<li>policy: 缓存策略 push push-pull pull</li>
+<li>key: 设置缓存的Key，在有多个缓存的时候需要设置，否则缓存内容会被重写</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Glide-Golang包管理</p>
+<ul>
+<li><p>安装: go get -u -v github.com/Masterminds/glide</p>
+</li>
+<li><p>初始化: glide init<br>  glide会对代码中依赖的golang包做静态扫描，并生成<code>glide.yaml</code>文件</p>
+</li>
+<li><p>下载包: glide install<br>  glide会将依赖的包下载到vendor目录中</p>
+</li>
+<li><p>镜像和下载subpackage: 如果需要下载的包国内无法访问或者需要下载某个subpackage，可以在<code>glide.yaml</code>中添加如下配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- package: golang.org/x/image</span><br><span class="line">repo: https://github.com/golang/image //指明镜像仓库地址</span><br><span class="line">vcs: git</span><br><span class="line">subpackages: //指明要下载的子包</span><br><span class="line">- bmp</span><br><span class="line">- draw</span><br><span class="line">- font</span><br><span class="line">- math/f64</span><br><span class="line">- math/fixed</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>私有仓库配置: 如果代码依赖私有仓库中的项目，则可以通过git submodules功能来配置依赖</p>
+<ul>
+<li><code>git submodule add git@somewhere:folder/mysubmodule.git</code>: 添加submodule</li>
+<li>修改.gitmodules文件，将url改为相对路径</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[submodule "mysubmodule"]</span><br><span class="line">path = mysubmodule</span><br><span class="line">url = ../../group/mysubmodule.git</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在gitlab-ci.yml中配置获取submodule</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">variables:</span><br><span class="line">GIT_SUBMODULE_STRATEGY: recursive</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Golang/" rel="tag"># Golang</a>
+          
+            <a href="/tags/Gitlab/" rel="tag"># Gitlab</a>
+          
+            <a href="/tags/CI/" rel="tag"># CI</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/19/Golang-http/" rel="next" title="Golang-http">
+                <i class="fa fa-chevron-left"></i> Golang-http
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/20/Golang-pprof性能分析/" rel="prev" title="Golang-pprof性能分析">
+                Golang-pprof性能分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2018/11/19/Golang-Gitlab-CI/" data-title="Golang-Gitlab-CI" data-url="http://yoursite.com/2018/11/19/Golang-Gitlab-CI/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">123</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

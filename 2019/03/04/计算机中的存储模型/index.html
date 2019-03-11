@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Memory,Disk,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="计算机存储体系图  内存 物理内存: 计算机实际的内存大小  管理结构: 程序需要加载到内存中才可以执行。当多个进程进入内存之后，需要给其划分内存大小。一种方式是将内存进行等长度的划分，然后选择一部分分给进程；另一种方式是进程需要多少就给其划分多少，为不等长划分。因此需要使用某种数据结构来跟踪内存的使用情况 等长: 使用位图来管理，将内存划分为大小相同的内存块，使用位图中的每一位来标记每一块的使用">
+<meta name="keywords" content="Memory,Disk">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机中的存储模型">
+<meta property="og:url" content="http://yoursite.com/2019/03/04/计算机中的存储模型/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="计算机存储体系图  内存 物理内存: 计算机实际的内存大小  管理结构: 程序需要加载到内存中才可以执行。当多个进程进入内存之后，需要给其划分内存大小。一种方式是将内存进行等长度的划分，然后选择一部分分给进程；另一种方式是进程需要多少就给其划分多少，为不等长划分。因此需要使用某种数据结构来跟踪内存的使用情况 等长: 使用位图来管理，将内存划分为大小相同的内存块，使用位图中的每一位来标记每一块的使用">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/计算机中的存储模型.png">
+<meta property="og:image" content="http://yoursite.com/images/计算机中的存储模型之位图.png">
+<meta property="og:image" content="http://yoursite.com/images/计算机中的内存模型之空闲区表.png">
+<meta property="og:image" content="http://yoursite.com/images/计算机中的内存模型之内存回收.png">
+<meta property="og:image" content="http://yoursite.com/images/计算机中的内存模型之伙伴算法.png">
+<meta property="og:image" content="http://yoursite.com/images/计算机中的内存模型之虚拟内存.png">
+<meta property="og:image" content="http://yoursite.com/images/计算机中的内存模型之页表.png">
+<meta property="og:image" content="http://yoursite.com/images/计算机中的内存模型之页表项.png">
+<meta property="og:image" content="http://yoursite.com/images/计算机中的内存模型之页框号.png">
+<meta property="og:image" content="http://yoursite.com/images/计算机中的内存模型之多级页表.png">
+<meta property="og:image" content="http://yoursite.com/images/计算机中的内存模型之段页式管理.png">
+<meta property="og:image" content="http://yoursite.com/images/计算机中的内存模型之磁盘结构1.png">
+<meta property="og:image" content="http://yoursite.com/images/计算机中的内存模型之磁盘结构2.png">
+<meta property="og:image" content="http://yoursite.com/images/计算机中的内存模型之磁盘控制器.png">
+<meta property="og:image" content="http://yoursite.com/images/计算机中的内存模型之磁盘调度算法FCFS.png">
+<meta property="og:image" content="http://yoursite.com/images/计算机中的内存模型之磁盘调度算法SSTF.png">
+<meta property="og:image" content="http://yoursite.com/images/计算机中的内存模型之磁盘调度算法SCAN.png">
+<meta property="og:updated_time" content="2019-03-11T10:18:22.660Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="计算机中的存储模型">
+<meta name="twitter:description" content="计算机存储体系图  内存 物理内存: 计算机实际的内存大小  管理结构: 程序需要加载到内存中才可以执行。当多个进程进入内存之后，需要给其划分内存大小。一种方式是将内存进行等长度的划分，然后选择一部分分给进程；另一种方式是进程需要多少就给其划分多少，为不等长划分。因此需要使用某种数据结构来跟踪内存的使用情况 等长: 使用位图来管理，将内存划分为大小相同的内存块，使用位图中的每一位来标记每一块的使用">
+<meta name="twitter:image" content="http://yoursite.com/images/计算机中的存储模型.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/04/计算机中的存储模型/">
+
+
+
+
+
+  <title>计算机中的存储模型 | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/04/计算机中的存储模型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">计算机中的存储模型</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-04T16:33:22+08:00">
+                2019-03-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Architecture/" itemprop="url" rel="index">
+                    <span itemprop="name">Computer Architecture</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/04/计算机中的存储模型/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/04/计算机中的存储模型/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>计算机存储体系图</p>
+<p><img src="/images/计算机中的存储模型.png" alt="img"></p>
+<h2 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h2><ul>
+<li><p>物理内存: 计算机实际的内存大小</p>
+<ul>
+<li>管理结构: 程序需要加载到内存中才可以执行。当多个进程进入内存之后，需要给其划分内存大小。一种方式是将内存进行等长度的划分，然后选择一部分分给进程；另一种方式是进程需要多少就给其划分多少，为不等长划分。因此需要使用某种数据结构来跟踪内存的使用情况<ul>
+<li>等长: 使用<code>位图</code>来管理，将内存划分为大小相同的内存块，使用位图中的每一位来标记每一块的使用情况，从而形成一个位图<br><img src="/images/计算机中的存储模型之位图.png" alt="img"></li>
+<li>不等长: 使用<code>空闲区表/空闲区链表</code>来管理，通过链式结构将内存的使用情况组织起来<br><img src="/images/计算机中的内存模型之空闲区表.png" alt="img"></li>
+</ul>
+</li>
+<li>分配算法 <strong>以空闲区链表为例</strong><ul>
+<li>首次适配: 在空闲区链表中从头开始查找符合申请内存大小的块，直到找到满足条件的为止。由于该算法不断从头开始申请内存，导致大部分使用的都是低地址空间的内存，从而留下了高地址空间来满足大内存的申请要求。缺点是较低的地址空间中频繁的申请和释放导致低地址空间存在较多内存碎片，同时每次都从头开始查找，查找效率较低</li>
+<li>下次适配: 是对首次适配算法的改进，即每次都上次适配的地址开始向下查找，而不是从头开始。该算法使得内存使用均匀，但是可能会导致不存在大的内存块来满足内存分配</li>
+<li>最佳适配: 首先按照空闲区大小从小到大进行排序，然后每次都从头开始匹配，这样保证每次分配的结果都是最优的。但是实际由于空闲区不一定与申请的内存大小完全相同，会导致产生很多较小的内存碎片，同时每次分配后都需要重新排序，开销较大</li>
+<li>最差适配: 首先按照空闲区大小从大到小进行排序，然后每次将最大空闲区内存块进行分配，然后如果空闲区过大，可以进行对空闲区进行二次分配。这样如果不能分配，则所有空闲区都不能分配</li>
+</ul>
+</li>
+<li>回收算法 <strong>一般来说，回收算法和分配算法是相关联的</strong><ul>
+<li>四种情况: 从左往右从上往下分别为上相邻，下相邻，上下相邻和上下不相邻<br><img src="/images/计算机中的内存模型之内存回收.png" alt="img"></li>
+</ul>
+</li>
+<li>内存碎片问题: 指的是内存中占据一定大小的空间却无法被使用的内存，分为内碎片和外碎片<ul>
+<li>内碎片: 比如按照页式等长分配，如果某进程需要5页多内存，那么只能给其分配6页内存，此时多余分配的不到1页的内存无法被其他进程使用，称为内碎片</li>
+<li>外碎片: 尚未被分配的且因为内存太小而无法被再次分配的内存块称为外碎片</li>
+<li>紧缩技术: 对内存碎片进行合并的方法。原理是将暂时不运行的进程安全的移动位置，独立出内存，从而将多个内存碎片进行组装得到一个较大的内存块</li>
+</ul>
+</li>
+<li>伙伴算法: Linux系统内存分配和回收算法的实现。基本思想是将内存大小看做2的n次方，如果一个进程申请的内存块大小m满足<code>2^n-1 &lt; m &lt; 2^n</code>，则将此时的内存块进行分配。如下图，当进程需要200K空间时，1M等于1024K，如果m小于1M的一半，那么继续分离m，当分离到256时，刚好能满足200K的需求，所以进行分配。内存回收时，根据左右相邻的占用情况进行合并<br><img src="/images/计算机中的内存模型之伙伴算法.png" alt="img"></li>
+</ul>
+</li>
+<li><p>虚拟内存: 进程运行于内存之中，每一个进程都有独立的内存地址空间。进程的内存地址空间是抽象出来的，属于虚拟内存</p>
+<ul>
+<li>特点<ul>
+<li>将物理内存看做是磁盘的高速缓存，在物理内存中只保留活跃的数据并根据需要在物理内存和磁盘中进行数据交换，使得物理内存的使用更加高效</li>
+<li>为每一个进程抽象出一致的内存空间，使得多进程可以更加简单的运行；同时保证每一个进程的地址空间不会被其他进程破坏</li>
+</ul>
+</li>
+<li>运行过程<ul>
+<li>进程1在访问物理内存的数据时，首先获得的是虚拟内存地址空间的地址</li>
+<li>通过<code>MMU</code>将虚拟地址进行转换得到物理内存地址，从而获取数据</li>
+<li>由于物理内存空间有限，只需要将每一个进程常用的数据加载到内存之中，其他的数据先暂存到磁盘(Swap分区)上</li>
+<li>当进程在访问物理内存时，如果物理内存中的数据不存在，则发生中断，然后将磁盘上对应的数据加载到内存之中<br><img src="/images/计算机中的内存模型之虚拟内存.png" alt="img"></li>
+</ul>
+</li>
+<li>页式管理: 将物理内存、虚拟内存和磁盘上的交换分区都划分为固定大小的内存块，一般为4K。 <strong>等长划分</strong><ul>
+<li>页表: 对划分的内存块进行管理<br><img src="/images/计算机中的内存模型之页表.png" alt="img"><ul>
+<li>页表项: 页表中的每一项，包括地址转换和标记位。比如以x86架构的32位机器，地址总线为32位，寻址能力为2^32，页大小为4K，即2^12。因此我们需要(32-12)=20位来表示物理内存的页框号，即物理内存能够被分为2^20个页。标记位主要包括有效位，即该页面在物理内存中还是在磁盘上；访问位，即该页近期是否被访问过；修改位，即该页近期是否被修改过；保护位，即该页面是否属于操作系统，如果是则普通进程没有权限访问它<br><img src="/images/计算机中的内存模型之页表项.png" alt="img"><br><img src="/images/计算机中的内存模型之页框号.png" alt="img"></li>
+<li>单一页表: 页表必须连续存放，并且需要常驻内存，当地址空间很大时，页表会占用很大空间</li>
+<li>多级页表: 根据使用过的页面来建立页表，一级索引二级，二级索引内存<br><img src="/images/计算机中的内存模型之多级页表.png" alt="img"></li>
+</ul>
+</li>
+<li>MMU: Memory Management Unit，是CPU管理虚拟存储器和物理存储器的控制线路，同时负责将虚拟地址转换为物理地址，以及提供硬件机制的内存访问授权</li>
+<li>快表TLB: 页表项的缓存，提高页面查询速度</li>
+<li>页错误/缺页异常: 当访问的页面在页表中没有记录或者页表项的有效位为0时，此时产生缺页异常，需要操作系统将磁盘上的数据交换到内存中</li>
+<li>页面置换算法: 针对内存和磁盘上数据的交换，目的是尽量减少页面交换和减少缺页异常，因为磁盘访问比较耗时<ul>
+<li>OPT: 理想页面置换算法，将未来不使用或很久以后才使用的页面置换出内存 <strong>该算法并不能实现，仅仅是页面置换算法的一个衡量标准</strong></li>
+<li>FIFO: 先进先出算法，将最早到来的页面置换出去，简单但不高效</li>
+<li>第二次机会: FIFO的一种改进，即当页面要被置换出去时，如果页表项中的访问位为1，则不置换，而是将访问我设置为0，同时将其放到队列末尾</li>
+<li>时钟算法: 对第二次机会算法的改进，将链式结构改为环形结构，这样就不需要出现将队头放入到队尾的这种比较耗时的操作</li>
+<li>LRU: 最少使用算法，将近期使用次数最少的页置换出去</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>段式管理: 将进程划分为若干个段进行存储，每一个段都是一个逻辑实体，比如程序段、数据段等。通过段表来进行管理，段表中包括段号、段起始点、装入位、段长度等。 <strong>不等长划分</strong></li>
+<li>段/页式管理: 通过段表找到段，再通过段表中的段内偏移(实际是页框号加页内偏移)来找到页<br><img src="/images/计算机中的内存模型之段页式管理.png" alt="img"></li>
+<li>内存映射: 使用<code>mmap</code>函数实现，该函数在内核中建立了文件与虚拟内存空间中某一段内存映射关系，这样该文件便脱离了磁盘文件系统的管理。进程在操作这一段内存时，操作系统自动将对应的数据写入到文件中，而不需要调用效率较低的<code>read</code>,<code>write</code>系统调用函数。同时也可以基于<code>mmap</code>实现不同进程间的文件共享</li>
+<li>写时复制: 使用<code>fork</code>函数创建子进程时，父子进程都通过各自的页表映射打牌物理内存上相同的页，但是当子进程修改内存数据时，由于页表上的访问权限位为只读，此时操作系统为子进程分配新的页</li>
+</ul>
+</li>
+</ul>
+<h2 id="磁盘"><a href="#磁盘" class="headerlink" title="磁盘"></a>磁盘</h2><ul>
+<li>磁盘结构: 通过磁头的转动来获取磁盘上的数据</li>
+</ul>
+<p><img src="/images/计算机中的内存模型之磁盘结构1.png" alt="img"><br><img src="/images/计算机中的内存模型之磁盘结构2.png" alt="img"></p>
+<ul>
+<li>磁盘存取: 通过磁盘控制器来存取数据；磁盘控制器将数据从磁盘读取到IO总线上，然后通过总线传送到内存中。内存此时可以看做是磁盘的一个高速缓存<ul>
+<li>寻道时间: 将磁头组合定位到所在磁道的柱面上需要的时间</li>
+<li>旋转延迟: 等待访问块中第一个扇区转到磁头下的时间</li>
+<li>传输数据: 读写数据时，数据所在磁盘和扇区间的空隙经过磁头的时间</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/计算机中的内存模型之磁盘控制器.png" alt="img"></p>
+<ul>
+<li><p>磁盘调度</p>
+<ul>
+<li>调度算法: 磁盘本身也会根据内存的分页机制来进行分页；由于页面的请求顺序是随机的，但是磁盘控制器控制的磁头组合只有一个，因此需要通过磁盘调度算法实现在最短时间内完成最多的页面请求<ul>
+<li>FCFS: 先来先服务调度算法，将磁盘页面请求排成一个队列，先请求的先服务。优点是公平，缺点是效率太低<br><img src="/images/计算机中的内存模型之磁盘调度算法FCFS.png" alt="img"></li>
+<li>SSTF: 最短寻道时间算法，优先选择距离当前磁头最近的请求。优点是改善了平均请求耗时，缺点是不公平，比如某些距离磁头较远的请求可能长时间得不到响应<br><img src="/images/计算机中的内存模型之磁盘调度算法SSTF.png" alt="img"></li>
+<li>SCAN: 电梯调度算法，当有磁盘页面请求时，将磁头按一个方向移动，当该方向服务完毕后再转换方向，类似电梯。由于磁盘也是高速旋转设备，让它停止并转换方向也是非常耗时的<br><img src="/images/计算机中的内存模型之磁盘调度算法SCAN.png" alt="img"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>磁盘预读和缓冲: 提高磁盘访问的效率，减少磁盘IO的次数</p>
+<ul>
+<li>预读: 每次读取磁盘数据时，总会多读取相邻的几页数据。利用局部性原理，减少磁盘IO的次数</li>
+<li>缓冲: 每次写入磁盘时，并不是立即写入到磁盘中去，而是先添加到缓冲区中，等缓冲区满或有必要的时候再刷新到磁盘中去，减少磁盘IO的次数</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Memory/" rel="tag"># Memory</a>
+          
+            <a href="/tags/Disk/" rel="tag"># Disk</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/04/优秀博客收藏/" rel="next" title="优秀博客收藏">
+                <i class="fa fa-chevron-left"></i> 优秀博客收藏
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/05/Tree/" rel="prev" title="Tree">
+                Tree <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2019/03/04/计算机中的存储模型/" data-title="计算机中的存储模型" data-url="http://yoursite.com/2019/03/04/计算机中的存储模型/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">123</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#内存"><span class="nav-number">1.</span> <span class="nav-text">内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#磁盘"><span class="nav-number">2.</span> <span class="nav-text">磁盘</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

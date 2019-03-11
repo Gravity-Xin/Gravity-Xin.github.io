@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Golang,runtime,goroutine,heap,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="runtime提供了goroutine的运行时环境。下述的环境变量控制了runtime的行为，主要包括: 1234567891011121314151617181920212223242526272829GOGC  控制GC的频率，当自上次GC后HeapSize已经增长了GOGC%后触发GC  默认为100，即HeapSize增加一倍后触发GC；GOGC=off则关闭GC  可以通过runtime">
+<meta name="keywords" content="Golang,runtime,goroutine,heap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang-runtime">
+<meta property="og:url" content="http://yoursite.com/2018/11/14/Golang-runtime/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="runtime提供了goroutine的运行时环境。下述的环境变量控制了runtime的行为，主要包括: 1234567891011121314151617181920212223242526272829GOGC  控制GC的频率，当自上次GC后HeapSize已经增长了GOGC%后触发GC  默认为100，即HeapSize增加一倍后触发GC；GOGC=off则关闭GC  可以通过runtime">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/goroutine调度之G、P、M.jpg">
+<meta property="og:image" content="http://yoursite.com/images/Goroutine状态转换.jpg">
+<meta property="og:updated_time" content="2019-03-11T10:18:22.650Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Golang-runtime">
+<meta name="twitter:description" content="runtime提供了goroutine的运行时环境。下述的环境变量控制了runtime的行为，主要包括: 1234567891011121314151617181920212223242526272829GOGC  控制GC的频率，当自上次GC后HeapSize已经增长了GOGC%后触发GC  默认为100，即HeapSize增加一倍后触发GC；GOGC=off则关闭GC  可以通过runtime">
+<meta name="twitter:image" content="http://yoursite.com/images/goroutine调度之G、P、M.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/14/Golang-runtime/">
+
+
+
+
+
+  <title>Golang-runtime | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/14/Golang-runtime/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Golang-runtime</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-14T09:57:07+08:00">
+                2018-11-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/14/Golang-runtime/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/11/14/Golang-runtime/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>runtime提供了goroutine的运行时环境。<br>下述的环境变量控制了runtime的行为，主要包括:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">GOGC</span><br><span class="line">  控制GC的频率，当自上次GC后HeapSize已经增长了GOGC%后触发GC</span><br><span class="line">  默认为100，即HeapSize增加一倍后触发GC；GOGC=off则关闭GC</span><br><span class="line">  可以通过runtime/debug.SetGCPercent函数在运行时修改GOGC值</span><br><span class="line">GODEBUG</span><br><span class="line">  控制runtime的debug输出，值为name1=value1,name2=value2的形式</span><br><span class="line">  支持的name如下</span><br><span class="line">    allocfreetrace: 设置1会记录每个对象的内存分配和释放的堆栈踪迹</span><br><span class="line">    cgocheck: 设置0会不再检查go指针在非go代码中的使用情况</span><br><span class="line">    efence: 设置1会导致内存分配器的模式变为对每个对象使用独立的页和地址且永不循环使用</span><br><span class="line">    gccheckmark: 设置为1会开启对GC标记的二次检查</span><br><span class="line">    gcpacetrace:</span><br><span class="line">    gcshrinkstackoff:</span><br><span class="line">    gcrescanstacks:</span><br><span class="line">    gcstoptheworld:</span><br><span class="line">    gctrace: 设置为1会在每次GC时向标准错误输出写入单行数据，包括GC内存的大小、暂停的时间长度等</span><br><span class="line">    memprofilerate: 修改runtime.MemProfileRate值</span><br><span class="line">    invalidptr:</span><br><span class="line">    sbrk:</span><br><span class="line">    scavenge:</span><br><span class="line">    scheddetail: 设置schedtrace为X并设置其为1，会导致调度器每隔X毫秒向标准错误输出写入详细的多行信息</span><br><span class="line">    schedtrace: 设置为X会导致goroutine调度器每隔X毫秒向标准错误输出写入单行数据，概述调度状态</span><br><span class="line">    tracebackancestors:</span><br><span class="line">GOMAXPROCS</span><br><span class="line">    设置同时运行goroutine的操作系统线程数</span><br><span class="line">GOTRACEBACK</span><br><span class="line">    控制当Go程序运行失败时的输出信息</span><br><span class="line">GOARCH、GOOS、GOPATH、GOROOT</span><br><span class="line">    影响Go程序的构建</span><br></pre></td></tr></table></figure>
+<p>runtime中的变量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MemProfileRate</span><br><span class="line">   控制内存profile记录的内存分配的采样频率，内存profile记录器平均每分配MemProfileRate字节进行一次分配采样</span><br></pre></td></tr></table></figure>
+<p>runtime中的函数</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">BlockProfile()</span><br><span class="line">    返回当前阻塞的goroutine的profile</span><br><span class="line">SetBlockProfileRate()</span><br><span class="line">    设置goroutine阻塞事件profile的采样评测，平均每阻塞多少纳秒，记录器就会采集一份样本</span><br><span class="line">SetCPUProfileRate()</span><br><span class="line">    设置CPU profile记录器的记录频率为每秒多少次</span><br><span class="line">Caller()</span><br><span class="line">    返回goroutine调用栈所执行的函数的文件和行号信息</span><br><span class="line">Callers()</span><br><span class="line">    把当前goroutine调用栈上的调用栈标识符填入切片中</span><br><span class="line">GC()</span><br><span class="line">    执行一次GC操作</span><br><span class="line">GOMAXPROCS(int)</span><br><span class="line">    设置GOMAXPROCS环境变量</span><br><span class="line">Goexit()</span><br><span class="line">    终止当前的goroutine</span><br><span class="line">GoroutineProfile()</span><br><span class="line">    返回当前激活的goroutine的堆栈profile</span><br><span class="line">Gosched()</span><br><span class="line">    使当前的goroutine放弃CPU，以让其它go程运行，它不会挂起当前goroutine，因此当前goroutine未来会恢复执行</span><br><span class="line">KeepAlive()</span><br><span class="line">    使得某个对象reachable，不会被回收，也就不会调用其finalizer</span><br><span class="line">LockOSThread()</span><br><span class="line">UnLockOSThread()</span><br><span class="line">    将调用的goroutine绑定到它当前所在的操作系统线程，除非调用的go程退出或调用UnlockOSThread，否则它将总是在该线程中执行，而其它go程则不能进入该线程</span><br><span class="line">MemProfile()</span><br><span class="line">    返回当前内存profile中的记录数</span><br><span class="line">MutexProfile()</span><br><span class="line">    返回当前系统所有goroutine的block profile</span><br><span class="line">SetMutexProfileFraction()</span><br><span class="line">    设置mutex记录器的统计的比例</span><br><span class="line">NumCPU()</span><br><span class="line">    返回本地机器的逻辑CPU数量</span><br><span class="line">NumCgoCall()</span><br><span class="line">    返回当前系统中cgo调用数量</span><br><span class="line">NumGoroutine()</span><br><span class="line">    返回系统中存在的goroutine数量</span><br><span class="line">ReadMemStats()</span><br><span class="line">    将内存申请的统计信息保存</span><br><span class="line">SetFinalizer()</span><br><span class="line">    设置对象的清理函数</span><br><span class="line">Stack()</span><br><span class="line">    返回当前goroutine的堆栈信息</span><br><span class="line">FuncForPC()</span><br><span class="line">    返回一个调用栈标识符pc对应的调用栈的*Func</span><br></pre></td></tr></table></figure>
+<p>runtime中的对象</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Func: 堆栈中的函数对象</span><br><span class="line">MemStats: 内存分配器的统计信息</span><br></pre></td></tr></table></figure>
+<p>从上述内容可以看出，runtime提供的主要功能包括goroutine的调度和内存GC。具体包括debug和pprof进行性能分析、各个记录器来抓取系统事件信息，如goroutine创建、mutex|block、内存分配、CPU使用等等、</p>
+<h2 id="goroutine的调度"><a href="#goroutine的调度" class="headerlink" title="goroutine的调度"></a>goroutine的调度</h2><ul>
+<li><p>并发与并行</p>
+<ul>
+<li>并行指的是在不同的物理处理器上同时执行不同的代码片段，并行可以同时做很多事情，而并发是同时管理很多事情</li>
+</ul>
+</li>
+<li><p>线程模型 - 线程与内核调度实体(内核线程)的关系</p>
+<ul>
+<li>1:1绑定 内核级线程(c++ std:thread)</li>
+<li>n:1绑定 用户级线程(python gevent)</li>
+<li>n:m动态绑定 混合级线程(golang goroutine)</li>
+</ul>
+</li>
+<li><p>为什么需要语言级别的调度</p>
+<ul>
+<li>OS的线程调度代价大</li>
+<li>GC需要stop the workd，因此需要对goroutine进行调度，使其在GC时停止</li>
+</ul>
+</li>
+<li><p>主要组成(G、P、M)</p>
+<ul>
+<li>每一个Go程序都自带一个runtime，负责与OS进行交互</li>
+<li>G: goroutine</li>
+<li>P: processor 逻辑处理器，可以看作是一个在单线程上运行的goroutine队列</li>
+<li>M: machine|thread 分别从全局P和本地P中获取goroutine来运行</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/goroutine调度之G、P、M.jpg" alt="image"></p>
+<ul>
+<li><p>调度细节</p>
+<ul>
+<li>全局P: 所有刚创建的goroutine放在这里</li>
+<li>本地P: 所有运行的goroutine</li>
+<li>当我们创建一个goroutine的后，会先存放在全局P中。等待Go运行时的调度器进行调度，把他们分配给其中的一个本地P</li>
+<li>处于本地P中的goroutine，依次排队等待最终等着CPU执行</li>
+<li>运行的goroutine因为系统调用而阻塞的时候，将这个goroutine放入到全局P中</li>
+<li>各个本地P在运行完自己的队列后，也可以从全局P中获取goroutine</li>
+</ul>
+</li>
+<li><p>goroutine的阻塞</p>
+<ul>
+<li>用户态的阻塞和唤醒<ul>
+<li>channel操作</li>
+<li>sync操作</li>
+</ul>
+</li>
+<li>系统调用阻塞<ul>
+<li>network IO <strong>实际上golang中，已经使用epoll将阻塞的network IO变为非阻塞</strong></li>
+<li>blocking syscall</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>goroutine的状态</p>
+<ul>
+<li>Grunnable</li>
+<li>Grunning</li>
+<li>Gwaiting</li>
+<li>Gsyscall</li>
+<li>Gdead</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Goroutine状态转换.jpg" alt="协程状态转换"></p>
+<ul>
+<li>特点<ul>
+<li>goroutine的动态栈</li>
+<li>抢占式调度，长时间对于运行状态的P会被其他的P抢占</li>
+<li>G与M之间时多对多的关系</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://www.ardanlabs.com/blog/2018/08/scheduling-in-go-part1.html" target="_blank" rel="noopener">协程调度</a></p>
+<h2 id="GC"><a href="#GC" class="headerlink" title="GC"></a>GC</h2><ul>
+<li>低延迟GC，代价是GC吞吐量的下降</li>
+<li>三色标记清除</li>
+</ul>
+<p><a href="https://making.pusher.com/golangs-real-time-gc-in-theory-and-practice/" target="_blank" rel="noopener">GoGC</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Golang/" rel="tag"># Golang</a>
+          
+            <a href="/tags/runtime/" rel="tag"># runtime</a>
+          
+            <a href="/tags/goroutine/" rel="tag"># goroutine</a>
+          
+            <a href="/tags/heap/" rel="tag"># heap</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/13/Golang-goroutine泄露/" rel="next" title="Golang-goroutine泄露">
+                <i class="fa fa-chevron-left"></i> Golang-goroutine泄露
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/14/Golang-资源池/" rel="prev" title="Golang-资源池">
+                Golang-资源池 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2018/11/14/Golang-runtime/" data-title="Golang-runtime" data-url="http://yoursite.com/2018/11/14/Golang-runtime/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">123</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#goroutine的调度"><span class="nav-number">1.</span> <span class="nav-text">goroutine的调度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GC"><span class="nav-number">2.</span> <span class="nav-text">GC</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

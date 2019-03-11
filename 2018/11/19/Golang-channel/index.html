@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Golang,channel,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="channel的特性 类型  缓冲(len, cap操作获取状态) 非缓冲   状态  nil，未初始化的状态，只进行了声明 active，正常的状态，可以进行读写 close，已关闭的状态，但是不为nil   操作  读与写 关闭 channel并不需要显式的close，如果没有goroutine对其读写，则channel会被GC回收       特殊情况: 当nil channel在selec">
+<meta name="keywords" content="Golang,channel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang-channel">
+<meta property="og:url" content="http://yoursite.com/2018/11/19/Golang-channel/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="channel的特性 类型  缓冲(len, cap操作获取状态) 非缓冲   状态  nil，未初始化的状态，只进行了声明 active，正常的状态，可以进行读写 close，已关闭的状态，但是不为nil   操作  读与写 关闭 channel并不需要显式的close，如果没有goroutine对其读写，则channel会被GC回收       特殊情况: 当nil channel在selec">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/Golang之channel的状态与操作.png">
+<meta property="og:updated_time" content="2019-03-11T10:18:22.651Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Golang-channel">
+<meta name="twitter:description" content="channel的特性 类型  缓冲(len, cap操作获取状态) 非缓冲   状态  nil，未初始化的状态，只进行了声明 active，正常的状态，可以进行读写 close，已关闭的状态，但是不为nil   操作  读与写 关闭 channel并不需要显式的close，如果没有goroutine对其读写，则channel会被GC回收       特殊情况: 当nil channel在selec">
+<meta name="twitter:image" content="http://yoursite.com/images/Golang之channel的状态与操作.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/19/Golang-channel/">
+
+
+
+
+
+  <title>Golang-channel | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/19/Golang-channel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Golang-channel</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-19T14:17:46+08:00">
+                2018-11-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/19/Golang-channel/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/11/19/Golang-channel/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="channel的特性"><a href="#channel的特性" class="headerlink" title="channel的特性"></a>channel的特性</h2><ul>
+<li><p>类型</p>
+<ul>
+<li>缓冲(len, cap操作获取状态)</li>
+<li>非缓冲</li>
+</ul>
+</li>
+<li><p>状态</p>
+<ul>
+<li>nil，未初始化的状态，只进行了声明</li>
+<li>active，正常的状态，可以进行读写</li>
+<li>close，已关闭的状态，但是不为nil</li>
+</ul>
+</li>
+<li><p>操作</p>
+<ul>
+<li>读与写</li>
+<li>关闭<ul>
+<li>channel并不需要显式的close，如果没有goroutine对其读写，则channel会被GC回收</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Golang之channel的状态与操作.png" alt="Channel的状态与操作"></p>
+<p>特殊情况: 当nil channel在select的某个case中时，这个case会阻塞，但不会造成panic</p>
+<h2 id="channel的常用操作"><a href="#channel的常用操作" class="headerlink" title="channel的常用操作"></a>channel的常用操作</h2><ul>
+<li>使用<code>for range</code>循环读取channel</li>
+</ul>
+<p>当channel关闭时，for循环会自动退出，无需主动监测channel是否关闭，可以防止读取已经关闭的channel，造成读到数据为通道所存储的数据类型的零值</p>
+<ul>
+<li>使用<code>_, ok</code>判断channel是否关闭</li>
+</ul>
+<p>读已关闭的channel会造成零值 ，如果不确定channel，需要使用ok进行检测。ok为<code>true</code>表示读到数据，并且通道没有关闭; ok为<code>false</code>表示通道关闭</p>
+<ul>
+<li>使用<code>select</code>处理多个channel的读写</li>
+</ul>
+<p>同时监控多个channel的情况，只处理最先未阻塞的case; 当通道为nil时，对应的case永远为阻塞，无论读写<br>普通情况下，对nil的通道写操作是要panic的</p>
+<ul>
+<li>使用channel的声明控制读写权限</li>
+</ul>
+<p>如果协程对某个channel只有写操作，则这个channel声明为只写<br>如果协程对某个channel只有读操作，则这个channe声明为只读</p>
+<ul>
+<li><p>使用缓冲channel增强并发和异步</p>
+</li>
+<li><p>使用<code>select</code>和<code>time.After</code>为操作加上超时</p>
+</li>
+</ul>
+<p>看操作和定时器哪个先返回，处理先完成的，达到超时控制的效果</p>
+<p>当该操作为channel的读写时，可以为channel操作增加超时效果，使得channel的读写变为无阻塞</p>
+<ul>
+<li><p>使用<code>close</code>关闭channel,从而关闭channel所有的下游协程</p>
+</li>
+<li><p>使用chan struct{}作为信号channel</p>
+</li>
+</ul>
+<p>当数据需要传递时，传递空struct</p>
+<ul>
+<li>使用channel传递结构体的指针而非结构体</li>
+</ul>
+<p>channel本质上传递的是数据的拷贝，拷贝的数据越小传输效率越高，传递结构体指针，比传递结构体更高效</p>
+<h2 id="优雅关闭channel"><a href="#优雅关闭channel" class="headerlink" title="优雅关闭channel"></a>优雅关闭channel</h2><p>关闭channel的原则: <strong>不要在消费端关闭，不要关闭有多个并行的生产者的channel</strong></p>
+<h3 id="暴力解决方案"><a href="#暴力解决方案" class="headerlink" title="暴力解决方案"></a>暴力解决方案</h3><p>使用recover机制来处理channel的关闭</p>
+<ul>
+<li>生产者的Send操作</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SafeSend</span><span class="params">(ch <span class="keyword">chan</span> T, value T)</span><span class="params">(closed <span class="keyword">bool</span>)</span></span>&#123;</span><br><span class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">recover</span>() != <span class="literal">nil</span>&#123;</span><br><span class="line">            closed = <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ch &lt;- value</span><br><span class="line">    <span class="built_in">close</span> = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>生产者的close操作</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SafeClose</span><span class="params">(ch <span class="keyword">chan</span> T)</span><span class="params">(justClosed <span class="keyword">bool</span>)</span></span>&#123;</span><br><span class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">recover</span>() != <span class="literal">nil</span>&#123;</span><br><span class="line">            justClosed = <span class="literal">false</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">close</span>(ch)</span><br><span class="line">    justClosed = <span class="literal">true</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然，也可以使用sync.Once或者sync.Mutex来执行close操作</p>
+<h3 id="优雅解决方案"><a href="#优雅解决方案" class="headerlink" title="优雅解决方案"></a>优雅解决方案</h3><p>上述的SafeSend()存在一个缺陷，不能使用select+case语句进行Send操作</p>
+<ul>
+<li>多个消费者，单个生产者的情况</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">go</span> Sender(ch)</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">        <span class="keyword">go</span> Receiver(ch)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    time.Sleep(<span class="number">5</span> * time.Second)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Sender 生产者</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Sender</span><span class="params">(ch <span class="keyword">chan</span>&lt;- <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    maxRandomNumber := <span class="number">100</span></span><br><span class="line">    rand.Seed(time.Now().UnixNano())</span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> value := rand.Intn(maxRandomNumber); value == <span class="number">0</span> &#123;</span><br><span class="line">            <span class="built_in">close</span>(ch) <span class="comment">//单个生产者的情况下，直接close即可</span></span><br><span class="line">            fmt.Println(<span class="string">"Channel Close"</span>)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            fmt.Println(<span class="string">"Sender: "</span>, value)</span><br><span class="line">            ch &lt;- value</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Receiver 消费者</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Receiver</span><span class="params">(ch &lt;-<span class="keyword">chan</span> <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> value := <span class="keyword">range</span> ch &#123; <span class="comment">//对被close的channel进行range，直接退出循环</span></span><br><span class="line">        fmt.Println(<span class="string">"Receiver: "</span>, value)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>多个生产者，一个消费者的情况</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">    stopChan := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">interface</span>&#123;&#125;) <span class="comment">//通过额外的Signal Channel，让Receiver通知Sender停止发送</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">go</span> Receiver(ch, stopChan)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">        <span class="keyword">go</span> Sender(ch, stopChan)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    time.Sleep(<span class="number">5</span> * time.Second)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Sender 生产者</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Sender</span><span class="params">(ch <span class="keyword">chan</span>&lt;- <span class="keyword">int</span>, stopChan &lt;-<span class="keyword">chan</span> <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    maxRandomNumber := <span class="number">100</span></span><br><span class="line">    rand.Seed(time.Now().UnixNano())</span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        value := rand.Intn(maxRandomNumber)</span><br><span class="line">        <span class="keyword">select</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> &lt;-stopChan: <span class="comment">//接收到Stop Channel，停止发送</span></span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">case</span> ch &lt;- value:</span><br><span class="line">            fmt.Println(<span class="string">"Sender: "</span>, value)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Receiver 消费者</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Receiver</span><span class="params">(ch &lt;-<span class="keyword">chan</span> <span class="keyword">int</span>, stopChan <span class="keyword">chan</span>&lt;- <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> value := <span class="keyword">range</span> ch &#123;</span><br><span class="line">        <span class="keyword">if</span> value == <span class="number">0</span> &#123;</span><br><span class="line">            <span class="built_in">close</span>(stopChan)</span><br><span class="line">            fmt.Println(<span class="string">"Close Stop Channel"</span>) <span class="comment">//通知Sender停止发送</span></span><br><span class="line">        &#125;</span><br><span class="line">        fmt.Println(<span class="string">"Receiver: "</span>, value)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>多个生产者，多个消费者<br>  通过引入一个第三方的协调者，消费者和生产者可以主动通知协调者来关闭channel</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">    stopChan := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">string</span>)</span><br><span class="line">    doStop := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">interface</span>&#123;&#125;)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">        <span class="keyword">go</span> Receiver(<span class="string">"receiver:"</span>+strconv.Itoa(i), ch, stopChan, doStop)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">        <span class="keyword">go</span> Sender(<span class="string">"sender:"</span>+strconv.Itoa(i), ch, stopChan, doStop)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">        from := &lt;-stopChan <span class="comment">//使用stopChan作为一个协调者</span></span><br><span class="line">        fmt.Println(<span class="string">"Close From:"</span> + from)</span><br><span class="line">        <span class="built_in">close</span>(doStop) <span class="comment">//在此关闭doStop channel</span></span><br><span class="line">    &#125;()</span><br><span class="line"></span><br><span class="line">    time.Sleep(<span class="number">5</span> * time.Second)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Sender 生产者</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Sender</span><span class="params">(name <span class="keyword">string</span>, ch <span class="keyword">chan</span>&lt;- <span class="keyword">int</span>, stopChan <span class="keyword">chan</span>&lt;- <span class="keyword">string</span>, doStop &lt;-<span class="keyword">chan</span> <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    maxRandomNumber := <span class="number">100</span></span><br><span class="line">    rand.Seed(time.Now().UnixNano())</span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        value := rand.Intn(maxRandomNumber)</span><br><span class="line">        <span class="keyword">if</span> value == <span class="number">0</span> &#123;</span><br><span class="line">            <span class="keyword">select</span> &#123;</span><br><span class="line">            <span class="keyword">case</span> stopChan &lt;- name: <span class="comment">//通知协调者关闭doStop channel，此处采用的是select，因为Sender和Receiver都有可能向stopChan中写</span></span><br><span class="line">                fmt.Println(name + <span class="string">" Active Exit"</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="comment">//当前goroutine直接退出</span></span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                fmt.Println(name + <span class="string">" Active Exit"</span>)</span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">select</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> &lt;-doStop: <span class="comment">//其他goroutine通知协调者关闭doStop，在此退出</span></span><br><span class="line">            fmt.Println(name + <span class="string">" InActive Exit"</span>)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">case</span> ch &lt;- value:</span><br><span class="line">            fmt.Println(name, value)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Receiver 消费者</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Receiver</span><span class="params">(name <span class="keyword">string</span>, ch &lt;-<span class="keyword">chan</span> <span class="keyword">int</span>, stopChan <span class="keyword">chan</span>&lt;- <span class="keyword">string</span>, doStop &lt;-<span class="keyword">chan</span> <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        <span class="keyword">select</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> &lt;-doStop: <span class="comment">//其他goroutine通知协调者关闭doStop，在此退出</span></span><br><span class="line">            fmt.Println(name + <span class="string">" InActive Exit"</span>)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">case</span> value := &lt;-ch:</span><br><span class="line">            <span class="keyword">if</span> value == <span class="number">99</span> &#123;</span><br><span class="line">                <span class="keyword">select</span> &#123;</span><br><span class="line">                <span class="keyword">case</span> stopChan &lt;- name: <span class="comment">//通知协调者关闭doStop channel，此处采用的是select，因为Sender和Receiver都有可能向stopChan中写</span></span><br><span class="line">                    fmt.Println(name + <span class="string">" Active Exit"</span>)</span><br><span class="line">                    <span class="keyword">return</span></span><br><span class="line">                <span class="keyword">default</span>:</span><br><span class="line">                    fmt.Println(name + <span class="string">" Active Exit"</span>)</span><br><span class="line">                    <span class="keyword">return</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            fmt.Println(name, value)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Golang/" rel="tag"># Golang</a>
+          
+            <a href="/tags/channel/" rel="tag"># channel</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/16/Golang-context/" rel="next" title="Golang-context">
+                <i class="fa fa-chevron-left"></i> Golang-context
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/19/Golang-http/" rel="prev" title="Golang-http">
+                Golang-http <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2018/11/19/Golang-channel/" data-title="Golang-channel" data-url="http://yoursite.com/2018/11/19/Golang-channel/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">123</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#channel的特性"><span class="nav-number">1.</span> <span class="nav-text">channel的特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#channel的常用操作"><span class="nav-number">2.</span> <span class="nav-text">channel的常用操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优雅关闭channel"><span class="nav-number">3.</span> <span class="nav-text">优雅关闭channel</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#暴力解决方案"><span class="nav-number">3.1.</span> <span class="nav-text">暴力解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优雅解决方案"><span class="nav-number">3.2.</span> <span class="nav-text">优雅解决方案</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

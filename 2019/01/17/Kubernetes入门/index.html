@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Kubernetes,Namespace,Pod,Service,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="当前主流的容器编排技术包括  docker compose: Docker官方的单机版本的容器编排工具 docker swarm: Docker官方的多机版本的容器编排工具 mesos + marathon: Apache提供的集群资源管理和容器编排工具 kubernetes: Google提供的容器编排工具，事实上已经成为容器编排的标准工具  主要功能 基于容器的应用的自动部署、滚动升级、自动修">
+<meta name="keywords" content="Kubernetes,Namespace,Pod,Service">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes入门">
+<meta property="og:url" content="http://yoursite.com/2019/01/17/Kubernetes入门/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="当前主流的容器编排技术包括  docker compose: Docker官方的单机版本的容器编排工具 docker swarm: Docker官方的多机版本的容器编排工具 mesos + marathon: Apache提供的集群资源管理和容器编排工具 kubernetes: Google提供的容器编排工具，事实上已经成为容器编排的标准工具  主要功能 基于容器的应用的自动部署、滚动升级、自动修">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/Kubernetes之系统架构.png">
+<meta property="og:updated_time" content="2019-03-11T10:18:22.656Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kubernetes入门">
+<meta name="twitter:description" content="当前主流的容器编排技术包括  docker compose: Docker官方的单机版本的容器编排工具 docker swarm: Docker官方的多机版本的容器编排工具 mesos + marathon: Apache提供的集群资源管理和容器编排工具 kubernetes: Google提供的容器编排工具，事实上已经成为容器编排的标准工具  主要功能 基于容器的应用的自动部署、滚动升级、自动修">
+<meta name="twitter:image" content="http://yoursite.com/images/Kubernetes之系统架构.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/17/Kubernetes入门/">
+
+
+
+
+
+  <title>Kubernetes入门 | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/17/Kubernetes入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Kubernetes入门</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-17T16:31:32+08:00">
+                2019-01-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker-K8S/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker/K8S</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/17/Kubernetes入门/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/17/Kubernetes入门/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>当前主流的容器编排技术包括</p>
+<ul>
+<li><code>docker compose</code>: Docker官方的单机版本的容器编排工具</li>
+<li><code>docker swarm</code>: Docker官方的多机版本的容器编排工具</li>
+<li><code>mesos + marathon</code>: Apache提供的集群资源管理和容器编排工具</li>
+<li><code>kubernetes</code>: Google提供的容器编排工具，事实上已经成为容器编排的标准工具</li>
+</ul>
+<h2 id="主要功能"><a href="#主要功能" class="headerlink" title="主要功能"></a>主要功能</h2><ul>
+<li>基于容器的应用的自动部署、滚动升级、自动修复和版本回滚</li>
+<li>应用配置的管理</li>
+<li>服务的自动伸缩和水平扩展</li>
+<li>负载均衡和服务发现</li>
+<li>跨机器和跨地区的集群调度</li>
+<li>无状态和有状态服务</li>
+<li>广泛的数据卷支持和管理</li>
+<li>插件机制保证可扩展性</li>
+</ul>
+<h2 id="系统架构"><a href="#系统架构" class="headerlink" title="系统架构"></a>系统架构</h2><p>Master-Slave(Node)结构</p>
+<p><img src="/images/Kubernetes之系统架构.png" alt="kubernetes architecture"></p>
+<ul>
+<li><p><code>Kubectl</code>: 用户的命令行交互工具</p>
+</li>
+<li><p>K8S Control Plane(Master): 管理整个集群</p>
+<ul>
+<li>各个组件可以以分布式的形式在多台机器上运行</li>
+<li>为保证高可用，推荐部署3个Master节点</li>
+<li>主要组件包括:<ul>
+<li><code>API Server</code>: 用户API入口<ul>
+<li>将K8S API以<code>JSON over HTTP</code>的形式暴露给用户</li>
+<li>用户可以通过<code>kubectl</code>发起请求，对集群中的Pod在Node上进行调度</li>
+<li>请求处理的结果最终保存到ETCD中</li>
+</ul>
+</li>
+<li><code>Controller Manager</code>: 控制器管理器<ul>
+<li>管理多个Pod控制器，一般一个Pod需要一个Pod控制器</li>
+<li>常用的Pod控制器包括:<ul>
+<li><code>ReplicationController</code>: 早期版本的副本控制器</li>
+<li><code>ReplicaSet</code>: 副本集控制器，一般不直接使用</li>
+<li><code>Deployment</code>: 声明式的无状态应用部署控制器，支持滚动升级和版本回滚<ul>
+<li>支持HPA(HorizontalPodAutoscaling)，可以对应用进行自动伸缩</li>
+</ul>
+</li>
+<li><code>DaemonSet</code>: 无状态应用，保证一个Node上运行一个Pod，对应系统级别的后台进程</li>
+<li><code>StatefulSet</code>: 有状态应用</li>
+<li><code>Job</code>: 一次性任务，即完成后便退出的应用</li>
+<li><code>Cronjob</code>: 周期性任务，不需要持续运行的应用</li>
+</ul>
+</li>
+<li>每个控制器分别负责监控集群中的某些状态，使之符合<code>Object.status</code>的要求</li>
+<li>与API Server进行通信，实现资源(Pod, Service)的创建、更新和删除</li>
+</ul>
+</li>
+<li><code>Scheduler</code>: 调度器<ul>
+<li>将集群中所有的Node的资源看做是一个整体</li>
+<li>监控各个Node上的资源使用情况</li>
+<li>对资源进行调度，按照预定的策略将Pod调度到对应的Node上</li>
+</ul>
+</li>
+<li><code>ETCD</code>: 集群状态存储<ul>
+<li>轻量级的分布式一致性KV存储服务</li>
+<li>API Server使用其提供的<code>watch</code>机制对资源状态进行监控</li>
+<li>存储整个集群的状态信息</li>
+</ul>
+</li>
+<li><code>AddONs</code>: 插件，也是以Pod+Service的形式运行<ul>
+<li>DNS: 解析规则会根据集群状态的变化而自动改变</li>
+<li>Dashboard: 集群管理页面</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>K8S Node(Slave): Pod真正运行的机器</p>
+<ul>
+<li>带有容器的运行时，比如Docker</li>
+<li>还包括以下组件<ul>
+<li><code>Kubelet</code><ul>
+<li>对容器、数据卷、网络等进行管理</li>
+<li>监控容器运行状态和资源使用状态并上报到Master</li>
+</ul>
+</li>
+<li><code>Container</code><ul>
+<li>处于Pod的内部，包含了应用所需的依赖</li>
+</ul>
+</li>
+<li><code>Kube-Proxy</code><ul>
+<li>实现了网络代理、服务发现、负载均衡等功能</li>
+<li>当Service对象发生变化后，自动在iptables中修改对应的规则，相当于为Service对象提供了一层抽象</li>
+</ul>
+</li>
+<li><code>cAdvisor</code><ul>
+<li>Kubelet使用cAdvisor进行容器资源使用情况的收集</li>
+<li>对各个容器使用的系统资源(CPU,Memory,Network,File)进行收集</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
+<li><code>Object</code><ul>
+<li>对持久实体进行描述</li>
+<li>一般包含两个嵌套对象<ul>
+<li>spec: 对象所需要的状态<strong>K8S的核心就是保证应用总是在期望的状态</strong></li>
+<li>status: 对象实际的状态</li>
+</ul>
+</li>
+<li>使用K8S API对对象进行管理</li>
+<li>创建对象时，一般使用<code>.yaml</code>文件来进行描述<ul>
+<li>必填字段<ul>
+<li>apiVersion: K8S API的版本</li>
+<li>kind: 对象类型</li>
+<li>metadata: 对象唯一标识，包含<code>name, uid, namespace</code>等信息</li>
+<li>spec: 对象所需要的状态</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>常用的<code>Object</code>对象包括:</p>
+<ul>
+<li><p><code>Namespace</code>: 用于创建多个虚拟集群，对资源进行隔离</p>
+<ul>
+<li>命名空间的名称在系统中唯一</li>
+<li>删除一个命名空间会自动删除属于该空间的资源</li>
+<li>名称为<code>default</code>和<code>kube-system</code>为系统使用，不可以删除</li>
+<li>大多数的资源都属于命名空间，如<code>Pod, Service, Replica, Deployment</code>等</li>
+<li>低级别的资源如<code>Node, PersistentVolume</code>则不属于任何命名空间</li>
+</ul>
+</li>
+<li><p><code>Pod</code>: 系统中可以进行调度的最小对象，可以包含一个或多个容器</p>
+<ul>
+<li>Pod在系统中会被分配一个唯一的IP地址</li>
+<li>Pod中的多个容器共享网络、数据卷等</li>
+<li>Pod内部的容器之间可以通过<code>localhost</code>进行访问 <strong>本质是Pod中的容器使用的是联盟式网络</strong></li>
+<li>Pod是有生命周期的，可能会被集群启动、修改和删除</li>
+<li>跨Pod的容器之间的访问可以通过<code>Service</code>对象来实现</li>
+</ul>
+</li>
+<li><p><code>Service</code>: 一个或多个Pod组成，是Pod之上的概念</p>
+<ul>
+<li>通过<code>Label Selector</code>来筛选Pod，符合条件的Pod的IP和端口组成了一个<code>EndPoints</code>列表</li>
+<li>每一个Service会被分配一个<code>Cluster IP</code>和DNS名称</li>
+<li>外部用户和其他Service可以通过该<code>Cluster IP</code>或DNS名来访问服务，而不需要了解服务对应的Pod列表，可以将Service看做是对Pod的代理</li>
+<li>Kube-Proxy将用户对Service的访问均衡负载到这些<code>EndPoints</code>上，从而实现了负载均衡和服务发现的功能  <strong>本质上是DNS解析和在iptables添加了DNAT数据转发规则</strong></li>
+</ul>
+</li>
+<li><p><code>Volume</code>: 为Pod提供存储空间和文件共享</p>
+</li>
+</ul>
+<p>管理<code>Object</code>的机制包括:</p>
+<ul>
+<li><p><code>Label</code>: 识别Object的标签</p>
+<ul>
+<li>key/value对</li>
+<li>使用<code>Label Selector</code>用于过滤出符合标签条件的Object<ul>
+<li>等式: app=nginx env != production</li>
+<li>集合: env in (production, test)</li>
+<li>组合: app=nginx, env=test</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>Annotation</code>: 对Object的描述</p>
+<ul>
+<li>key/value对</li>
+<li>记录Object的一些附属信息</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Kubernetes/" rel="tag"># Kubernetes</a>
+          
+            <a href="/tags/Namespace/" rel="tag"># Namespace</a>
+          
+            <a href="/tags/Pod/" rel="tag"># Pod</a>
+          
+            <a href="/tags/Service/" rel="tag"># Service</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/16/Golang-实现简单的https服务器/" rel="next" title="Golang-实现简单的https服务器">
+                <i class="fa fa-chevron-left"></i> Golang-实现简单的https服务器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/18/Docker的Linux原理/" rel="prev" title="Docker的Linux原理">
+                Docker的Linux原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2019/01/17/Kubernetes入门/" data-title="Kubernetes入门" data-url="http://yoursite.com/2019/01/17/Kubernetes入门/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">123</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#主要功能"><span class="nav-number">1.</span> <span class="nav-text">主要功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统架构"><span class="nav-number">2.</span> <span class="nav-text">系统架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">3.</span> <span class="nav-text">基本概念</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
