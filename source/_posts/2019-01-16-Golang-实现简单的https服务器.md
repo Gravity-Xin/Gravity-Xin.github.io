@@ -37,7 +37,7 @@ https协议使用TLS(Transport Layer Security, 传输层安全协议)来保证�
 
 TLS基于X.509来进行认证，然后使用非对称加密算法来进行通信双方的身份认证，然后进行公钥的交换，并使用公钥对通信双方的数据进行加密
 
-HTTPS连接的建立过程
+HTTPS连接的建立过程: 使用非对称加密来交换对称加密的密钥
 
 ![img](/images/HTTPs的建立过程.png)
 
