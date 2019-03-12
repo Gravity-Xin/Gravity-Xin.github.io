@@ -249,6 +249,688 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/18/Kubernetes安装部署/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/18/Kubernetes安装部署/" itemprop="url">Kubernetes安装部署</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-18T17:15:06+08:00">
+                2019-01-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker-K8S/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker/K8S</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/18/Kubernetes安装部署/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/18/Kubernetes安装部署/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>K8S的安装方式:</p>
+<ul>
+<li>使用<code>Minikube</code>安装K8S单机环境</li>
+<li>使用二进制安装<ul>
+<li>将Master节点上的组件(<code>API Server</code>、<code>Controller Manager</code>、<code>Scheduler</code>、<code>ETCD</code>等)直接以二进制的形式安装在主机上</li>
+<li>Node节点上的组件(<code>Kubelet</code>、<code>Docker</code>、<code>Kube-Proxy</code>等)直接以二进制的形式安装在主机上</li>
+<li>这是一种传统方式，所有K8S组件都是系统级别的守护进</li>
+<li>该方式比较麻烦，因为需要手动去安装和配置各个组件，比如配置节点间安全通信的证书</li>
+<li>在该方式下，如果某些K8S组件出现故障，需要手动去进行管理和维护，因此不推荐该方式<br><a href="https://github.com/opsnull/follow-me-install-kubernetes-cluster" target="_blank" rel="noopener">参考</a></li>
+</ul>
+</li>
+<li>使用<code>Kubeadm</code>自动化工具安装<ul>
+<li>内部调用<code>Kubectl</code>等命令</li>
+<li>在所有主机上安装<code>Docker</code>、<code>Kubelet</code>和<code>Kubeadm</code>组件，提供主机上运行容器和Pod的基础环境</li>
+<li>将某台主机使用<code>Kubeadm init</code>初始化为Master节点</li>
+<li>在其他主机上使用<code>Kubeadm join</code>来进入到K8S集群中，作为Node节点</li>
+<li>在Master节点上以Pod的形式在容器中运行组件(<code>API Server</code>、<code>Controller Manager</code>、<code>Scheduler</code>、<code>ETCD</code>等)</li>
+<li>在Node节点上以Pod的形式在容器中运行组件(<code>Kube-Proxy</code>等)</li>
+<li>K8S所有组件以Pod的方式来运行，这些Pod为静态Pod，由<code>Kubelet</code>进行管理，仅存于特定Node上，不能通过API Server进行管理</li>
+<li>在所有主机上以Pod的方式来运行<code>Flannel</code>，为Pod提供IP地址分配的功能，该Pod由K8S来进行管理<br><a href="https://github.com/kubernetes/kubeadm/blob/master/docs/design/design_v1.10.md" target="_blank" rel="noopener">参考</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/18/Docker的Linux原理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/18/Docker的Linux原理/" itemprop="url">Docker的Linux原理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-18T14:07:53+08:00">
+                2019-01-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker-K8S/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker/K8S</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/18/Docker的Linux原理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/18/Docker的Linux原理/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="使用namespace实现资源隔离"><a href="#使用namespace实现资源隔离" class="headerlink" title="使用namespace实现资源隔离"></a>使用namespace实现资源隔离</h2><ul>
+<li><p>UTS: 主机与域名隔离，使用独立的主机名称，从而能够网络中标识自己</p>
+</li>
+<li><p>IPC: 进程间通信隔离，如信号量、消息队列、共享内存等</p>
+</li>
+<li><p>PID: 进程隔离，与宿主机中的进程ID隔离</p>
+</li>
+<li><p>Network: 网络设备、网络栈、端口等隔离</p>
+</li>
+<li><p>Mount: 文件系统隔离，使用<code>chroot</code>来切换根目录的挂载点</p>
+</li>
+<li><p>User: 用户，用户组和权限的隔离</p>
+</li>
+</ul>
+<h2 id="使用cgroups实现资源限制"><a href="#使用cgroups实现资源限制" class="headerlink" title="使用cgroups实现资源限制"></a>使用cgroups实现资源限制</h2><ul>
+<li><p>CPU</p>
+</li>
+<li><p>Memory</p>
+</li>
+<li><p>Disk I/O</p>
+</li>
+<li><p>Network I/O</p>
+</li>
+</ul>
+<h2 id="使用union-filesystem实现镜像"><a href="#使用union-filesystem实现镜像" class="headerlink" title="使用union-filesystem实现镜像"></a>使用union-filesystem实现镜像</h2><ul>
+<li><p>基于copy-on-write，写时复制</p>
+</li>
+<li><p>多个layer，最上层为一个可写的层</p>
+</li>
+<li><p>所有对容器的修改其实都是对最上层的修改</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/17/Kubernetes入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/17/Kubernetes入门/" itemprop="url">Kubernetes入门</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-17T16:31:32+08:00">
+                2019-01-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker-K8S/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker/K8S</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/17/Kubernetes入门/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/17/Kubernetes入门/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>当前主流的容器编排技术包括</p>
+<ul>
+<li><code>docker compose</code>: Docker官方的单机版本的容器编排工具</li>
+<li><code>docker swarm</code>: Docker官方的多机版本的容器编排工具</li>
+<li><code>mesos + marathon</code>: Apache提供的集群资源管理和容器编排工具</li>
+<li><code>kubernetes</code>: Google提供的容器编排工具，事实上已经成为容器编排的标准工具</li>
+</ul>
+<h2 id="主要功能"><a href="#主要功能" class="headerlink" title="主要功能"></a>主要功能</h2><ul>
+<li>基于容器的应用的自动部署、滚动升级、自动修复和版本回滚</li>
+<li>应用配置的管理</li>
+<li>服务的自动伸缩和水平扩展</li>
+<li>负载均衡和服务发现</li>
+<li>跨机器和跨地区的集群调度</li>
+<li>无状态和有状态服务</li>
+<li>广泛的数据卷支持和管理</li>
+<li>插件机制保证可扩展性</li>
+</ul>
+<h2 id="系统架构"><a href="#系统架构" class="headerlink" title="系统架构"></a>系统架构</h2><p>Master-Slave(Node)结构</p>
+<p><img src="/images/Kubernetes之系统架构.png" alt="kubernetes architecture"></p>
+<ul>
+<li><p><code>Kubectl</code>: 用户的命令行交互工具</p>
+</li>
+<li><p>K8S Control Plane(Master): 管理整个集群</p>
+<ul>
+<li>各个组件可以以分布式的形式在多台机器上运行</li>
+<li>为保证高可用，推荐部署3个Master节点</li>
+<li>主要组件包括:<ul>
+<li><code>API Server</code>: 用户API入口<ul>
+<li>将K8S API以<code>JSON over HTTP</code>的形式暴露给用户</li>
+<li>用户可以通过<code>kubectl</code>发起请求，对集群中的Pod在Node上进行调度</li>
+<li>请求处理的结果最终保存到ETCD中</li>
+</ul>
+</li>
+<li><code>Controller Manager</code>: 控制器管理器<ul>
+<li>管理多个Pod控制器，一般一个Pod需要一个Pod控制器</li>
+<li>常用的Pod控制器包括:<ul>
+<li><code>ReplicationController</code>: 早期版本的副本控制器</li>
+<li><code>ReplicaSet</code>: 副本集控制器，一般不直接使用</li>
+<li><code>Deployment</code>: 声明式的无状态应用部署控制器，支持滚动升级和版本回滚<ul>
+<li>支持HPA(HorizontalPodAutoscaling)，可以对应用进行自动伸缩</li>
+</ul>
+</li>
+<li><code>DaemonSet</code>: 无状态应用，保证一个Node上运行一个Pod，对应系统级别的后台进程</li>
+<li><code>StatefulSet</code>: 有状态应用</li>
+<li><code>Job</code>: 一次性任务，即完成后便退出的应用</li>
+<li><code>Cronjob</code>: 周期性任务，不需要持续运行的应用</li>
+</ul>
+</li>
+<li>每个控制器分别负责监控集群中的某些状态，使之符合<code>Object.status</code>的要求</li>
+<li>与API Server进行通信，实现资源(Pod, Service)的创建、更新和删除</li>
+</ul>
+</li>
+<li><code>Scheduler</code>: 调度器<ul>
+<li>将集群中所有的Node的资源看做是一个整体</li>
+<li>监控各个Node上的资源使用情况</li>
+<li>对资源进行调度，按照预定的策略将Pod调度到对应的Node上</li>
+</ul>
+</li>
+<li><code>ETCD</code>: 集群状态存储<ul>
+<li>轻量级的分布式一致性KV存储服务</li>
+<li>API Server使用其提供的<code>watch</code>机制对资源状态进行监控</li>
+<li>存储整个集群的状态信息</li>
+</ul>
+</li>
+<li><code>AddONs</code>: 插件，也是以Pod+Service的形式运行<ul>
+<li>DNS: 解析规则会根据集群状态的变化而自动改变</li>
+<li>Dashboard: 集群管理页面</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>K8S Node(Slave): Pod真正运行的机器</p>
+<ul>
+<li>带有容器的运行时，比如Docker</li>
+<li>还包括以下组件<ul>
+<li><code>Kubelet</code><ul>
+<li>对容器、数据卷、网络等进行管理</li>
+<li>监控容器运行状态和资源使用状态并上报到Master</li>
+</ul>
+</li>
+<li><code>Container</code><ul>
+<li>处于Pod的内部，包含了应用所需的依赖</li>
+</ul>
+</li>
+<li><code>Kube-Proxy</code><ul>
+<li>实现了网络代理、服务发现、负载均衡等功能</li>
+<li>当Service对象发生变化后，自动在iptables中修改对应的规则，相当于为Service对象提供了一层抽象</li>
+</ul>
+</li>
+<li><code>cAdvisor</code><ul>
+<li>Kubelet使用cAdvisor进行容器资源使用情况的收集</li>
+<li>对各个容器使用的系统资源(CPU,Memory,Network,File)进行收集</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
+<li><code>Object</code><ul>
+<li>对持久实体进行描述</li>
+<li>一般包含两个嵌套对象<ul>
+<li>spec: 对象所需要的状态<strong>K8S的核心就是保证应用总是在期望的状态</strong></li>
+<li>status: 对象实际的状态</li>
+</ul>
+</li>
+<li>使用K8S API对对象进行管理</li>
+<li>创建对象时，一般使用<code>.yaml</code>文件来进行描述<ul>
+<li>必填字段<ul>
+<li>apiVersion: K8S API的版本</li>
+<li>kind: 对象类型</li>
+<li>metadata: 对象唯一标识，包含<code>name, uid, namespace</code>等信息</li>
+<li>spec: 对象所需要的状态</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>常用的<code>Object</code>对象包括:</p>
+<ul>
+<li><p><code>Namespace</code>: 用于创建多个虚拟集群，对资源进行隔离</p>
+<ul>
+<li>命名空间的名称在系统中唯一</li>
+<li>删除一个命名空间会自动删除属于该空间的资源</li>
+<li>名称为<code>default</code>和<code>kube-system</code>为系统使用，不可以删除</li>
+<li>大多数的资源都属于命名空间，如<code>Pod, Service, Replica, Deployment</code>等</li>
+<li>低级别的资源如<code>Node, PersistentVolume</code>则不属于任何命名空间</li>
+</ul>
+</li>
+<li><p><code>Pod</code>: 系统中可以进行调度的最小对象，可以包含一个或多个容器</p>
+<ul>
+<li>Pod在系统中会被分配一个唯一的IP地址</li>
+<li>Pod中的多个容器共享网络、数据卷等</li>
+<li>Pod内部的容器之间可以通过<code>localhost</code>进行访问 <strong>本质是Pod中的容器使用的是联盟式网络</strong></li>
+<li>Pod是有生命周期的，可能会被集群启动、修改和删除</li>
+<li>跨Pod的容器之间的访问可以通过<code>Service</code>对象来实现</li>
+</ul>
+</li>
+<li><p><code>Service</code>: 一个或多个Pod组成，是Pod之上的概念</p>
+<ul>
+<li>通过<code>Label Selector</code>来筛选Pod，符合条件的Pod的IP和端口组成了一个<code>EndPoints</code>列表</li>
+<li>每一个Service会被分配一个<code>Cluster IP</code>和DNS名称</li>
+<li>外部用户和其他Service可以通过该<code>Cluster IP</code>或DNS名来访问服务，而不需要了解服务对应的Pod列表，可以将Service看做是对Pod的代理</li>
+<li>Kube-Proxy将用户对Service的访问均衡负载到这些<code>EndPoints</code>上，从而实现了负载均衡和服务发现的功能  <strong>本质上是DNS解析和在iptables添加了DNAT数据转发规则</strong></li>
+</ul>
+</li>
+<li><p><code>Volume</code>: 为Pod提供存储空间和文件共享</p>
+</li>
+</ul>
+<p>管理<code>Object</code>的机制包括:</p>
+<ul>
+<li><p><code>Label</code>: 识别Object的标签</p>
+<ul>
+<li>key/value对</li>
+<li>使用<code>Label Selector</code>用于过滤出符合标签条件的Object<ul>
+<li>等式: app=nginx env != production</li>
+<li>集合: env in (production, test)</li>
+<li>组合: app=nginx, env=test</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>Annotation</code>: 对Object的描述</p>
+<ul>
+<li>key/value对</li>
+<li>记录Object的一些附属信息</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/16/Golang-实现简单的https服务器/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1483,602 +2165,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/25/Linux-Shell-curl/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/25/Linux-Shell-curl/" itemprop="url">Linux Shell curl</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-25T16:53:10+08:00">
-                2018-12-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux-Shell/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux Shell</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/12/25/Linux-Shell-curl/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/12/25/Linux-Shell-curl/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>根据提供的选项来处理URL</p>
-<ul>
-<li><p>选项</p>
-<ul>
-<li>缩写形式, <code>-v</code></li>
-<li>原始形式, <code>--verbose</code></li>
-<li>带有参数值, <code>-d data</code></li>
-<li>带有空格的参数值, <code>-d &#39;{&quot;key&quot;: &quot;value&quot;}&#39;</code></li>
-<li>使用 <code>curl --help</code> 来查看所有选项</li>
-</ul>
-</li>
-<li><p>URL的组成</p>
-<ul>
-<li>协议</li>
-<li>用户名和密码</li>
-<li>主机名称或地址</li>
-<li>端口号码</li>
-<li>资源地址</li>
-</ul>
-</li>
-</ul>
-<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><ul>
-<li>verbose模式<br>  <code>-v</code> or <code>--verbose</code>: 获取更多细节信息<br>  <code>--trace [filename]</code> and <code>--trace-ascii [filename]</code>: 将细节信息保存到文件中<br>  <code>--trace-time</code>: 获取时间戳<br>  <code>-s</code> or <code>--silent</code>: 切换到silent模式</li>
-<li>默认会复用之前的连接</li>
-<li>下载相关<br>  <code>-o [filename]</code>: 指定保存的文件名称<br>  <code>&gt; [filename]</code>: 指定保存的文件名称<br>  <code>-O</code>: 从URL获取保存的的文件名称<br>  <code>-J</code>or <code>--remote-header-name</code>: 从响应头中的参数中获取保存的文件名称<br>  <code>--compressed</code>: 要求服务器对响应结果进行压缩，然后在客户端进行解压<br>  <code>--limit-rate [speed]</code>: 设置平均下载速率<br>  <code>--max-filesize</code>: 设置下载文件大小的上线<br>  <code>--retry [number]</code>: 设置出错之后的重试次数<br>  <code>--continue-at [number]</code> and <code>--range [start-end]</code>: 断点续传</li>
-<li>上传相关<ul>
-<li>HTTP<br><code>-d</code> or <code>--data</code>: POST请求参数<br><code>-F</code>: POST的multipart格式的参数<br><code>-T</code>: PUT的文件参数</li>
-<li>FTP<br><code>-T</code>: 上传的文件参数</li>
-</ul>
-</li>
-<li>连接相关<br>  <code>--connect-timeout</code>: 建立连接的超时时间<br>  <code>--no-keepalive</code> and <code>--keepalive-time</code>: 默认使用keeplive<br>  <code>-m</code> or <code>--max-time</code>: 命令执行最大时间</li>
-</ul>
-<h2 id="使用Curl进行HTTP请求"><a href="#使用Curl进行HTTP请求" class="headerlink" title="使用Curl进行HTTP请求"></a>使用Curl进行HTTP请求</h2><p><img src="/images/HTTP_With_Curl.png" alt="http with curl"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/25/CSAPP-Chapter-2-Representing-and-Manipulating-Information/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/25/CSAPP-Chapter-2-Representing-and-Manipulating-Information/" itemprop="url">CSAPP-Chapter 2-Representing and Manipulating Information</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-25T14:08:34+08:00">
-                2018-12-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CSAPP/" itemprop="url" rel="index">
-                    <span itemprop="name">CSAPP</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/12/25/CSAPP-Chapter-2-Representing-and-Manipulating-Information/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/12/25/CSAPP-Chapter-2-Representing-and-Manipulating-Information/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>three most important encoding of numbers:</p>
-<ul>
-<li>unsigned integers</li>
-<li>signed integers</li>
-<li>float-point number</li>
-</ul>
-<p>we need to focus on:</p>
-<ul>
-<li>the ranges of values that can be represented<ul>
-<li>overflow</li>
-<li>roundoff</li>
-</ul>
-</li>
-<li>the properties of different arithmetic operations<ul>
-<li>integer arithmetic satisfy commutative and associative</li>
-<li>float-point arithmetic is commutative, but not associative</li>
-</ul>
-</li>
-</ul>
-<h2 id="Information-Storage"><a href="#Information-Storage" class="headerlink" title="Information Storage"></a>Information Storage</h2><p>virtual memory -&gt; larger bytes array -&gt; bytes -&gt; block of eight bits<br>virtual address space -&gt; each memory bytes has a unique number</p>
-<p>in C, pointer’s value is the virtual address of the object’s first bytes<br>compiler use the pointer’s type to generate machine code to access object’s value</p>
-<h3 id="Hexadecimal-Notation"><a href="#Hexadecimal-Notation" class="headerlink" title="Hexadecimal Notation"></a>Hexadecimal Notation</h3><p>binary, decimal and hexadecimal</p>
-<p>write bit pattern as base-16 or hexadecimal number</p>
-<h3 id="Words"><a href="#Words" class="headerlink" title="Words"></a>Words</h3><p>word size of a computer indicates the noraml size of integer and pointer data<br>virtual address is encoded by a word, the word size is the maximum size of the virtual address space<br>n word size -&gt; [0, 2^n] virtual address space</p>
-<h3 id="Data-Sizes"><a href="#Data-Sizes" class="headerlink" title="Data Sizes"></a>Data Sizes</h3><p>different data type may have different size depend on the machine and compiler</p>
-<h3 id="Addressing-and-Byte-Ordering"><a href="#Addressing-and-Byte-Ordering" class="headerlink" title="Addressing and Byte Ordering"></a>Addressing and Byte Ordering</h3><p>object that span multiple bytes, we must establish two conventions:</p>
-<ul>
-<li>what will be the address of the object: smallest address of the bytes used</li>
-<li>how will we order the bytes in memory: big endian and little endian</li>
-</ul>
-<p><img src="/images/CSAPP_2.1.png" alt="big endian vs little endian"></p>
-<p>when byte ordering becomes a issue:</p>
-<ul>
-<li>binary data is communicated over a network between different machines</li>
-<li>programs are written that circumvent the normal types system</li>
-</ul>
-<h3 id="Representing-String"><a href="#Representing-String" class="headerlink" title="Representing String"></a>Representing String</h3><p>in C, string is an array of characters terminated by the null character</p>
-<h3 id="Representing-Code"><a href="#Representing-Code" class="headerlink" title="Representing Code"></a>Representing Code</h3><p>different machine use different and incompatible instructions and encodings<br>binary code is seldom portable across different combinations of machine and operating sytem</p>
-<h3 id="Boolean-Algebras-and-Rings"><a href="#Boolean-Algebras-and-Rings" class="headerlink" title="Boolean Algebras and Rings"></a>Boolean Algebras and Rings</h3><p>boolean operations: ~ not, &amp; and, | or, ^ exclusive or<br>extend the boolean operations to also operate on bit vectors</p>
-<h3 id="Bit-Level-Operations-in-C"><a href="#Bit-Level-Operations-in-C" class="headerlink" title="Bit-Level Operations in C"></a>Bit-Level Operations in C</h3><p>C support bit-wise boolean operations, ~ &amp; | ^<br>can be applied to any “integral” data type</p>
-<h3 id="Logical-Operations-in-C"><a href="#Logical-Operations-in-C" class="headerlink" title="Logical Operations in C"></a>Logical Operations in C</h3><p>C provide a set of logical operators, &amp;&amp; || !</p>
-<h3 id="Shift-Operations-in-C"><a href="#Shift-Operations-in-C" class="headerlink" title="Shift Operations in C"></a>Shift Operations in C</h3><p>C provide a set of shift operations for shifting bit patterns, &lt;&lt; &gt;&gt;</p>
-<p>two forms of right shift:logical and arithmetic</p>
-<h2 id="Integer-Representations"><a href="#Integer-Representations" class="headerlink" title="Integer Representations"></a>Integer Representations</h2><p>unsigned for negative, zero and positive numbers<br>signed for nongative numbers</p>
-<h3 id="Integral-Data-Types"><a href="#Integral-Data-Types" class="headerlink" title="Integral Data Types"></a>Integral Data Types</h3><p>C support a variety of integral data types, with an indication of unsigned</p>
-<h3 id="Unsigned-and-Two’s-Complement-Encodings"><a href="#Unsigned-and-Two’s-Complement-Encodings" class="headerlink" title="Unsigned and Two’s Complement Encodings"></a>Unsigned and Two’s Complement Encodings</h3><p>use two’s complement form to represent signed numbers</p>
-<h3 id="Conversions-Between-Signed-and-Unsigned"><a href="#Conversions-Between-Signed-and-Unsigned" class="headerlink" title="Conversions Between Signed and Unsigned"></a>Conversions Between Signed and Unsigned</h3><p><img src="/images/CSAPP_2.11.png" alt="signed to unsigned"></p>
-<p><img src="/images/CSAPP_2.12.png" alt="unsigned to signed"></p>
-<h3 id="Signed-vs-Unsigned-in-C"><a href="#Signed-vs-Unsigned-in-C" class="headerlink" title="Signed vs Unsigned in C"></a>Signed vs Unsigned in C</h3><p>C support both signed(default) and unsigned arithmetic of integer data</p>
-<p>C allow conversion between unsigned and signed, explicit and implicit conversion</p>
-<h3 id="Expanding-the-Bit-Representation-of-a-Number"><a href="#Expanding-the-Bit-Representation-of-a-Number" class="headerlink" title="Expanding the Bit Representation of a Number"></a>Expanding the Bit Representation of a Number</h3><p>zero extension for unsigned number<br>sign extension for signed number</p>
-<h3 id="Truncating-Numbers"><a href="#Truncating-Numbers" class="headerlink" title="Truncating Numbers"></a>Truncating Numbers</h3><p>drop the high-order bits</p>
-<h3 id="Advice-on-Signed-vs-Unsigned"><a href="#Advice-on-Signed-vs-Unsigned" class="headerlink" title="Advice on Signed vs Unsigned"></a>Advice on Signed vs Unsigned</h3><p>conversion between signed and unsigned leads to some nointuitive behavior</p>
-<ul>
-<li>never use unsigned numbers</li>
-</ul>
-<h2 id="Integer-Arithmetic"><a href="#Integer-Arithmetic" class="headerlink" title="Integer Arithmetic"></a>Integer Arithmetic</h2><h3 id="Unsigned-Addition"><a href="#Unsigned-Addition" class="headerlink" title="Unsigned Addition"></a>Unsigned Addition</h3><p>may overflow, drop the higher order bit</p>
-<p><img src="/images/CSAPP_2.15.png" alt="overflow"></p>
-<h3 id="Signed-Addition"><a href="#Signed-Addition" class="headerlink" title="Signed Addition"></a>Signed Addition</h3><p>may negative or positive overflow, drop the higher order bit</p>
-<p><img src="/images/CSAPP_2.17.png" alt="overflow"></p>
-<h3 id="Signed-Negation"><a href="#Signed-Negation" class="headerlink" title="Signed Negation"></a>Signed Negation</h3><h3 id="Unsigned-Multiplication"><a href="#Unsigned-Multiplication" class="headerlink" title="Unsigned Multiplication"></a>Unsigned Multiplication</h3><p>may overflow, drop the higher order bit</p>
-<h3 id="Signed-Multiplication"><a href="#Signed-Multiplication" class="headerlink" title="Signed Multiplication"></a>Signed Multiplication</h3><p>may overflow, drop the higher order bit</p>
-<h3 id="Multiplying-by-Powers-of-Two"><a href="#Multiplying-by-Powers-of-Two" class="headerlink" title="Multiplying by Powers of Two"></a>Multiplying by Powers of Two</h3><p>use shift operation, shift to the left, drop the higher order bit</p>
-<h3 id="Dividing-by-Powers-of-Two"><a href="#Dividing-by-Powers-of-Two" class="headerlink" title="Dividing by Powers of Two"></a>Dividing by Powers of Two</h3><p>use shift operation, shift to the right</p>
-<h2 id="Floating-Point"><a href="#Floating-Point" class="headerlink" title="Floating Point"></a>Floating Point</h2><h3 id="Fractional-Binary-Numbers"><a href="#Fractional-Binary-Numbers" class="headerlink" title="Fractional Binary Numbers"></a>Fractional Binary Numbers</h3><p>positional notation, like decimal</p>
-<h3 id="IEEE-Floating-Point-Representation"><a href="#IEEE-Floating-Point-Representation" class="headerlink" title="IEEE Floating-Point Representation"></a>IEEE Floating-Point Representation</h3><p>V = (-1)^S × M × 2^E</p>
-<p>S: 符号位<br>M: 有效数字，大于<br>E: 指数位</p>
-<p><img src="/images/CSAPP_32_Floating_Point.png" alt="32_bit"></p>
-<p><img src="/images/CSAPP_64_Floating_Point.png" alt="64_bit"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/25/GDB-LLDB-Debugger/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/25/GDB-LLDB-Debugger/" itemprop="url">GDB/LLDB Debugger</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-25T09:51:56+08:00">
-                2018-12-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Debugger/" itemprop="url" rel="index">
-                    <span itemprop="name">Debugger</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/12/25/GDB-LLDB-Debugger/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/12/25/GDB-LLDB-Debugger/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Debugger"><a href="#Debugger" class="headerlink" title="Debugger"></a>Debugger</h2><p>a debugger is a program that simulates/runs another program and allows you to:</p>
-<ul>
-<li>pause and continue its execution</li>
-<li>set break points or conditions where the execution pauses so you can look at its state</li>
-<li>view and watch variable values</li>
-<li>step through the program line-by-line</li>
-</ul>
-<h2 id="Use-GDB"><a href="#Use-GDB" class="headerlink" title="Use GDB"></a>Use GDB</h2><p>gdb is a GNU Debugger</p>
-<ul>
-<li>compile</li>
-</ul>
-<p>to use gdb for debugging, you need use <code>-g</code> flag to compile<br><code>-g</code> flag preserves the identifiers and symbols</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -Wall -g main.c</span><br></pre></td></tr></table></figure>
-<ul>
-<li>start debugging</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gdb a.out</span><br><span class="line"><span class="meta">#</span> 增加程序的启动参数</span><br><span class="line">gdb --args a.out arg1 arg2</span><br></pre></td></tr></table></figure>
-<ul>
-<li>useful gdb commands<ul>
-<li>file: set executable file</li>
-<li>refresh: refresh the display</li>
-<li>set args PARAM: set args</li>
-<li>run: run your program</li>
-<li>backtrace full: see the crash stack</li>
-<li>layout next: see your source code</li>
-<li>list: list part of source code</li>
-<li>break POINT: set a break point, use file_name:line_number, function_names and etc</li>
-<li>condition: enter break point when condition is true</li>
-<li>delete POINT: delete a break point</li>
-<li>clear POINT: clear a break point</li>
-<li>next: go to next step</li>
-<li>continue: continue to next break point</li>
-<li>step: step inside the function</li>
-<li>print VARIABLE: print a variable’s value</li>
-<li>print *ARRAY@SIZE: print a array’s value</li>
-<li>watch VARIABLE: watch a variable for change</li>
-<li>quit: quit debugger</li>
-<li>help: show help of command</li>
-</ul>
-</li>
-</ul>
-<h2 id="Use-LLDB"><a href="#Use-LLDB" class="headerlink" title="Use LLDB"></a>Use LLDB</h2>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2129,7 +2215,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-count">76</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2140,7 +2226,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2151,7 +2237,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">123</span>
+                  <span class="site-state-item-count">132</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

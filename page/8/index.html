@@ -249,6 +249,586 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/14/Golang-资源池/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/14/Golang-资源池/" itemprop="url">Golang-资源池</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-14T11:44:48+08:00">
+                2018-11-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/14/Golang-资源池/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/11/14/Golang-资源池/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>可以使用一个有缓冲的channel来实现一个资源池，用于在goroutine之间共享资源，比如数据库连接池、网络连接池等。<br>资源池提供初始化、申请资源、放回资源和关闭的接口。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ErrPoolClosed 资源池已关闭的错误</span></span><br><span class="line"><span class="keyword">var</span> ErrPoolClosed = errors.New(<span class="string">"Pool has closed"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Pool 多协程下安全的资源池</span></span><br><span class="line"><span class="keyword">type</span> Pool <span class="keyword">struct</span> &#123;</span><br><span class="line">    m       sync.Mutex</span><br><span class="line">    res     <span class="keyword">chan</span> io.Closer            <span class="comment">//假设资源实现了Closer接口</span></span><br><span class="line">    factory <span class="function"><span class="keyword">func</span><span class="params">()</span> <span class="params">(io.Closer, error)</span> //新建资源的工厂方法</span></span><br><span class="line"><span class="function">    <span class="title">closed</span>  <span class="title">bool</span>                      //资源池是否被关闭</span></span><br><span class="line"><span class="function">&#125;</span></span><br><span class="line"><span class="function">// <span class="title">New</span> 初始化资源池</span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="title">New</span><span class="params">(fn <span class="keyword">func</span>()</span> <span class="params">(io.Closer, error)</span>, <span class="title">size</span> <span class="title">uint</span>) <span class="params">(*Pool, error)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> fn == <span class="literal">nil</span> || size &lt;= <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, errors.New(<span class="string">"fn should not be nil or size to small"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> &amp;Pool&#123;</span><br><span class="line">        factory: fn,</span><br><span class="line">        res: <span class="built_in">make</span>(<span class="keyword">chan</span> io.Closer, size)</span><br><span class="line">    &#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Close 关闭资源池</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Close</span><span class="params">(p *Pool)</span></span>&#123;</span><br><span class="line">    p.m.Lock()</span><br><span class="line">    <span class="keyword">defer</span> p.m.Unlock()</span><br><span class="line">    <span class="keyword">if</span> p.closed&#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    p.closed = <span class="literal">true</span></span><br><span class="line">    <span class="built_in">close</span>(p.res) <span class="comment">//关闭chan</span></span><br><span class="line">    <span class="keyword">for</span> r := <span class="keyword">range</span> p.res&#123; <span class="comment">//关闭后的chan仍然可读但不可写</span></span><br><span class="line">        r.Close()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Acquire 获取资源</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *Pool)</span><span class="title">Acquire</span><span class="params">()</span><span class="params">(io.Closer, error)</span></span>&#123;</span><br><span class="line">    <span class="keyword">select</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> r, ok := &lt;-p.res: <span class="comment">//首先从资源池中获取资源</span></span><br><span class="line">        <span class="keyword">if</span> !ok&#123; <span class="comment">//判断资源池是否已经关闭</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">nil</span>, ErrPoolClosed</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> r, <span class="literal">nil</span></span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="keyword">return</span> p.factory(), <span class="literal">nil</span> <span class="comment">//如果没有从资源池获取到，则新生成资源</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Release 释放资源</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *Pool)</span><span class="title">Release</span><span class="params">()</span></span>&#123;</span><br><span class="line">    p.m.Lock()</span><br><span class="line">    <span class="keyword">defer</span> p.m.Unlock()</span><br><span class="line">    <span class="keyword">if</span> p.closed&#123;</span><br><span class="line">        r.Close()</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">select</span>&#123;</span><br><span class="line">    <span class="keyword">case</span> p.res &lt;- r: <span class="comment">//尝试将资源放回池中</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        r.Close() <span class="comment">//如果池已满，则关闭资源</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Golang自带的<code>sync.Pool</code>对象提供了资源池的功能</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/14/Golang-runtime/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/14/Golang-runtime/" itemprop="url">Golang-runtime</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-14T09:57:07+08:00">
+                2018-11-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/14/Golang-runtime/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/11/14/Golang-runtime/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>runtime提供了goroutine的运行时环境。<br>下述的环境变量控制了runtime的行为，主要包括:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">GOGC</span><br><span class="line">  控制GC的频率，当自上次GC后HeapSize已经增长了GOGC%后触发GC</span><br><span class="line">  默认为100，即HeapSize增加一倍后触发GC；GOGC=off则关闭GC</span><br><span class="line">  可以通过runtime/debug.SetGCPercent函数在运行时修改GOGC值</span><br><span class="line">GODEBUG</span><br><span class="line">  控制runtime的debug输出，值为name1=value1,name2=value2的形式</span><br><span class="line">  支持的name如下</span><br><span class="line">    allocfreetrace: 设置1会记录每个对象的内存分配和释放的堆栈踪迹</span><br><span class="line">    cgocheck: 设置0会不再检查go指针在非go代码中的使用情况</span><br><span class="line">    efence: 设置1会导致内存分配器的模式变为对每个对象使用独立的页和地址且永不循环使用</span><br><span class="line">    gccheckmark: 设置为1会开启对GC标记的二次检查</span><br><span class="line">    gcpacetrace:</span><br><span class="line">    gcshrinkstackoff:</span><br><span class="line">    gcrescanstacks:</span><br><span class="line">    gcstoptheworld:</span><br><span class="line">    gctrace: 设置为1会在每次GC时向标准错误输出写入单行数据，包括GC内存的大小、暂停的时间长度等</span><br><span class="line">    memprofilerate: 修改runtime.MemProfileRate值</span><br><span class="line">    invalidptr:</span><br><span class="line">    sbrk:</span><br><span class="line">    scavenge:</span><br><span class="line">    scheddetail: 设置schedtrace为X并设置其为1，会导致调度器每隔X毫秒向标准错误输出写入详细的多行信息</span><br><span class="line">    schedtrace: 设置为X会导致goroutine调度器每隔X毫秒向标准错误输出写入单行数据，概述调度状态</span><br><span class="line">    tracebackancestors:</span><br><span class="line">GOMAXPROCS</span><br><span class="line">    设置同时运行goroutine的操作系统线程数</span><br><span class="line">GOTRACEBACK</span><br><span class="line">    控制当Go程序运行失败时的输出信息</span><br><span class="line">GOARCH、GOOS、GOPATH、GOROOT</span><br><span class="line">    影响Go程序的构建</span><br></pre></td></tr></table></figure>
+<p>runtime中的变量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MemProfileRate</span><br><span class="line">   控制内存profile记录的内存分配的采样频率，内存profile记录器平均每分配MemProfileRate字节进行一次分配采样</span><br></pre></td></tr></table></figure>
+<p>runtime中的函数</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">BlockProfile()</span><br><span class="line">    返回当前阻塞的goroutine的profile</span><br><span class="line">SetBlockProfileRate()</span><br><span class="line">    设置goroutine阻塞事件profile的采样评测，平均每阻塞多少纳秒，记录器就会采集一份样本</span><br><span class="line">SetCPUProfileRate()</span><br><span class="line">    设置CPU profile记录器的记录频率为每秒多少次</span><br><span class="line">Caller()</span><br><span class="line">    返回goroutine调用栈所执行的函数的文件和行号信息</span><br><span class="line">Callers()</span><br><span class="line">    把当前goroutine调用栈上的调用栈标识符填入切片中</span><br><span class="line">GC()</span><br><span class="line">    执行一次GC操作</span><br><span class="line">GOMAXPROCS(int)</span><br><span class="line">    设置GOMAXPROCS环境变量</span><br><span class="line">Goexit()</span><br><span class="line">    终止当前的goroutine</span><br><span class="line">GoroutineProfile()</span><br><span class="line">    返回当前激活的goroutine的堆栈profile</span><br><span class="line">Gosched()</span><br><span class="line">    使当前的goroutine放弃CPU，以让其它go程运行，它不会挂起当前goroutine，因此当前goroutine未来会恢复执行</span><br><span class="line">KeepAlive()</span><br><span class="line">    使得某个对象reachable，不会被回收，也就不会调用其finalizer</span><br><span class="line">LockOSThread()</span><br><span class="line">UnLockOSThread()</span><br><span class="line">    将调用的goroutine绑定到它当前所在的操作系统线程，除非调用的go程退出或调用UnlockOSThread，否则它将总是在该线程中执行，而其它go程则不能进入该线程</span><br><span class="line">MemProfile()</span><br><span class="line">    返回当前内存profile中的记录数</span><br><span class="line">MutexProfile()</span><br><span class="line">    返回当前系统所有goroutine的block profile</span><br><span class="line">SetMutexProfileFraction()</span><br><span class="line">    设置mutex记录器的统计的比例</span><br><span class="line">NumCPU()</span><br><span class="line">    返回本地机器的逻辑CPU数量</span><br><span class="line">NumCgoCall()</span><br><span class="line">    返回当前系统中cgo调用数量</span><br><span class="line">NumGoroutine()</span><br><span class="line">    返回系统中存在的goroutine数量</span><br><span class="line">ReadMemStats()</span><br><span class="line">    将内存申请的统计信息保存</span><br><span class="line">SetFinalizer()</span><br><span class="line">    设置对象的清理函数</span><br><span class="line">Stack()</span><br><span class="line">    返回当前goroutine的堆栈信息</span><br><span class="line">FuncForPC()</span><br><span class="line">    返回一个调用栈标识符pc对应的调用栈的*Func</span><br></pre></td></tr></table></figure>
+<p>runtime中的对象</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Func: 堆栈中的函数对象</span><br><span class="line">MemStats: 内存分配器的统计信息</span><br></pre></td></tr></table></figure>
+<p>从上述内容可以看出，runtime提供的主要功能包括goroutine的调度和内存GC。具体包括debug和pprof进行性能分析、各个记录器来抓取系统事件信息，如goroutine创建、mutex|block、内存分配、CPU使用等等、</p>
+<h2 id="goroutine的调度"><a href="#goroutine的调度" class="headerlink" title="goroutine的调度"></a>goroutine的调度</h2><ul>
+<li><p>并发与并行</p>
+<ul>
+<li>并行指的是在不同的物理处理器上同时执行不同的代码片段，并行可以同时做很多事情，而并发是同时管理很多事情</li>
+</ul>
+</li>
+<li><p>线程模型 - 线程与内核调度实体(内核线程)的关系</p>
+<ul>
+<li>1:1绑定 内核级线程(c++ std:thread)</li>
+<li>n:1绑定 用户级线程(python gevent)</li>
+<li>n:m动态绑定 混合级线程(golang goroutine)</li>
+</ul>
+</li>
+<li><p>为什么需要语言级别的调度</p>
+<ul>
+<li>OS的线程调度代价大</li>
+<li>GC需要stop the workd，因此需要对goroutine进行调度，使其在GC时停止</li>
+</ul>
+</li>
+<li><p>主要组成(G、P、M)</p>
+<ul>
+<li>每一个Go程序都自带一个runtime，负责与OS进行交互</li>
+<li>G: goroutine</li>
+<li>P: processor 逻辑处理器，可以看作是一个在单线程上运行的goroutine队列</li>
+<li>M: machine|thread 分别从全局P和本地P中获取goroutine来运行</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/goroutine调度之G、P、M.jpg" alt="image"></p>
+<ul>
+<li><p>调度细节</p>
+<ul>
+<li>全局P: 所有刚创建的goroutine放在这里</li>
+<li>本地P: 所有运行的goroutine</li>
+<li>当我们创建一个goroutine的后，会先存放在全局P中。等待Go运行时的调度器进行调度，把他们分配给其中的一个本地P</li>
+<li>处于本地P中的goroutine，依次排队等待最终等着CPU执行</li>
+<li>运行的goroutine因为系统调用而阻塞的时候，将这个goroutine放入到全局P中</li>
+<li>各个本地P在运行完自己的队列后，也可以从全局P中获取goroutine</li>
+</ul>
+</li>
+<li><p>goroutine的阻塞</p>
+<ul>
+<li>用户态的阻塞和唤醒<ul>
+<li>channel操作</li>
+<li>sync操作</li>
+</ul>
+</li>
+<li>系统调用阻塞<ul>
+<li>network IO <strong>实际上golang中，已经使用epoll将阻塞的network IO变为非阻塞</strong></li>
+<li>blocking syscall</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>goroutine的状态</p>
+<ul>
+<li>Grunnable</li>
+<li>Grunning</li>
+<li>Gwaiting</li>
+<li>Gsyscall</li>
+<li>Gdead</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Goroutine状态转换.jpg" alt="协程状态转换"></p>
+<ul>
+<li>特点<ul>
+<li>goroutine的动态栈</li>
+<li>抢占式调度，长时间对于运行状态的P会被其他的P抢占</li>
+<li>G与M之间时多对多的关系</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://www.ardanlabs.com/blog/2018/08/scheduling-in-go-part1.html" target="_blank" rel="noopener">协程调度</a></p>
+<h2 id="GC"><a href="#GC" class="headerlink" title="GC"></a>GC</h2><ul>
+<li>低延迟GC，代价是GC吞吐量的下降</li>
+<li>三色标记清除</li>
+</ul>
+<p><a href="https://making.pusher.com/golangs-real-time-gc-in-theory-and-practice/" target="_blank" rel="noopener">GoGC</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/13/Golang-goroutine泄露/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/13/Golang-goroutine泄露/" itemprop="url">Golang-goroutine泄露</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-13T16:59:31+08:00">
+                2018-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/13/Golang-goroutine泄露/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/11/13/Golang-goroutine泄露/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>本文参考<a href="https://medium.com/golangspec/goroutine-leak-400063aef468" target="_blank" rel="noopener">Goroutine leak</a></p>
+<h2 id="何为Goroutine泄露"><a href="#何为Goroutine泄露" class="headerlink" title="何为Goroutine泄露"></a>何为Goroutine泄露</h2><p>Go的并发是通过goroutine和channel实现的。由于goroutine的存在会消耗内存等资源，如果goroutine随着程序的运行不断的增长，最终会耗尽内存，导致程序崩溃。</p>
+<h2 id="产生泄露的情况"><a href="#产生泄露的情况" class="headerlink" title="产生泄露的情况"></a>产生泄露的情况</h2><ul>
+<li>向没有receiver的channel发送消息</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模拟查询请求</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">query</span><span class="params">()</span> <span class="title">int</span></span> &#123;  </span><br><span class="line">    n := rand.Intn(<span class="number">100</span>)  </span><br><span class="line">    time.Sleep(time.Duration(n) * time.Millisecond)  </span><br><span class="line">    <span class="keyword">return</span> n  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发起多个请求，然后获取最先得到的结果</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">queryAll</span><span class="params">()</span> <span class="title">int</span></span> &#123;  </span><br><span class="line">    ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)  </span><br><span class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; ch &lt;- query() &#125;()  </span><br><span class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; ch &lt;- query() &#125;()  </span><br><span class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; ch &lt;- query() &#125;()  </span><br><span class="line">    <span class="keyword">return</span> &lt;-ch  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;  </span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">4</span>; i++ &#123;  </span><br><span class="line">        queryAll()  </span><br><span class="line">        fmt.Printf(<span class="string">"#goroutines: %d\n"</span>, runtime.NumGoroutine())  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>goroutines: 3  </span><br><span class="line"><span class="meta">#</span>goroutines: 5  </span><br><span class="line"><span class="meta">#</span>goroutines: 7  </span><br><span class="line"><span class="meta">#</span>goroutines: 9</span><br></pre></td></tr></table></figure>
+<p>同时发起多个请求，然后获取最先得到结果的响应，此时较慢的goroutine将会出现向没有接收者的channel发送消息的情况</p>
+<p>可能的解决方法是，如果知道请求数量，则可以使用带缓冲的channel，否则可以在匿名方法中使用context的超时机制</p>
+<ul>
+<li>从没有sender的channel获取消息</li>
+</ul>
+<p>原理同第一种情况</p>
+<ul>
+<li>使用了值为nil的channel</li>
+</ul>
+<p>对值为nil的channel进行读写会永远阻塞</p>
+<ul>
+<li>程序陷入了循环</li>
+</ul>
+<p>goroutine陷入了死循环，导致永远不会结束</p>
+<h2 id="检查方法"><a href="#检查方法" class="headerlink" title="检查方法"></a>检查方法</h2><ul>
+<li><p>使用runtime.NumGoroutine()来观察</p>
+</li>
+<li><p>对于Web应用，使用net/http/pprof，通过/debug/pprof/goroutine?debug=1来观察</p>
+</li>
+<li><p>使用runtime/pprof将现有的goroutine的堆栈打印</p>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pprof.Lookup(<span class="string">"goroutine"</span>).WriteTo(os.Stdout, <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>使用<a href="github.com/google/gops">gops</a></p>
+</li>
+<li><p>使用<a href="https://github.com/fortytw2/leaktest" target="_blank" rel="noopener">leaktest</a></p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/12/Heap/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1038,7 +1618,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-count">76</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1049,7 +1629,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1060,7 +1640,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">123</span>
+                  <span class="site-state-item-count">132</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

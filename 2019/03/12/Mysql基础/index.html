@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="index,mysql,InnoDB,MyISAM,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="逻辑架构 客户端 服务器 存储引擎 InnoDB mysql默认事务型引擎 处理大量短期事务，应该优先考虑使用该引擎 支持行锁和表锁 支持事务和自动崩溃恢复 索引文件和数据文件相同，根据主键查询为聚簇索引，索引data域为具体行数据；根据其它字段查询为非聚簇索引，索引data域为主键值，再根据主键的索引找到具体行   MyISAM 支持表锁 不支持事务和自动崩溃恢复 索引文件和数据文件分离，索引">
+<meta name="keywords" content="index,mysql,InnoDB,MyISAM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql基础">
+<meta property="og:url" content="http://yoursite.com/2019/03/12/Mysql基础/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="逻辑架构 客户端 服务器 存储引擎 InnoDB mysql默认事务型引擎 处理大量短期事务，应该优先考虑使用该引擎 支持行锁和表锁 支持事务和自动崩溃恢复 索引文件和数据文件相同，根据主键查询为聚簇索引，索引data域为具体行数据；根据其它字段查询为非聚簇索引，索引data域为主键值，再根据主键的索引找到具体行   MyISAM 支持表锁 不支持事务和自动崩溃恢复 索引文件和数据文件分离，索引">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-12T03:35:10.652Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mysql基础">
+<meta name="twitter:description" content="逻辑架构 客户端 服务器 存储引擎 InnoDB mysql默认事务型引擎 处理大量短期事务，应该优先考虑使用该引擎 支持行锁和表锁 支持事务和自动崩溃恢复 索引文件和数据文件相同，根据主键查询为聚簇索引，索引data域为具体行数据；根据其它字段查询为非聚簇索引，索引data域为主键值，再根据主键的索引找到具体行   MyISAM 支持表锁 不支持事务和自动崩溃恢复 索引文件和数据文件分离，索引">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/12/Mysql基础/">
+
+
+
+
+
+  <title>Mysql基础 | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/12/Mysql基础/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Mysql基础</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-12T10:57:10+08:00">
+                2019-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mysql/" itemprop="url" rel="index">
+                    <span itemprop="name">Mysql</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/12/Mysql基础/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/12/Mysql基础/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <ul>
+<li>逻辑架构<ul>
+<li>客户端</li>
+<li>服务器</li>
+<li>存储引擎<ul>
+<li>InnoDB<ul>
+<li>mysql默认事务型引擎</li>
+<li>处理大量短期事务，应该优先考虑使用该引擎</li>
+<li>支持行锁和表锁</li>
+<li>支持事务和自动崩溃恢复</li>
+<li>索引文件和数据文件相同，根据主键查询为聚簇索引，索引data域为具体行数据；根据其它字段查询为非聚簇索引，索引data域为主键值，再根据主键的索引找到具体行</li>
+</ul>
+</li>
+<li>MyISAM<ul>
+<li>支持表锁</li>
+<li>不支持事务和自动崩溃恢复</li>
+<li>索引文件和数据文件分离，索引data域为行的地址，为非聚簇索引；主键索引与其它字段的索引格式一样，都是非聚簇索引</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>并发请求控制<ul>
+<li>读写锁</li>
+<li>表锁与行锁</li>
+</ul>
+</li>
+<li>事务<ul>
+<li>ACID特性</li>
+<li>隔离级别: 一个事务中所做的修改对于其他事务的可见性<ul>
+<li>READ UNCOMMITED: 未提交读 发生脏读的情况</li>
+<li>READ COMMITED: 提交读 发生不可重复读的情况</li>
+<li>REPEATABLE READ: 可重复读 解决了脏读的问题，还使用MVCC多版本控制来解决幻读的问题  <strong>mysql默认的隔离级别</strong></li>
+<li>SERIALIZABLE 可串行化 事务串行执行</li>
+</ul>
+</li>
+<li>死锁: 多个事务互相等待对方占用的锁</li>
+<li>使用事务日志来提高事务的执行效率，不直接改磁盘上的数据，而是记录事务日志，然后在后台慢慢将数据刷回到磁盘</li>
+<li>AUTOCOMMIT: 在InnoDB中，如果没有显式开始事务，则自动将每一个sql操作当做事务进行提交</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>隔离级别</th>
+<th>脏读（Dirty Read）</th>
+<th>不可重复读（NonRepeatable Read）</th>
+<th>幻读（Phantom Read）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>未提交读</td>
+<td>可能</td>
+<td>可能</td>
+<td>可能</td>
+</tr>
+<tr>
+<td>已提交读</td>
+<td>不可能</td>
+<td>可能</td>
+<td>可能</td>
+</tr>
+<tr>
+<td>可重复读</td>
+<td>不可能</td>
+<td>不可能</td>
+<td>可能</td>
+</tr>
+<tr>
+<td>可串行化</td>
+<td>不可能</td>
+<td>不可能</td>
+<td>不可能</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>多版本并发控制(MVCC): 保存数据在某个时间点的快照，使用乐观锁的方式<ul>
+<li>InnoDB在每行记录中添加额外的两个隐藏的列(创建时间和删除时间)来实现MVCC</li>
+</ul>
+</li>
+<li>索引<ul>
+<li>使用索引会降低增删改的速度，因为需要维护索引</li>
+<li>分类<ul>
+<li>主键索引 PRIMARY KEY</li>
+<li>唯一索引 UNIQUE</li>
+<li>普通索引 INDEX</li>
+<li>组合索引 INDEX</li>
+<li>全文索引 FULLTEXT</li>
+</ul>
+</li>
+<li>实现机制<ul>
+<li>B+树<ul>
+<li>磁盘IO次数为树的高度</li>
+<li>多个树节点占用磁盘一页的空间，可以利用磁盘缓存和访问局部性原理提高IO效率</li>
+</ul>
+</li>
+<li>哈希<ul>
+<li>每次只查询出一行，不支持范围查询</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>优化<ul>
+<li>使用explain命令定位性能瓶颈<ul>
+<li>是否为全表扫描</li>
+<li>用了哪些索引</li>
+</ul>
+</li>
+<li>索引的字段应尽量的小，减少单个索引占用的磁盘空间，从而可以增加磁盘上一页中的树节点数量，从而减少磁盘IO次数</li>
+<li>组合索引与最左前缀匹配原理<ul>
+<li>创建组合索引时，将使用最频繁的列放在左边</li>
+<li>使用组合索引查询时，where子句将使用最频繁的列放在最左边</li>
+</ul>
+</li>
+<li>使用区分度高的列作为索引</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>SQL语句执行顺序: <code>select -- from -- where -- group by -- having -- order by</code><ul>
+<li>from: 确定从哪些表中进行检索，多个表的执行顺序是从后往前，因此需要将数据量较少的表放到最后</li>
+<li>where: 确定表中数据的过滤条件，多个过滤条件的执行顺序是从后往前，因此可以过滤到最多数据的条件应放到最后 <strong>过滤条件对应的字段是表中所有的字段，过滤条件不能使聚合函数</strong></li>
+<li>group by: 确定过滤出的数据的数据分组</li>
+<li>having: 对已经分组的数据设置过滤条件 <strong>过滤条件对应的字段是表中被select查询出来的字段，过滤条件一般是聚合函数，一般配合分组进行使用</strong></li>
+<li>select: 获取符合条件的数据结果集</li>
+<li>order by: 对数据结果集进行排序，执行顺序为从前往后</li>
+</ul>
+</li>
+<li>大表优化<ul>
+<li>限制查询范围</li>
+<li>读写分离</li>
+<li>缓存</li>
+<li>垂直拆分: 根据表中内容的相关性拆分为几张表</li>
+<li>水平拆分: 按照某个字段进行分片</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/index/" rel="tag"># index</a>
+          
+            <a href="/tags/mysql/" rel="tag"># mysql</a>
+          
+            <a href="/tags/InnoDB/" rel="tag"># InnoDB</a>
+          
+            <a href="/tags/MyISAM/" rel="tag"># MyISAM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/09/Kubernetes使用入门/" rel="next" title="Kubernetes使用入门">
+                <i class="fa fa-chevron-left"></i> Kubernetes使用入门
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/12/Redis基础/" rel="prev" title="Redis基础">
+                Redis基础 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2019/03/12/Mysql基础/" data-title="Mysql基础" data-url="http://yoursite.com/2019/03/12/Mysql基础/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">76</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
