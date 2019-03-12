@@ -5,33 +5,18 @@ tags:
 
 - 数据结构
   - golang 数据结构实现
-  - skiplist
-  - 二叉树
-  - 平衡二叉树
-  - 二叉查找树
-  - 红黑树
-  - b/b+/b-树 —> 索引
-    - b tree of golang etcd from google
+  - b tree of golang etcd from google
   - LSM树
-  - 哈希 ->索引
   - bitset
 
 goleveldb
-
-- 有道云笔记迁移
 
 - db
   - groupcache
   - ledisdb
   - codis
 
-- mysql
-  - 索引
-  - 锁
-
-- redis
-
-- kafks
+- kafka
 
 - cloud native
   - etcd
