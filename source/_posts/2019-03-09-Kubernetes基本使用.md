@@ -1,5 +1,5 @@
 ---
-title: Kubernetes使用入门
+title: Kubernetes基本使用
 date: 2019-03-09 12:25:57
 categories: 
 - Docker/K8S
