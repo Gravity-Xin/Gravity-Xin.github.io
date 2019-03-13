@@ -1,7 +1,9 @@
 ---
 title: Kubernetes网络基础
 date: 2019-03-08 15:57:50
-tags:
+categories: 
+- Docker/K8S
+tags: 
 ---
 
 - 三种网络
