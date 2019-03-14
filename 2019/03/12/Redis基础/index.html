@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="高性能的KV缓存和数据库  支持数据持久化，数据可以保存在内存或磁盘中  AOF: 将所有的写操作命令以redis命令协议的方式保存到日志文件中；但是AOF文件往往比较大，且恢复数据较慢 RDB: 将内存快照写入到临时文件中，并可通过该文件进行恢复；但是由于是间隔一段时间进行持久化，有可能会发送数据的丢失   支持的值的类型包括string,list,hash,set和zset string:">
+<meta name="description" content="高性能的KV缓存和数据库  支持数据持久化，数据可以保存在内存或磁盘中  AOF: 将所有的写操作命令以redis命令协议的方式保存到日志文件中；但是AOF文件往往比较大，且恢复数据较慢 RDB: 将内存快照写入到临时文件中，并可通过该文件进行恢复；但是由于是间隔一段时间进行持久化，有可能会发生数据的丢失   支持的值的类型包括string,list,hash,set和zset string:">
 <meta name="keywords" content="redis,string,list,set,hash,zset">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis基础">
 <meta property="og:url" content="http://yoursite.com/2019/03/12/Redis基础/index.html">
 <meta property="og:site_name" content="Yihang&#39;s Blog">
-<meta property="og:description" content="高性能的KV缓存和数据库  支持数据持久化，数据可以保存在内存或磁盘中  AOF: 将所有的写操作命令以redis命令协议的方式保存到日志文件中；但是AOF文件往往比较大，且恢复数据较慢 RDB: 将内存快照写入到临时文件中，并可通过该文件进行恢复；但是由于是间隔一段时间进行持久化，有可能会发送数据的丢失   支持的值的类型包括string,list,hash,set和zset string:">
+<meta property="og:description" content="高性能的KV缓存和数据库  支持数据持久化，数据可以保存在内存或磁盘中  AOF: 将所有的写操作命令以redis命令协议的方式保存到日志文件中；但是AOF文件往往比较大，且恢复数据较慢 RDB: 将内存快照写入到临时文件中，并可通过该文件进行恢复；但是由于是间隔一段时间进行持久化，有可能会发生数据的丢失   支持的值的类型包括string,list,hash,set和zset string:">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-12T03:44:10.254Z">
+<meta property="og:updated_time" content="2019-03-14T01:52:12.591Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis基础">
-<meta name="twitter:description" content="高性能的KV缓存和数据库  支持数据持久化，数据可以保存在内存或磁盘中  AOF: 将所有的写操作命令以redis命令协议的方式保存到日志文件中；但是AOF文件往往比较大，且恢复数据较慢 RDB: 将内存快照写入到临时文件中，并可通过该文件进行恢复；但是由于是间隔一段时间进行持久化，有可能会发送数据的丢失   支持的值的类型包括string,list,hash,set和zset string:">
+<meta name="twitter:description" content="高性能的KV缓存和数据库  支持数据持久化，数据可以保存在内存或磁盘中  AOF: 将所有的写操作命令以redis命令协议的方式保存到日志文件中；但是AOF文件往往比较大，且恢复数据较慢 RDB: 将内存快照写入到临时文件中，并可通过该文件进行恢复；但是由于是间隔一段时间进行持久化，有可能会发生数据的丢失   支持的值的类型包括string,list,hash,set和zset string:">
 
 
 
@@ -358,7 +358,7 @@
 <li><p>支持数据持久化，数据可以保存在内存或磁盘中</p>
 <ul>
 <li>AOF: 将所有的写操作命令以redis命令协议的方式保存到日志文件中；但是AOF文件往往比较大，且恢复数据较慢</li>
-<li>RDB: 将内存快照写入到临时文件中，并可通过该文件进行恢复；但是由于是间隔一段时间进行持久化，有可能会发送数据的丢失</li>
+<li>RDB: 将内存快照写入到临时文件中，并可通过该文件进行恢复；但是由于是间隔一段时间进行持久化，有可能会发生数据的丢失</li>
 </ul>
 </li>
 <li>支持的值的类型包括<code>string</code>,<code>list</code>,<code>hash</code>,<code>set</code>和<code>zset</code><ul>

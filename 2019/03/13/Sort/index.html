@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="Sort,">
 
 
 
@@ -79,19 +79,26 @@
 
 
 
-<meta name="description" content="三种网络 节点网络: 所有Node组成的网络 集群网络: 所有Service组成的网络 Pod网络: 所有Pod组成的网络    三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络   三种通信  Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过localhost进行访问 Pod与Pod的容器之间 两个Pod如果位于同一个Node上，容器间可以利用docker">
+<meta name="description" content="算法概述可以分为两大类  比较类: 通过比较来决定元素间的相对次序，时间复杂度不能突破O(nlogn)，也称为非线性时间排序 交换 冒泡排序 快速排序   插入 插入排序 希尔排序   选择 选择排序 堆排序   归并 二路归并排序 多路归并排序     非比较类: 不通过比较来决定元素间的相对次数，时间复杂度可以突破O(nlogn)，以线性时间运行，也称为线性时间排序 计数排序 桶排序 基数排序">
+<meta name="keywords" content="Sort">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Kubernetes网络基础">
-<meta property="og:url" content="http://yoursite.com/2019/03/08/Kubernetes网络基础/index.html">
+<meta property="og:title" content="Sort">
+<meta property="og:url" content="http://yoursite.com/2019/03/13/Sort/index.html">
 <meta property="og:site_name" content="Yihang&#39;s Blog">
-<meta property="og:description" content="三种网络 节点网络: 所有Node组成的网络 集群网络: 所有Service组成的网络 Pod网络: 所有Pod组成的网络    三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络   三种通信  Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过localhost进行访问 Pod与Pod的容器之间 两个Pod如果位于同一个Node上，容器间可以利用docker">
+<meta property="og:description" content="算法概述可以分为两大类  比较类: 通过比较来决定元素间的相对次序，时间复杂度不能突破O(nlogn)，也称为非线性时间排序 交换 冒泡排序 快速排序   插入 插入排序 希尔排序   选择 选择排序 堆排序   归并 二路归并排序 多路归并排序     非比较类: 不通过比较来决定元素间的相对次数，时间复杂度可以突破O(nlogn)，以线性时间运行，也称为线性时间排序 计数排序 桶排序 基数排序">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/Kubernetes之三种网络.png">
-<meta property="og:updated_time" content="2019-03-14T01:44:56.233Z">
+<meta property="og:image" content="http://yoursite.com/images/排序之冒泡排序.gif">
+<meta property="og:image" content="http://yoursite.com/images/排序之快速排序.gif">
+<meta property="og:image" content="http://yoursite.com/images/排序之插入排序.gif">
+<meta property="og:image" content="http://yoursite.com/images/排序之希尔排序.gif">
+<meta property="og:image" content="http://yoursite.com/images/排序之选择排序.gif">
+<meta property="og:image" content="http://yoursite.com/images/排序之堆排序.gif">
+<meta property="og:image" content="http://yoursite.com/images/排序之归并排序.gif">
+<meta property="og:updated_time" content="2019-03-14T03:47:28.944Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kubernetes网络基础">
-<meta name="twitter:description" content="三种网络 节点网络: 所有Node组成的网络 集群网络: 所有Service组成的网络 Pod网络: 所有Pod组成的网络    三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络   三种通信  Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过localhost进行访问 Pod与Pod的容器之间 两个Pod如果位于同一个Node上，容器间可以利用docker">
-<meta name="twitter:image" content="http://yoursite.com/images/Kubernetes之三种网络.png">
+<meta name="twitter:title" content="Sort">
+<meta name="twitter:description" content="算法概述可以分为两大类  比较类: 通过比较来决定元素间的相对次序，时间复杂度不能突破O(nlogn)，也称为非线性时间排序 交换 冒泡排序 快速排序   插入 插入排序 希尔排序   选择 选择排序 堆排序   归并 二路归并排序 多路归并排序     非比较类: 不通过比较来决定元素间的相对次数，时间复杂度可以突破O(nlogn)，以线性时间运行，也称为线性时间排序 计数排序 桶排序 基数排序">
+<meta name="twitter:image" content="http://yoursite.com/images/排序之冒泡排序.gif">
 
 
 
@@ -121,13 +128,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/03/08/Kubernetes网络基础/">
+  <link rel="canonical" href="http://yoursite.com/2019/03/13/Sort/">
 
 
 
 
 
-  <title>Kubernetes网络基础 | Yihang's Blog</title>
+  <title>Sort | Yihang's Blog</title>
   
 
 
@@ -254,7 +261,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/08/Kubernetes网络基础/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/13/Sort/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Yihang">
@@ -271,7 +278,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Kubernetes网络基础</h1>
+          <h1 class="post-title" itemprop="name headline">Sort</h1>
         
 
         <div class="post-meta">
@@ -283,8 +290,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-08T15:57:50+08:00">
-                2019-03-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-13T10:00:20+08:00">
+                2019-03-13
               </time>
             
 
@@ -306,8 +313,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Docker-K8S/" itemprop="url" rel="index">
-                    <span itemprop="name">Docker/K8S</span>
+                  <a href="/categories/Algo-DS/" itemprop="url" rel="index">
+                    <span itemprop="name">Algo/DS</span>
                   </a>
                 </span>
 
@@ -324,8 +331,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/03/08/Kubernetes网络基础/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/08/Kubernetes网络基础/" itemprop="commentCount"></span>
+                <a href="/2019/03/13/Sort/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/13/Sort/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -353,33 +360,203 @@
       
 
       
-        <ul>
-<li>三种网络<ul>
-<li>节点网络: 所有Node组成的网络</li>
-<li>集群网络: 所有Service组成的网络</li>
-<li>Pod网络: 所有Pod组成的网络</li>
+        <h2 id="算法概述"><a href="#算法概述" class="headerlink" title="算法概述"></a>算法概述</h2><p>可以分为两大类</p>
+<ul>
+<li>比较类: 通过比较来决定元素间的相对次序，时间复杂度不能突破O(nlogn)，也称为非线性时间排序<ul>
+<li>交换<ul>
+<li>冒泡排序</li>
+<li>快速排序</li>
+</ul>
+</li>
+<li>插入<ul>
+<li>插入排序</li>
+<li>希尔排序</li>
+</ul>
+</li>
+<li>选择<ul>
+<li>选择排序</li>
+<li>堆排序</li>
+</ul>
+</li>
+<li>归并<ul>
+<li>二路归并排序</li>
+<li>多路归并排序</li>
 </ul>
 </li>
 </ul>
-<p>三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络</p>
-<p><img src="/images/Kubernetes之三种网络.png" alt="img"></p>
-<ul>
-<li><p>三种通信</p>
-<ul>
-<li>Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过<code>localhost</code>进行访问</li>
-<li>Pod与Pod的容器之间<ul>
-<li>两个Pod如果位于同一个Node上，容器间可以利用<code>docker0</code>网桥相连接进行通信</li>
-<li>两个Pod如果在不同Node上，此时容器分别被<code>docker0</code>网桥隐藏，无法直接连接，此时需要<code>Flannel</code>来接管Pod的IP分配，以<code>Overlay Network</code>叠加式网络的方式进行连接</li>
+</li>
+<li>非比较类: 不通过比较来决定元素间的相对次数，时间复杂度可以突破O(nlogn)，以线性时间运行，也称为线性时间排序<ul>
+<li>计数排序</li>
+<li>桶排序</li>
+<li>基数排序</li>
 </ul>
 </li>
-<li>Pod与Service之间，由于Service在K8S集群中有独立的IP地址和DNS名称，可以通过其与Service直接进行通信</li>
+</ul>
+<p>时间复杂度</p>
+<table>
+<thead>
+<tr>
+<th>排序方法</th>
+<th>平均时间复杂度</th>
+<th>最坏时间复杂度</th>
+<th>最好时间复杂度</th>
+<th>空间复杂度</th>
+<th>稳定性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>冒泡排序</td>
+<td>O(n^2)</td>
+<td>O(n^2)</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>快速排序</td>
+<td>O(nlogn)</td>
+<td>O(n^2)</td>
+<td>O(nlogn)</td>
+<td>O(nlogn)</td>
+<td>不稳定</td>
+</tr>
+<tr>
+<td>插入排序</td>
+<td>O(n^2)</td>
+<td>O(n^2)</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>希尔排序</td>
+<td>O(n^1.3)</td>
+<td>O(n^2)</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td>不稳定</td>
+</tr>
+<tr>
+<td>选择排序</td>
+<td>O(n^2)</td>
+<td>O(n^2)</td>
+<td>O(n^2)</td>
+<td>O(1)</td>
+<td>不稳定</td>
+</tr>
+<tr>
+<td>堆排序</td>
+<td>O(nlogn)</td>
+<td>O(nlogn)</td>
+<td>O(nlogn)</td>
+<td>O(1)</td>
+<td>不稳定</td>
+</tr>
+<tr>
+<td>归并排序</td>
+<td>O(nlogn)</td>
+<td>O(nlogn)</td>
+<td>O(nlogn)</td>
+<td>O(n)</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>计数排序</td>
+<td>O(n+k)</td>
+<td>O(n+k)</td>
+<td>O(n+k)</td>
+<td>O(n+k)</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>桶排序</td>
+<td>O(n+k)</td>
+<td>O(n^2)</td>
+<td>O(n)</td>
+<td>O(n+k)</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>基数排序</td>
+<td>O(n*k)</td>
+<td>O(n*k)</td>
+<td>O(n*k)</td>
+<td>O(n+k)</td>
+<td>稳定</td>
+</tr>
+</tbody>
+</table>
+<h2 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h2><p>n: 待排序的序列长度</p>
+<ul>
+<li>冒泡排序(Bubble Sort)<ul>
+<li>遍历一遍序列，依次比较相邻的两个元素，如果它们次序错误则将其进行交换，这样末尾的元素为最大</li>
+<li>除了最后一个元素之外，重复进行上述步骤</li>
+<li>当一次遍历中未发生交换操作或者遍历了n次后，整个序列有序</li>
 </ul>
 </li>
-<li><p>网络配置和网络策略</p>
-<ul>
-<li>网络配置: Pod和Service的IP分配</li>
-<li>网络策略: Pod之间是否可以互相访问</li>
 </ul>
+<p><img src="/images/排序之冒泡排序.gif" alt="img"></p>
+<ul>
+<li>快速排序(Quick Sort): <code>递归分治法的思想</code><ul>
+<li>选择序列中的第一个元素作为基准</li>
+<li>进行分区操作，即遍历一遍序列，将所有元素小于该基准的放在基准前面，大于该基准的放在基准后面，此时该基准元素位于序列中正确的排序位置</li>
+<li>分别对基准元素前面和后面的子序列进行同样的操作，直到整个序列有序</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之快速排序.gif" alt="img"></p>
+<ul>
+<li>插入排序(Insertion Sort)<ul>
+<li>将序列上的第一个元素看做已经有序</li>
+<li>取出序列中的第二个元素作为待加入元素，在已有序的子序列中从后向前遍历</li>
+<li>如果子序列中的元素较大，则将其向后移位，直到待加入元素已经插入到正确位置，形成一个有序的子序列</li>
+<li>重复上述操作，直到整个序列有序</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之插入排序.gif" alt="img"></p>
+<ul>
+<li>希尔排序(Shell Sort): <code>对插入排序的改进，通过设置不同的增量依次进行插入排序，也叫缩小增量排序</code><ul>
+<li>选择一个增量序列t1,t2,……,tk，其中ti&gt;ti+1, tk=1</li>
+<li>对于每一个增量ti，将序列分割为ti个子序列，对各个子序列分别进行插入排序</li>
+<li>当增量为1时，其实是将整个序列作为一个子序列进行插入排序</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之希尔排序.gif" alt="img"></p>
+<ul>
+<li>选择排序(Selection Sort)<ul>
+<li>遍历一次序列，从中选择最小的元素，然后将其和序列中第一个元素进行交换</li>
+<li>此时序列中第一个元素有序，然后对剩下的元素再次进行上述操作，直到整个序列有序</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之选择排序.gif" alt="img"></p>
+<ul>
+<li>堆排序(Heap Sort): <code>依赖堆数据结构</code> <a href="https://gravity-xin.github.io/2018/11/12/Heap/" target="_blank" rel="noopener">Heap</a><ul>
+<li>构造堆</li>
+<li>从堆中Pop堆顶元素，然后调整生成新的堆</li>
+<li>重复上述操作，直到排序完成</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之堆排序.gif" alt="img"></p>
+<ul>
+<li>归并排序(Merge Sort): <code>递归分治法的思想，分为拆分子序列和合并子序列两个过程</code><ul>
+<li>将序列拆分为长度为n/2的子序列</li>
+<li>对每个子序列继续进行拆分，直到无法拆分为止</li>
+<li>对两个子序列进行合并，得到最终有序的序列</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之归并排序.gif" alt="img"></p>
+<ul>
+<li><p>计数排序(Counting Sort)</p>
+</li>
+<li><p>桶排序(Bucket Sort)</p>
+</li>
+<li><p>基数排序(Radix Sort)</p>
 </li>
 </ul>
 
@@ -397,6 +574,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/Sort/" rel="tag"># Sort</a>
+          
+        </div>
+      
 
       
       
@@ -406,8 +589,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/03/07/Docker容器的资源管理/" rel="next" title="Docker容器的资源管理">
-                <i class="fa fa-chevron-left"></i> Docker容器的资源管理
+              <a href="/2019/03/12/Mysql常用SQL/" rel="next" title="Mysql常用SQL">
+                <i class="fa fa-chevron-left"></i> Mysql常用SQL
               </a>
             
           </div>
@@ -415,10 +598,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/03/09/Kubernetes基本使用/" rel="prev" title="Kubernetes基本使用">
-                Kubernetes基本使用 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -449,7 +628,7 @@
 
   
     <div class="comments" id="comments">
-      <div class="ds-thread" data-thread-key="2019/03/08/Kubernetes网络基础/" data-title="Kubernetes网络基础" data-url="http://yoursite.com/2019/03/08/Kubernetes网络基础/">
+      <div class="ds-thread" data-thread-key="2019/03/13/Sort/" data-title="Sort" data-url="http://yoursite.com/2019/03/13/Sort/">
       </div>
     </div>
 
@@ -476,8 +655,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -537,6 +725,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#算法概述"><span class="nav-number">1.</span> <span class="nav-text">算法概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法原理"><span class="nav-number">2.</span> <span class="nav-text">算法原理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

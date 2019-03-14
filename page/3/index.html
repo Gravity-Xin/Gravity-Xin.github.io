@@ -249,6 +249,167 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/12/Elasticsearch-Filter查询/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/12/Elasticsearch-Filter查询/" itemprop="url">Elasticsearch-Filter查询</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-12T16:06:06+08:00">
+                2019-02-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index">
+                    <span itemprop="name">Elasticsearch</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/12/Elasticsearch-Filter查询/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/12/Elasticsearch-Filter查询/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>与Query查询不同的是，Filter查询不计算文档与查询条件之间的相关性(score值)，同时可以进行查询结果的缓存，因此Filter查询的速度比Query快</p>
+<ul>
+<li>简单的过滤查询</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"post_filter": &#123;"term": &#123;"name": "zhaoming"&#125;&#125;&#125;  // 也可以用terms、match、range、exists等其他查询方式</span><br></pre></td></tr></table></figure>
+<ul>
+<li>bool过滤查询</li>
+</ul>
+<p>通过<code>must</code>, <code>should</code>和<code>must_not</code>可以实现多个过滤条件的组合</p>
+<p>must: 类似于SQL中的<code>AND</code><br>should: 类似于SQL中的<code>OR</code><br>must_not: 类似于SQL中的<code>NOT</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"bool":&#123;"filter":[&#123;"term":&#123;"name":"zhaoming"&#125;&#125;]&#125;&#125;&#125;  // 普通的过滤查询</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"bool":&#123;"must":[&#123;"term":&#123;"name":"zhaoming"&#125;&#125;],"must_not":[&#123;"term":&#123;"age":20&#125;&#125;]&#125;&#125;&#125;  // 名称必须为zhaoming且年龄不是20的文档</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"bool":&#123;"should":[&#123;"term":&#123;"name":"zhaoming"&#125;&#125;,&#123;"term":&#123;"name":"lisi"&#125;&#125;]&#125;&#125;&#125;  // 名称为zhaoming或lisi的文档</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/12/Elasticsearch-Query查询/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1929,241 +2090,6 @@
 </ul>
 <p>empty slice和nil slice</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">emptyNums := []<span class="keyword">int</span>&#123;&#125; <span class="comment">// 切片中的array指向一个空的数组</span></span><br><span class="line"><span class="keyword">var</span> nilNums []<span class="keyword">int</span> <span class="comment">// 切片中的array为nil，不指向任何数组</span></span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/22/Golang-corba/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/22/Golang-corba/" itemprop="url">Golang-corba</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-22T11:18:51+08:00">
-                2019-01-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Golang/" itemprop="url" rel="index">
-                    <span itemprop="name">Golang</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/01/22/Golang-corba/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/22/Golang-corba/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>使用corba库可以方便的编写cli程序，其中Docker和Kubernetes的客户端程序便是基于corba库进行开发的。</p>
-<p>corba库的特点:</p>
-<ul>
-<li>支持子命令，如<code>app fetch</code>, <code>app push</code>等</li>
-<li>兼容Posix标准的命令行模式</li>
-<li>支持子命令的嵌套</li>
-<li>支持全局、局部和串联的<code>Flag</code></li>
-<li>使用<code>corba create appname</code>和<code>corba add cmdname</code>可以方便的创建应用程序和增加命令</li>
-<li>命令输入错误时的智能提示</li>
-<li>自动生成命令和Flag的帮助信息</li>
-<li>默认支持<code>-h</code>和<code>--help</code>，输出帮助信息</li>
-<li>Bash下命令的自动补全</li>
-<li>自动生成应用的man手册信息</li>
-<li>支持命令别名</li>
-<li>支持自定义<code>Help</code>、<code>Usage</code>等信息</li>
-</ul>
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
-<li><code>Command</code>: 命令，代表执行的动作</li>
-<li><code>Arg</code>: 命令对象，代表动作对应的对象</li>
-<li><code>Flag</code>: 命令参数</li>
-</ul>
-<p>因此，cli程序的使用方式为<code>AppName Command Arg --Flag</code>，其中<code>Command</code>还有可能包含子命令</p>
-<h2 id="项目初始化"><a href="#项目初始化" class="headerlink" title="项目初始化"></a>项目初始化</h2><ul>
-<li>安装:<code>go get -u github.com/spf13/cobra/cobra</code></li>
-<li><p>导入: <code>import &quot;github.com/spf13/cobra&quot;</code></p>
-</li>
-<li><p>项目结构:</p>
-</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">appName/</span><br><span class="line">    cmd/</span><br><span class="line">        cmd1.<span class="keyword">go</span></span><br><span class="line">        cmd2.<span class="keyword">go</span></span><br><span class="line">    main.<span class="keyword">go</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>main.go: 初始化corba</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">"appName/cmd"</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    cmd.Execute()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="使用corba命令自动生成代码"><a href="#使用corba命令自动生成代码" class="headerlink" title="使用corba命令自动生成代码"></a>使用corba命令自动生成代码</h3><ul>
-<li><p>执行<code>corba init toolchain</code>: 在{GOPATH}/src/toolchain下生成应用代码</p>
-</li>
-<li><p>在{GOPATH}/src/toolchain下执行<code>corba add scenario</code>: 为应用程序增加命令scenario</p>
-</li>
-<li><p>在{GOPATH}/src/toolchain下执行<code>corba add create -p scenarioCmd</code>: 为scenario增加子命令create</p>
-</li>
-</ul>
-<h3 id="手动编写代码"><a href="#手动编写代码" class="headerlink" title="手动编写代码"></a>手动编写代码</h3><ul>
-<li><p>在{GOPATH}/src/toolchain下手动创建main.go文件，进行corba的初始化</p>
-</li>
-<li><p>在{GOPATH}/src/toolchain/cmd手动创建各个命令文件，对命令进行定义</p>
-</li>
-</ul>
-<h2 id="Command对象"><a href="#Command对象" class="headerlink" title="Command对象"></a>Command对象</h2><p>命令对象是cli应用的核心，命令可能还会包括子命令</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Command <span class="keyword">struct</span> &#123;</span><br><span class="line">    Use <span class="keyword">string</span> <span class="comment">// 命令的名称</span></span><br><span class="line"></span><br><span class="line">    Aliases []<span class="keyword">string</span> <span class="comment">// 命令的别名列表</span></span><br><span class="line"></span><br><span class="line">    SuggestFor []<span class="keyword">string</span> <span class="comment">// 该命令可以被提议使用的名称列表</span></span><br><span class="line"></span><br><span class="line">    Short <span class="keyword">string</span> <span class="comment">// 命令的简短描述，在help信息中展示</span></span><br><span class="line"></span><br><span class="line">    Long <span class="keyword">string</span> <span class="comment">// 命令的详细描述，在'help &lt;this-command&gt;'中展示</span></span><br><span class="line"></span><br><span class="line">    Example <span class="keyword">string</span> <span class="comment">// 命令的使用例子</span></span><br><span class="line"></span><br><span class="line">    ValidArgs []<span class="keyword">string</span> <span class="comment">// 在Bash自动补全中的所有合法的Arg列表</span></span><br><span class="line"></span><br><span class="line">    Args PositionalArgs <span class="comment">// Arg参数校验规则函数</span></span><br><span class="line"></span><br><span class="line">    ArgAliases []<span class="keyword">string</span> <span class="comment">// Arg参数别名列表</span></span><br><span class="line"></span><br><span class="line">    BashCompletionFunction <span class="keyword">string</span> <span class="comment">// Bash自动补全时的字符串</span></span><br><span class="line"></span><br><span class="line">    Deprecated <span class="keyword">string</span> <span class="comment">// 使用已被弃用的命令时输出的字符串</span></span><br><span class="line"></span><br><span class="line">    Hidden <span class="keyword">bool</span> <span class="comment">// 命令是否隐藏，如果隐藏则不会输出给用户</span></span><br><span class="line"></span><br><span class="line">    Annotations <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span> <span class="comment">// 命令关联的KV对，用于标识命令或对命令进行分组</span></span><br><span class="line"></span><br><span class="line">    Version <span class="keyword">string</span> <span class="comment">// 命令的版本</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// *Run系列函数的执行顺序如下:</span></span><br><span class="line">    <span class="comment">//   * PersistentPreRun() 当前命令的子命令可以实现和运行</span></span><br><span class="line">    <span class="comment">//   * PreRun() 当前命令的子命令无法实现和运行</span></span><br><span class="line">    <span class="comment">//   * Run()</span></span><br><span class="line">    <span class="comment">//   * PostRun() 当前命令的子命令无法实现和运行</span></span><br><span class="line">    <span class="comment">//   * PersistentPostRun() 当前命令的子命令可以实现和运行</span></span><br><span class="line">    <span class="comment">// 所有函数的输入参数相同的Arg参数</span></span><br><span class="line">    PersistentPreRun <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line"><span class="function">    <span class="title">PersistentPreRunE</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line"><span class="function">    <span class="title">PreRun</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line"><span class="function">    <span class="title">PreRunE</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line"><span class="function">    <span class="title">Run</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> // 命令的具体实现逻辑，大部分的命令只需要实现该参数</span></span><br><span class="line"><span class="function">    <span class="title">RunE</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line"><span class="function">    <span class="title">PostRun</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line"><span class="function">    <span class="title">PostRunE</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line"><span class="function">    <span class="title">PersistentPostRun</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line"><span class="function">    <span class="title">PersistentPostRunE</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
-<h2 id="Flag的使用"><a href="#Flag的使用" class="headerlink" title="Flag的使用"></a>Flag的使用</h2><ul>
-<li>Persistent Flag: 全局Flag，对当前命令及其子命令皆可用</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rootCmd.PersistentFlags().BoolVarP(&amp;Verbose, <span class="string">"verbose"</span>, <span class="string">"v"</span>, <span class="literal">false</span>, <span class="string">"verbose output"</span>)</span><br></pre></td></tr></table></figure>
-<ul>
-<li>Local Flag: 局部Flag，只对当前命令可用</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rootCmd.Flags().StringVarP(&amp;Source, <span class="string">"source"</span>, <span class="string">"s"</span>, <span class="string">""</span>, <span class="string">"Source directory to read from"</span>)</span><br></pre></td></tr></table></figure>
-<ul>
-<li>Flag与Config绑定:</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rootCmd.PersistentFlags().StringVar(&amp;author, <span class="string">"author"</span>, <span class="string">"YOUR NAME"</span>, <span class="string">"Author name for copyright attribution"</span>)</span><br><span class="line">viper.BindPFlag(<span class="string">"author"</span>, RootCmd.PersistentFlags().Lookup(<span class="string">"author"</span>))</span><br></pre></td></tr></table></figure>
-<ul>
-<li>必填的Flag</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rootCmd.Flags().StringVarP(&amp;Region, <span class="string">"region"</span>, <span class="string">"r"</span>, <span class="string">""</span>, <span class="string">"AWS region (required)"</span>)</span><br><span class="line">rootCmd.MarkFlagRequired(<span class="string">"region"</span>)</span><br></pre></td></tr></table></figure>
-<h2 id="Args的校验"><a href="#Args的校验" class="headerlink" title="Args的校验"></a>Args的校验</h2><ul>
-<li>内置校验规则</li>
-</ul>
-<p>NoArgs: 如果包含任何Arg，命令报错<br>ArbitraryArgs: 命令接受任何Arg<br>OnlyValidArgs: 如果有Arg不在ValidArgs中，命令报错<br>MinimumArgs(init): 如果Arg数目少于N个后，命令报错<br>MaximumArgs(init): 如果Arg数目多余N个后，命令报错<br>ExactArgs(init): 如果Arg数目不是N个话，命令报错<br>RangeArgs(min, max): 如果Arg数目不在范围(min, max)中，命令报错</p>
-<ul>
-<li>自定义校验规则</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cmd = &amp;cobra.Command&#123;</span><br><span class="line">    Short: <span class="string">"hello"</span>,</span><br><span class="line">    Args: <span class="function"><span class="keyword">func</span><span class="params">(cmd *cobra.Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(args) &lt; <span class="number">1</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> errors.New(<span class="string">"requires at least one arg"</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> myapp.IsValidColor(args[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> fmt.Errorf(<span class="string">"invalid color specified: %s"</span>, args[<span class="number">0</span>])</span><br><span class="line">    &#125;,</span><br><span class="line">    Run: <span class="function"><span class="keyword">func</span><span class="params">(cmd *cobra.Command, args []<span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"Hello, World!"</span>)</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="自定义Help和Usage"><a href="#自定义Help和Usage" class="headerlink" title="自定义Help和Usage"></a>自定义Help和Usage</h2><ul>
-<li>Help</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cmd.SetHelpCommand(cmd *Command)</span><br><span class="line">cmd.SetHelpFunc(f <span class="function"><span class="keyword">func</span><span class="params">(*Command, []<span class="keyword">string</span>)</span>)</span></span><br><span class="line"><span class="function"><span class="title">cmd</span>.<span class="title">SetHelpTemplate</span><span class="params">(s <span class="keyword">string</span>)</span></span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>Usage</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cmd.SetUsageFunc(f <span class="function"><span class="keyword">func</span><span class="params">(*Command)</span> <span class="title">error</span>)</span></span><br><span class="line"><span class="function"><span class="title">cmd</span>.<span class="title">SetUsageTemplate</span><span class="params">(s <span class="keyword">string</span>)</span></span></span><br></pre></td></tr></table></figure>
-<h2 id="生成帮助文档"><a href="#生成帮助文档" class="headerlink" title="生成帮助文档"></a>生成帮助文档</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"log"</span></span><br><span class="line"></span><br><span class="line">    <span class="string">"github.com/spf13/cobra"</span></span><br><span class="line">    <span class="string">"github.com/spf13/cobra/doc"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cmd := &amp;cobra.Command&#123;</span><br><span class="line">        Use:   <span class="string">"test"</span>,</span><br><span class="line">        Short: <span class="string">"my test program"</span>,</span><br><span class="line">    &#125;</span><br><span class="line">    err := doc.GenMarkdownTree(cmd, <span class="string">"/tmp"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Fatal(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><a href="https://github.com/spf13/cobra" target="_blank" rel="noopener">corba</a></p>
 
           
         
