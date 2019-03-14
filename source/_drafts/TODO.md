@@ -81,3 +81,7 @@ linux网络基础，多台主机上容器的通信方式
 mount命令查看挂载情况
 
 僵尸进程和孤儿进程 https://www.jb51.net/article/115940.htm
+
+linux源码阅读 https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/fs/eventpoll.c?h=linux-5.0.y
+
+cs io多路复用接口使用与分析 
