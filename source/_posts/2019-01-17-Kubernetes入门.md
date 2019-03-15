@@ -43,7 +43,7 @@ Master-Slave(Node)结构
   - 主要组件包括:
     - `API Server`: 用户API入口
       - 将K8S API以`JSON over HTTP`的形式暴露给用户
-      - 用户可以通过`kubectl`发起请求，对集群中的Pod在Node上进行调度
+      - 用户可以通过kubectl发起请求，对集群中的Pod在Node上进行调度
       - 请求处理的结果最终保存到ETCD中
     - `Controller Manager`: 控制器管理器
       - 管理多个Pod控制器，一般一个Pod需要一个Pod控制器
@@ -56,7 +56,7 @@ Master-Slave(Node)结构
         - `StatefulSet`: 有状态应用
         - `Job`: 一次性任务，即完成后便退出的应用
         - `Cronjob`: 周期性任务，不需要持续运行的应用
-      - 每个控制器分别负责监控集群中的某些状态，使之符合`Object.status`的要求
+      - 每个控制器分别负责监控集群中的某些状态，使之符合Object.status的要求
       - 与API Server进行通信，实现资源(Pod, Service)的创建、更新和删除
     - `Scheduler`: 调度器
       - 将集群中所有的Node的资源看做是一个整体
@@ -64,7 +64,7 @@ Master-Slave(Node)结构
       - 对资源进行调度，按照预定的策略将Pod调度到对应的Node上
     - `ETCD`: 集群状态存储
       - 轻量级的分布式一致性KV存储服务
-      - API Server使用其提供的`watch`机制对资源状态进行监控
+      - API Server使用其提供的watch机制对资源状态进行监控
       - 存储整个集群的状态信息
     - `AddONs`: 插件，也是以Pod+Service的形式运行
       - DNS: 解析规则会根据集群状态的变化而自动改变
@@ -90,14 +90,14 @@ Master-Slave(Node)结构
 - `Object`
   - 对持久实体进行描述
   - 一般包含两个嵌套对象
-    - spec: 对象所需要的状态**K8S的核心就是保证应用总是在期望的状态**
+    - spec: 对象所需要的状态 **K8S的核心就是保证应用总是在期望的状态**
     - status: 对象实际的状态
-  - 使用K8S API对对象进行管理
-  - 创建对象时，一般使用`.yaml`文件来进行描述
+  - 使用`Kubectl`对对象进行管理
+  - 创建对象时，一般使用.yaml文件来进行描述
     - 必填字段
       - apiVersion: K8S API的版本
       - kind: 对象类型
-      - metadata: 对象唯一标识，包含`name, uid, namespace`等信息
+      - metadata: 对象唯一标识，包含name, uid, namespace等信息
       - spec: 对象所需要的状态
 
 常用的`Object`对象包括:
@@ -105,22 +105,27 @@ Master-Slave(Node)结构
 - `Namespace`: 用于创建多个虚拟集群，对资源进行隔离
   - 命名空间的名称在系统中唯一
   - 删除一个命名空间会自动删除属于该空间的资源
-  - 名称为`default`和`kube-system`为系统使用，不可以删除
-  - 大多数的资源都属于命名空间，如`Pod, Service, Replica, Deployment`等
-  - 低级别的资源如`Node, PersistentVolume`则不属于任何命名空间
+  - 名称为default和kube-system为系统使用，不可以删除
+  - 大多数的资源都属于命名空间，如Pod, Service, Replica, Deployment等
+  - 低级别的资源如Node, PersistentVolume则不属于任何命名空间
 
 - `Pod`: 系统中可以进行调度的最小对象，可以包含一个或多个容器
   - Pod在系统中会被分配一个唯一的IP地址
   - Pod中的多个容器共享网络、数据卷等
-  - Pod内部的容器之间可以通过`localhost`进行访问 **本质是Pod中的容器使用的是联盟式网络**
+  - Pod内部的容器之间可以通过localhost进行访问 **本质是Pod中的容器使用的是联盟式网络**
   - Pod是有生命周期的，可能会被集群启动、修改和删除
-  - 跨Pod的容器之间的访问可以通过`Service`对象来实现
+  - 跨Pod的容器之间的访问可以通过Service对象来实现
 
 - `Service`: 一个或多个Pod组成，是Pod之上的概念
-  - 通过`Label Selector`来筛选Pod，符合条件的Pod的IP和端口组成了一个`EndPoints`列表
-  - 每一个Service会被分配一个`Cluster IP`和DNS名称
-  - 外部用户和其他Service可以通过该`Cluster IP`或DNS名来访问服务，而不需要了解服务对应的Pod列表，可以将Service看做是对Pod的代理
-  - Kube-Proxy将用户对Service的访问均衡负载到这些`EndPoints`上，从而实现了负载均衡和服务发现的功能  **本质上是DNS解析和在iptables添加了DNAT数据转发规则**
+  - 通过Label Selector来筛选Pod，符合条件的Pod的IP和端口组成了一个EndPoints列表
+  - 每一个Service会被分配一个Cluster IP和DNS名称
+  - 外部用户和其他Service可以通过该Cluster IP或DNS名来访问服务，而不需要了解服务对应的Pod列表，可以将Service看做是对Pod的代理
+  - Kube-Proxy将用户对Service的访问均衡负载到这些EndPoints上，从而实现了负载均衡和服务发现的功能  **本质上是DNS解析和在iptables添加了DNAT数据转发规则**
+  - 包含四种类型
+    - `ClusterIP`: 使用集群中的私有地址，此时Service只能被Node上的Pod访问。本质是在每一个Node上使用iptables，将发向ClusterIP的数据转发到Kube-Proxy中，然后Kube-Proxy内部查询到Service对应Pod的EndPoints，并以负载均衡式的将数据转发到对应的Pod
+    - `NodePort`: 除了使用ClusterIP之外，也将Service的端口映射到每一个Node的端口上，将Node上该端口的数据转发到Kube-Proxy上。这样便可以在集群外部通过访问Node的端口来访问Pod
+    - `LoadBalancer`: 使用云提供商的负载均衡器来访问ClusterIP或NodePort
+    - `ExternalName`: 通过CNAME将Service和ExternalName进行绑定，可以通过ExternalName来访问
 
 - `Volume`: 为Pod提供存储空间和文件共享
 
@@ -128,7 +133,7 @@ Master-Slave(Node)结构
 
 - `Label`: 识别Object的标签
   - key/value对
-  - 使用`Label Selector`用于过滤出符合标签条件的Object
+  - 使用Label Selector用于过滤出符合标签条件的Object
     - 等式: app=nginx env != production
     - 集合: env in (production, test)
     - 组合: app=nginx, env=test
