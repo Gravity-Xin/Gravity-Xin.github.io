@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="三种网络 节点网络: 所有Node组成的网络 集群网络: 所有Service组成的网络 Pod网络: 所有Pod组成的网络    三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络   三种通信  Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过localhost进行访问 Pod与Pod的容器之间 两个Pod如果位于同一个Node上，容器间可以利用docker">
+<meta name="description" content="三种网络 节点网络: 所有Node组成的网络 集群网络: 所有Service组成的网络 Pod网络: 所有Pod组成的网络    三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络  所有的网络相关，其本质上都是iptables或者ipvs中的规则在起作用，以及dns解析在起作用   三种通信  Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过localhos">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kubernetes网络基础">
 <meta property="og:url" content="http://yoursite.com/2019/03/08/Kubernetes网络基础/index.html">
 <meta property="og:site_name" content="Yihang&#39;s Blog">
-<meta property="og:description" content="三种网络 节点网络: 所有Node组成的网络 集群网络: 所有Service组成的网络 Pod网络: 所有Pod组成的网络    三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络   三种通信  Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过localhost进行访问 Pod与Pod的容器之间 两个Pod如果位于同一个Node上，容器间可以利用docker">
+<meta property="og:description" content="三种网络 节点网络: 所有Node组成的网络 集群网络: 所有Service组成的网络 Pod网络: 所有Pod组成的网络    三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络  所有的网络相关，其本质上都是iptables或者ipvs中的规则在起作用，以及dns解析在起作用   三种通信  Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过localhos">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/Kubernetes之三种网络.png">
-<meta property="og:updated_time" content="2019-03-14T01:44:56.233Z">
+<meta property="og:updated_time" content="2019-03-15T07:24:45.915Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes网络基础">
-<meta name="twitter:description" content="三种网络 节点网络: 所有Node组成的网络 集群网络: 所有Service组成的网络 Pod网络: 所有Pod组成的网络    三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络   三种通信  Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过localhost进行访问 Pod与Pod的容器之间 两个Pod如果位于同一个Node上，容器间可以利用docker">
+<meta name="twitter:description" content="三种网络 节点网络: 所有Node组成的网络 集群网络: 所有Service组成的网络 Pod网络: 所有Pod组成的网络    三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络  所有的网络相关，其本质上都是iptables或者ipvs中的规则在起作用，以及dns解析在起作用   三种通信  Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过localhos">
 <meta name="twitter:image" content="http://yoursite.com/images/Kubernetes之三种网络.png">
 
 
@@ -361,15 +361,15 @@
 </ul>
 </li>
 </ul>
-<p>三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络</p>
+<p>三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络  <strong>所有的网络相关，其本质上都是iptables或者ipvs中的规则在起作用，以及dns解析在起作用</strong></p>
 <p><img src="/images/Kubernetes之三种网络.png" alt="img"></p>
 <ul>
 <li><p>三种通信</p>
 <ul>
-<li>Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过<code>localhost</code>进行访问</li>
+<li>Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过localhost进行访问</li>
 <li>Pod与Pod的容器之间<ul>
 <li>两个Pod如果位于同一个Node上，容器间可以利用<code>docker0</code>网桥相连接进行通信</li>
-<li>两个Pod如果在不同Node上，此时容器分别被<code>docker0</code>网桥隐藏，无法直接连接，此时需要<code>Flannel</code>来接管Pod的IP分配，以<code>Overlay Network</code>叠加式网络的方式进行连接</li>
+<li>两个Pod如果在不同Node上，此时容器分别被<code>docker0</code>网桥隐藏，无法直接连接，此时需要Flannel来接管Pod的IP分配，以Overlay Network叠加式网络的方式进行连接</li>
 </ul>
 </li>
 <li>Pod与Service之间，由于Service在K8S集群中有独立的IP地址和DNS名称，可以通过其与Service直接进行通信</li>

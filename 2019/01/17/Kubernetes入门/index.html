@@ -88,7 +88,7 @@
 <meta property="og:description" content="当前主流的容器编排技术包括  docker compose: Docker官方的单机版本的容器编排工具 docker swarm: Docker官方的多机版本的容器编排工具 mesos + marathon: Apache提供的集群资源管理和容器编排工具 kubernetes: Google提供的容器编排工具，事实上已经成为容器编排的标准工具  主要功能 基于容器的应用的自动部署、滚动升级、自动修">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/Kubernetes之系统架构.png">
-<meta property="og:updated_time" content="2019-03-14T09:28:20.931Z">
+<meta property="og:updated_time" content="2019-03-15T08:16:01.788Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes入门">
 <meta name="twitter:description" content="当前主流的容器编排技术包括  docker compose: Docker官方的单机版本的容器编排工具 docker swarm: Docker官方的多机版本的容器编排工具 mesos + marathon: Apache提供的集群资源管理和容器编排工具 kubernetes: Google提供的容器编排工具，事实上已经成为容器编排的标准工具  主要功能 基于容器的应用的自动部署、滚动升级、自动修">
@@ -383,7 +383,7 @@
 <li>主要组件包括:<ul>
 <li><code>API Server</code>: 用户API入口<ul>
 <li>将K8S API以<code>JSON over HTTP</code>的形式暴露给用户</li>
-<li>用户可以通过<code>kubectl</code>发起请求，对集群中的Pod在Node上进行调度</li>
+<li>用户可以通过kubectl发起请求，对集群中的Pod在Node上进行调度</li>
 <li>请求处理的结果最终保存到ETCD中</li>
 </ul>
 </li>
@@ -402,7 +402,7 @@
 <li><code>Cronjob</code>: 周期性任务，不需要持续运行的应用</li>
 </ul>
 </li>
-<li>每个控制器分别负责监控集群中的某些状态，使之符合<code>Object.status</code>的要求</li>
+<li>每个控制器分别负责监控集群中的某些状态，使之符合Object.status的要求</li>
 <li>与API Server进行通信，实现资源(Pod, Service)的创建、更新和删除</li>
 </ul>
 </li>
@@ -414,7 +414,7 @@
 </li>
 <li><code>ETCD</code>: 集群状态存储<ul>
 <li>轻量级的分布式一致性KV存储服务</li>
-<li>API Server使用其提供的<code>watch</code>机制对资源状态进行监控</li>
+<li>API Server使用其提供的watch机制对资源状态进行监控</li>
 <li>存储整个集群的状态信息</li>
 </ul>
 </li>
@@ -459,16 +459,16 @@
 <li><code>Object</code><ul>
 <li>对持久实体进行描述</li>
 <li>一般包含两个嵌套对象<ul>
-<li>spec: 对象所需要的状态<strong>K8S的核心就是保证应用总是在期望的状态</strong></li>
+<li>spec: 对象所需要的状态 <strong>K8S的核心就是保证应用总是在期望的状态</strong></li>
 <li>status: 对象实际的状态</li>
 </ul>
 </li>
-<li>使用K8S API对对象进行管理</li>
-<li>创建对象时，一般使用<code>.yaml</code>文件来进行描述<ul>
+<li>使用<code>Kubectl</code>对对象进行管理</li>
+<li>创建对象时，一般使用.yaml文件来进行描述<ul>
 <li>必填字段<ul>
 <li>apiVersion: K8S API的版本</li>
 <li>kind: 对象类型</li>
-<li>metadata: 对象唯一标识，包含<code>name, uid, namespace</code>等信息</li>
+<li>metadata: 对象唯一标识，包含name, uid, namespace等信息</li>
 <li>spec: 对象所需要的状态</li>
 </ul>
 </li>
@@ -483,26 +483,33 @@
 <ul>
 <li>命名空间的名称在系统中唯一</li>
 <li>删除一个命名空间会自动删除属于该空间的资源</li>
-<li>名称为<code>default</code>和<code>kube-system</code>为系统使用，不可以删除</li>
-<li>大多数的资源都属于命名空间，如<code>Pod, Service, Replica, Deployment</code>等</li>
-<li>低级别的资源如<code>Node, PersistentVolume</code>则不属于任何命名空间</li>
+<li>名称为default和kube-system为系统使用，不可以删除</li>
+<li>大多数的资源都属于命名空间，如Pod, Service, Replica, Deployment等</li>
+<li>低级别的资源如Node, PersistentVolume则不属于任何命名空间</li>
 </ul>
 </li>
 <li><p><code>Pod</code>: 系统中可以进行调度的最小对象，可以包含一个或多个容器</p>
 <ul>
 <li>Pod在系统中会被分配一个唯一的IP地址</li>
 <li>Pod中的多个容器共享网络、数据卷等</li>
-<li>Pod内部的容器之间可以通过<code>localhost</code>进行访问 <strong>本质是Pod中的容器使用的是联盟式网络</strong></li>
+<li>Pod内部的容器之间可以通过localhost进行访问 <strong>本质是Pod中的容器使用的是联盟式网络</strong></li>
 <li>Pod是有生命周期的，可能会被集群启动、修改和删除</li>
-<li>跨Pod的容器之间的访问可以通过<code>Service</code>对象来实现</li>
+<li>跨Pod的容器之间的访问可以通过Service对象来实现</li>
 </ul>
 </li>
 <li><p><code>Service</code>: 一个或多个Pod组成，是Pod之上的概念</p>
 <ul>
-<li>通过<code>Label Selector</code>来筛选Pod，符合条件的Pod的IP和端口组成了一个<code>EndPoints</code>列表</li>
-<li>每一个Service会被分配一个<code>Cluster IP</code>和DNS名称</li>
-<li>外部用户和其他Service可以通过该<code>Cluster IP</code>或DNS名来访问服务，而不需要了解服务对应的Pod列表，可以将Service看做是对Pod的代理</li>
-<li>Kube-Proxy将用户对Service的访问均衡负载到这些<code>EndPoints</code>上，从而实现了负载均衡和服务发现的功能  <strong>本质上是DNS解析和在iptables添加了DNAT数据转发规则</strong></li>
+<li>通过Label Selector来筛选Pod，符合条件的Pod的IP和端口组成了一个EndPoints列表</li>
+<li>每一个Service会被分配一个Cluster IP和DNS名称</li>
+<li>外部用户和其他Service可以通过该Cluster IP或DNS名来访问服务，而不需要了解服务对应的Pod列表，可以将Service看做是对Pod的代理</li>
+<li>Kube-Proxy将用户对Service的访问均衡负载到这些EndPoints上，从而实现了负载均衡和服务发现的功能  <strong>本质上是DNS解析和在iptables添加了DNAT数据转发规则</strong></li>
+<li>包含四种类型<ul>
+<li><code>ClusterIP</code>: 使用集群中的私有地址，此时Service只能被Node上的Pod访问。本质是在每一个Node上使用iptables，将发向ClusterIP的数据转发到Kube-Proxy中，然后Kube-Proxy内部查询到Service对应Pod的EndPoints，并以负载均衡式的将数据转发到对应的Pod</li>
+<li><code>NodePort</code>: 除了使用ClusterIP之外，也将Service的端口映射到每一个Node的端口上，将Node上该端口的数据转发到Kube-Proxy上。这样便可以在集群外部通过访问Node的端口来访问Pod</li>
+<li><code>LoadBalancer</code>: 使用云提供商的负载均衡器来访问ClusterIP或NodePort</li>
+<li><code>ExternalName</code>: 通过CNAME将Service和ExternalName进行绑定，可以通过ExternalName来访问</li>
+</ul>
+</li>
 </ul>
 </li>
 <li><p><code>Volume</code>: 为Pod提供存储空间和文件共享</p>
@@ -513,7 +520,7 @@
 <li><p><code>Label</code>: 识别Object的标签</p>
 <ul>
 <li>key/value对</li>
-<li>使用<code>Label Selector</code>用于过滤出符合标签条件的Object<ul>
+<li>使用Label Selector用于过滤出符合标签条件的Object<ul>
 <li>等式: app=nginx env != production</li>
 <li>集合: env in (production, test)</li>
 <li>组合: app=nginx, env=test</li>

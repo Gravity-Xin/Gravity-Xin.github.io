@@ -1402,66 +1402,71 @@
       
         
           
-            <p>在Kubernetes中，主要通过<code>Kubectl</code>命令行工具对集群中的资源进行增删改查的操作，集群中的资源包括<code>Pod</code>、<code>Service</code>、各种控制器、<code>Node</code>等等</p>
+            <p>在Kubernetes中，主要通过Kubectl命令行工具对集群中的资源进行增删改查的操作，集群中的资源包括Pod、Service、各种控制器、Node等等</p>
 <ul>
 <li><p>集群资源类型</p>
 <ul>
-<li>certificatesigningrequests (aka ‘csr’)  </li>
-<li>clusterrolebindings  </li>
-<li>clusterroles  </li>
-<li>componentstatuses (aka ‘cs’)  </li>
-<li>configmaps (aka ‘cm’)  </li>
-<li>controllerrevisions  </li>
-<li>cronjobs  </li>
-<li>customresourcedefinition (aka ‘crd’) </li>
-<li>daemonsets (aka ‘ds’)  </li>
-<li>deployments (aka ‘deploy’)  </li>
-<li>endpoints (aka ‘ep’)  </li>
-<li>events (aka ‘ev’)  </li>
-<li>horizontalpodautoscalers (aka ‘hpa’)  </li>
-<li>ingresses (aka ‘ing’)  </li>
-<li>jobs  </li>
-<li>limitranges (aka ‘limits’)  </li>
-<li>namespaces (aka ‘ns’)  </li>
-<li>networkpolicies (aka ‘netpol’)  </li>
-<li>nodes (aka ‘no’)  </li>
-<li>persistentvolumeclaims (aka ‘pvc’)  </li>
-<li>persistentvolumes (aka ‘pv’)  </li>
-<li>poddisruptionbudgets (aka ‘pdb’)  </li>
-<li>podpreset  </li>
-<li>pods (aka ‘po’)  </li>
-<li>podsecuritypolicies (aka ‘psp’)  </li>
-<li>podtemplates  </li>
-<li>replicasets (aka ‘rs’)  </li>
-<li>replicationcontrollers (aka ‘rc’)  </li>
-<li>resourcequotas (aka ‘quota’)  </li>
-<li>rolebindings  </li>
-<li>roles  </li>
-<li>secrets  </li>
-<li>serviceaccounts (aka ‘sa’)  </li>
-<li>services (aka ‘svc’)  </li>
-<li>statefulsets (aka ‘sts’)  </li>
-<li>storageclasses (aka ‘sc’)error: Required resource not specified.</li>
+<li>certificatesigningrequests (aka ‘csr’)</li>
+<li>clusterrolebindings</li>
+<li>clusterroles</li>
+<li>componentstatuses (aka ‘cs’)</li>
+<li>configmaps (aka ‘cm’)</li>
+<li>controllerrevisions</li>
+<li>cronjobs</li>
+<li>customresourcedefinition (aka ‘crd’)</li>
+<li>daemonsets (aka ‘ds’)</li>
+<li>deployments (aka ‘deploy’)</li>
+<li>endpoints (aka ‘ep’)</li>
+<li>events (aka ‘ev’)</li>
+<li>horizontalpodautoscalers (aka ‘hpa’)</li>
+<li>ingresses (aka ‘ing’)</li>
+<li>jobs</li>
+<li>limitranges (aka ‘limits’)</li>
+<li>namespaces (aka ‘ns’)</li>
+<li>networkpolicies (aka ‘netpol’)</li>
+<li>nodes (aka ‘no’)</li>
+<li>persistentvolumeclaims (aka ‘pvc’)</li>
+<li>persistentvolumes (aka ‘pv’)</li>
+<li>poddisruptionbudgets (aka ‘pdb’)</li>
+<li>podpreset</li>
+<li>pods (aka ‘po’)</li>
+<li>podsecuritypolicies (aka ‘psp’)</li>
+<li>podtemplates</li>
+<li>replicasets (aka ‘rs’)</li>
+<li>replicationcontrollers (aka ‘rc’)</li>
+<li>resourcequotas (aka ‘quota’)</li>
+<li>rolebindings</li>
+<li>roles</li>
+<li>secrets</li>
+<li>serviceaccounts (aka ‘sa’)</li>
+<li>services (aka ‘svc’)</li>
+<li>statefulsets (aka ‘sts’)</li>
+<li>storageclasses (aka ‘sc’)</li>
 </ul>
 </li>
 <li><p><code>Kubectl</code>的使用方式</p>
 <ul>
 <li>入门命令<ul>
 <li><code>create</code>: 创建集群资源</li>
-<li><code>expose</code>: 使用<code>Pod</code>、<code>Service</code>或各种控制器来创建<code>Service</code>资源</li>
-<li><code>run</code>: 在集群上运行特定镜像，创建Pod资源</li>
-<li><code>set</code>: 给集群中的特定资源进行配置</li>
+<li><code>expose</code>: 使用Pod、Service或各种控制器来创建Service资源，外部可以通过该Service实现对Pod的访问</li>
+<li><code>run</code>: 在集群上运行特定镜像，创建Pod资源并使用Deployment或Job来对其进行控制</li>
+<li><code>set</code>: 给集群中的特定资源进行配置，可以设置Pod中的环境变量、镜像名称、LabelSelector等</li>
 </ul>
 </li>
 <li>中级命令<ul>
-<li><code>get</code>: 查看集群中的各类资源的状态</li>
+<li><code>get</code>: 查看集群中的各类资源的状态<ul>
+<li><code>pod</code>: 查看Pod资源状态</li>
+<li><code>deployment</code>: 查看Deployment控制器状态</li>
+<li><code>service</code>: 查看Service资源状态</li>
+</ul>
+</li>
 <li><code>explain</code>: 查看资源中各类资源的说明</li>
-<li><code>edit</code>: 对集群中的资源进行编辑</li>
+<li><code>edit</code>: 对集群中的资源对应的yaml文件进行编辑，保存后自动生效</li>
 <li><code>delete</code>: 对集群中的资源进行删除</li>
 </ul>
 </li>
 <li>部署管理<ul>
-<li><code>rollout</code>: 对资源的部署进行管理，比如暂停、恢复、回滚等</li>
+<li><code>rollout</code>: 对资源的更新部署进行管理，比如查看更新的状态，暂停和恢复更新，版本回滚等</li>
 <li><code>rolling-update</code>: 对资源的部署进行滚动更新</li>
 <li><code>scale</code>: 手动对资源进行扩容或缩容</li>
 <li><code>autoscale</code>: 设置资源的自动水平伸缩</li>
@@ -1474,15 +1479,19 @@
 <li><code>cordon</code>: 标记集群中某节点不可被调度</li>
 <li><code>uncordon</code>: 标记集群中某节点可以被调度</li>
 <li><code>drain</code>: 将集群中某节点上运行的资源赶到其它节点上</li>
-<li><code>taint</code>: 将集群中的某节点增加污点，与<code>Pod</code>的<code>Toleration</code>来配合使用</li>
+<li><code>taint</code>: 将集群中的某节点增加污点，与Pod的Toleration来配合使用，实现高级的调度</li>
 </ul>
 </li>
 <li>故障排除和调试<ul>
-<li><code>describe</code>: 显示集群某资源的详细信息</li>
-<li><code>logs</code>: 查看集群中某个<code>Pod</code>上的日志</li>
-<li><code>attach</code>: 附加到某个<code>Pod</code>中</li>
-<li><code>exec</code>: 在某个<code>Pod</code>中运行命令</li>
-<li><code>port-forward</code>: 设置某个<code>Pod</code>的端口和本地端口的映射</li>
+<li><code>describe</code>: 显示集群某资源的详细信息<ul>
+<li><code>pod</code>: 查看Pod的详细信息</li>
+<li><code>service</code>: 查看Service的详细信息，以及Service对应Pod的EndPoints列表等</li>
+</ul>
+</li>
+<li><code>logs</code>: 查看集群中某个Pod上的日志</li>
+<li><code>attach</code>: 附加到某个Pod中</li>
+<li><code>exec</code>: 在某个Pod中运行命令</li>
+<li><code>port-forward</code>: 设置某个Pod的端口和本地端口的映射</li>
 <li><code>proxy</code>: 在本地启动对集群API Server的代理</li>
 <li><code>cp</code>: 在<code>Pod</code>和本地之间进行文件拷贝</li>
 <li><code>auth</code>: 进行操作权限的校验</li>
@@ -1496,26 +1505,23 @@
 </ul>
 </li>
 <li>资源管理<ul>
-<li><code>label</code>: 给资源添加<code>Label</code></li>
-<li><code>annotate</code>: 给资源添加<code>Annotation</code></li>
+<li><code>label</code>: 给资源添加Label</li>
+<li><code>annotate</code>: 给资源添加Annotation</li>
 <li><code>completion</code>: 输出不同Shell的自动补全配置</li>
 </ul>
 </li>
 <li>其它<ul>
 <li><code>api-versions</code>: 输出API版本</li>
 <li><code>api-resources</code>: 输出集群支持的资源信息</li>
-<li><code>config</code>: 修改<code>Kubectl</code>使用的kubeconfig文件</li>
+<li><code>config</code>: 修改Kubectl使用的kubeconfig文件</li>
 <li><code>plugin</code>: 给集群添加插件</li>
 <li><code>version</code>: 输出客户端和服务端的版本信息</li>
+<li><code>cluster_info</code>: 查看集群中Master上系统Service信息</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-<p><code>kubectl get componentstatus</code>: 获取Master节点上各个组件的运行状态</p>
-<p><code>kubectl get namespaces</code>: 获取集群中的名称空间信息</p>
-<p><code>kubectl get nodes</code>: 获取集群Node节点信息</p>
-<p><code>kubectl get pods</code>: 获取集群中的Pod信息</p>
 
           
         
@@ -1675,15 +1681,15 @@
 </ul>
 </li>
 </ul>
-<p>三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络</p>
+<p>三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络  <strong>所有的网络相关，其本质上都是iptables或者ipvs中的规则在起作用，以及dns解析在起作用</strong></p>
 <p><img src="/images/Kubernetes之三种网络.png" alt="img"></p>
 <ul>
 <li><p>三种通信</p>
 <ul>
-<li>Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过<code>localhost</code>进行访问</li>
+<li>Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过localhost进行访问</li>
 <li>Pod与Pod的容器之间<ul>
 <li>两个Pod如果位于同一个Node上，容器间可以利用<code>docker0</code>网桥相连接进行通信</li>
-<li>两个Pod如果在不同Node上，此时容器分别被<code>docker0</code>网桥隐藏，无法直接连接，此时需要<code>Flannel</code>来接管Pod的IP分配，以<code>Overlay Network</code>叠加式网络的方式进行连接</li>
+<li>两个Pod如果在不同Node上，此时容器分别被<code>docker0</code>网桥隐藏，无法直接连接，此时需要Flannel来接管Pod的IP分配，以Overlay Network叠加式网络的方式进行连接</li>
 </ul>
 </li>
 <li>Pod与Service之间，由于Service在K8S集群中有独立的IP地址和DNS名称，可以通过其与Service直接进行通信</li>
