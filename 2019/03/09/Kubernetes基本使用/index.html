@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="Kubectlkubectl get componentstatus: 获取Master节点上各个组件的运行状态 kubectl get namespaces: 获取集群中的名称空间信息 kubectl get nodes: 获取集群Node节点信息 kubectl get pods: 获取集群中的Pod信息">
+<meta name="description" content="在Kubernetes中，主要通过Kubectl命令行工具对集群中的资源进行增删改查的操作，集群中的资源包括Pod、Service、各种控制器、Node等等  集群资源类型  certificatesigningrequests (aka ‘csr’)   clusterrolebindings   clusterroles   componentstatuses (aka ‘cs’)   con">
 <meta name="keywords" content="Kubernetes">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kubernetes基本使用">
 <meta property="og:url" content="http://yoursite.com/2019/03/09/Kubernetes基本使用/index.html">
 <meta property="og:site_name" content="Yihang&#39;s Blog">
-<meta property="og:description" content="Kubectlkubectl get componentstatus: 获取Master节点上各个组件的运行状态 kubectl get namespaces: 获取集群中的名称空间信息 kubectl get nodes: 获取集群Node节点信息 kubectl get pods: 获取集群中的Pod信息">
+<meta property="og:description" content="在Kubernetes中，主要通过Kubectl命令行工具对集群中的资源进行增删改查的操作，集群中的资源包括Pod、Service、各种控制器、Node等等  集群资源类型  certificatesigningrequests (aka ‘csr’)   clusterrolebindings   clusterroles   componentstatuses (aka ‘cs’)   con">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-13T10:10:24.763Z">
+<meta property="og:updated_time" content="2019-03-15T01:58:02.914Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes基本使用">
-<meta name="twitter:description" content="Kubectlkubectl get componentstatus: 获取Master节点上各个组件的运行状态 kubectl get namespaces: 获取集群中的名称空间信息 kubectl get nodes: 获取集群Node节点信息 kubectl get pods: 获取集群中的Pod信息">
+<meta name="twitter:description" content="在Kubernetes中，主要通过Kubectl命令行工具对集群中的资源进行增删改查的操作，集群中的资源包括Pod、Service、各种控制器、Node等等  集群资源类型  certificatesigningrequests (aka ‘csr’)   clusterrolebindings   clusterroles   componentstatuses (aka ‘cs’)   con">
 
 
 
@@ -352,7 +352,117 @@
       
 
       
-        <h2 id="Kubectl"><a href="#Kubectl" class="headerlink" title="Kubectl"></a>Kubectl</h2><p><code>kubectl get componentstatus</code>: 获取Master节点上各个组件的运行状态</p>
+        <p>在Kubernetes中，主要通过<code>Kubectl</code>命令行工具对集群中的资源进行增删改查的操作，集群中的资源包括<code>Pod</code>、<code>Service</code>、各种控制器、<code>Node</code>等等</p>
+<ul>
+<li><p>集群资源类型</p>
+<ul>
+<li>certificatesigningrequests (aka ‘csr’)  </li>
+<li>clusterrolebindings  </li>
+<li>clusterroles  </li>
+<li>componentstatuses (aka ‘cs’)  </li>
+<li>configmaps (aka ‘cm’)  </li>
+<li>controllerrevisions  </li>
+<li>cronjobs  </li>
+<li>customresourcedefinition (aka ‘crd’) </li>
+<li>daemonsets (aka ‘ds’)  </li>
+<li>deployments (aka ‘deploy’)  </li>
+<li>endpoints (aka ‘ep’)  </li>
+<li>events (aka ‘ev’)  </li>
+<li>horizontalpodautoscalers (aka ‘hpa’)  </li>
+<li>ingresses (aka ‘ing’)  </li>
+<li>jobs  </li>
+<li>limitranges (aka ‘limits’)  </li>
+<li>namespaces (aka ‘ns’)  </li>
+<li>networkpolicies (aka ‘netpol’)  </li>
+<li>nodes (aka ‘no’)  </li>
+<li>persistentvolumeclaims (aka ‘pvc’)  </li>
+<li>persistentvolumes (aka ‘pv’)  </li>
+<li>poddisruptionbudgets (aka ‘pdb’)  </li>
+<li>podpreset  </li>
+<li>pods (aka ‘po’)  </li>
+<li>podsecuritypolicies (aka ‘psp’)  </li>
+<li>podtemplates  </li>
+<li>replicasets (aka ‘rs’)  </li>
+<li>replicationcontrollers (aka ‘rc’)  </li>
+<li>resourcequotas (aka ‘quota’)  </li>
+<li>rolebindings  </li>
+<li>roles  </li>
+<li>secrets  </li>
+<li>serviceaccounts (aka ‘sa’)  </li>
+<li>services (aka ‘svc’)  </li>
+<li>statefulsets (aka ‘sts’)  </li>
+<li>storageclasses (aka ‘sc’)error: Required resource not specified.</li>
+</ul>
+</li>
+<li><p><code>Kubectl</code>的使用方式</p>
+<ul>
+<li>入门命令<ul>
+<li><code>create</code>: 创建集群资源</li>
+<li><code>expose</code>: 使用<code>Pod</code>、<code>Service</code>或各种控制器来创建<code>Service</code>资源</li>
+<li><code>run</code>: 在集群上运行特定镜像，创建Pod资源</li>
+<li><code>set</code>: 给集群中的特定资源进行配置</li>
+</ul>
+</li>
+<li>中级命令<ul>
+<li><code>get</code>: 查看集群中的各类资源的状态</li>
+<li><code>explain</code>: 查看资源中各类资源的说明</li>
+<li><code>edit</code>: 对集群中的资源进行编辑</li>
+<li><code>delete</code>: 对集群中的资源进行删除</li>
+</ul>
+</li>
+<li>部署管理<ul>
+<li><code>rollout</code>: 对资源的部署进行管理，比如暂停、恢复、回滚等</li>
+<li><code>rolling-update</code>: 对资源的部署进行滚动更新</li>
+<li><code>scale</code>: 手动对资源进行扩容或缩容</li>
+<li><code>autoscale</code>: 设置资源的自动水平伸缩</li>
+</ul>
+</li>
+<li>集群管理<ul>
+<li><code>certificate</code>: 修改集群认证信息</li>
+<li><code>cluster-info</code>: 查询集群信息</li>
+<li><code>top</code>: 查看集群中资源使用情况，如CPU、内存、磁盘等</li>
+<li><code>cordon</code>: 标记集群中某节点不可被调度</li>
+<li><code>uncordon</code>: 标记集群中某节点可以被调度</li>
+<li><code>drain</code>: 将集群中某节点上运行的资源赶到其它节点上</li>
+<li><code>taint</code>: 将集群中的某节点增加污点，与<code>Pod</code>的<code>Toleration</code>来配合使用</li>
+</ul>
+</li>
+<li>故障排除和调试<ul>
+<li><code>describe</code>: 显示集群某资源的详细信息</li>
+<li><code>logs</code>: 查看集群中某个<code>Pod</code>上的日志</li>
+<li><code>attach</code>: 附加到某个<code>Pod</code>中</li>
+<li><code>exec</code>: 在某个<code>Pod</code>中运行命令</li>
+<li><code>port-forward</code>: 设置某个<code>Pod</code>的端口和本地端口的映射</li>
+<li><code>proxy</code>: 在本地启动对集群API Server的代理</li>
+<li><code>cp</code>: 在<code>Pod</code>和本地之间进行文件拷贝</li>
+<li><code>auth</code>: 进行操作权限的校验</li>
+</ul>
+</li>
+<li>高级命令<ul>
+<li><code>apply</code>: 对集群中的资源进行配置</li>
+<li><code>patch</code>: 更新集群中的资源配置</li>
+<li><code>replace</code>: 对集群中的资源进行替换</li>
+<li><code>convert</code>: 将配置文件转换为不同的API版本</li>
+</ul>
+</li>
+<li>资源管理<ul>
+<li><code>label</code>: 给资源添加<code>Label</code></li>
+<li><code>annotate</code>: 给资源添加<code>Annotation</code></li>
+<li><code>completion</code>: 输出不同Shell的自动补全配置</li>
+</ul>
+</li>
+<li>其它<ul>
+<li><code>api-versions</code>: 输出API版本</li>
+<li><code>api-resources</code>: 输出集群支持的资源信息</li>
+<li><code>config</code>: 修改<code>Kubectl</code>使用的kubeconfig文件</li>
+<li><code>plugin</code>: 给集群添加插件</li>
+<li><code>version</code>: 输出客户端和服务端的版本信息</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><code>kubectl get componentstatus</code>: 获取Master节点上各个组件的运行状态</p>
 <p><code>kubectl get namespaces</code>: 获取集群中的名称空间信息</p>
 <p><code>kubectl get nodes</code>: 获取集群Node节点信息</p>
 <p><code>kubectl get pods</code>: 获取集群中的Pod信息</p>
@@ -456,17 +566,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -526,22 +627,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Kubectl"><span class="nav-number">1.</span> <span class="nav-text">Kubectl</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

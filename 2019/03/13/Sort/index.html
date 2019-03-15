@@ -94,7 +94,10 @@
 <meta property="og:image" content="http://yoursite.com/images/排序之选择排序.gif">
 <meta property="og:image" content="http://yoursite.com/images/排序之堆排序.gif">
 <meta property="og:image" content="http://yoursite.com/images/排序之归并排序.gif">
-<meta property="og:updated_time" content="2019-03-14T03:47:28.944Z">
+<meta property="og:image" content="http://yoursite.com/images/排序之计数排序.gif">
+<meta property="og:image" content="http://yoursite.com/images/排序之桶排序.png">
+<meta property="og:image" content="http://yoursite.com/images/排序之基数排序.gif">
+<meta property="og:updated_time" content="2019-03-15T02:28:00.279Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Sort">
 <meta name="twitter:description" content="算法概述可以分为两大类  比较类: 通过比较来决定元素间的相对次序，时间复杂度不能突破O(nlogn)，也称为非线性时间排序 交换 冒泡排序 快速排序   插入 插入排序 希尔排序   选择 选择排序 堆排序   归并 二路归并排序 多路归并排序     非比较类: 不通过比较来决定元素间的相对次数，时间复杂度可以突破O(nlogn)，以线性时间运行，也称为线性时间排序 计数排序 桶排序 基数排序">
@@ -552,13 +555,34 @@
 </ul>
 <p><img src="/images/排序之归并排序.gif" alt="img"></p>
 <ul>
-<li><p>计数排序(Counting Sort)</p>
-</li>
-<li><p>桶排序(Bucket Sort)</p>
-</li>
-<li><p>基数排序(Radix Sort)</p>
+<li>计数排序(Counting Sort): <code>要求序列中的元素为有确定范围的整数，将序列中的元素作为下标存储到额外开辟的数组空间中</code><ul>
+<li>确定输入序列中的最小元素和最大元素，构建额外的数组C，数组元素初始化为0</li>
+<li>对序列中的每一个值为i的元素，数组C的第i项的数组元素值加1</li>
+<li>遍历数组C，对于每一个数组元素i，每反向填充到序列一次就减1，直到为0</li>
+</ul>
 </li>
 </ul>
+<p><img src="/images/排序之计数排序.gif" alt="img"></p>
+<ul>
+<li>桶排序(Bucket Sort): <code>利用某个函数将序列中的元素映射到有限数量的桶中，然后对每一个分别进行排序，最后将元素进行拼接</code><ul>
+<li>设置确定数量的桶</li>
+<li>遍历序列，将其中的每一个元素分别映射到对应的桶中</li>
+<li>对于每一个桶使用某方法进行排序，比如快排</li>
+<li>将不为空的桶中的元素进行拼接</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之桶排序.png" alt="img"></p>
+<ul>
+<li>基数排序(Radix Sort): <code>对序列中的元素先按照低位进行排序，然后再按照高位进行排序</code><ul>
+<li>获取序列中的最大元素，并获取其位数为n</li>
+<li>从最低位开始，取得序列中每个元素在该位的值，构建radix数组</li>
+<li>对radix数组进行计数排序</li>
+<li>重复上述步骤n次，最终得到有序序列</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之基数排序.gif" alt="img"></p>
 
       
     </div>
