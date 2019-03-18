@@ -9,44 +9,6 @@ tags:
 
 在Kubernetes中，主要通过Kubectl命令行工具对集群中的资源进行增删改查的操作，集群中的资源包括Pod、Service、各种控制器、Node等等
 
-- 集群资源类型
-  - certificatesigningrequests (aka 'csr')
-  - clusterrolebindings
-  - clusterroles
-  - componentstatuses (aka 'cs')
-  - configmaps (aka 'cm')
-  - controllerrevisions
-  - cronjobs
-  - customresourcedefinition (aka 'crd')
-  - daemonsets (aka 'ds')
-  - deployments (aka 'deploy')
-  - endpoints (aka 'ep')
-  - events (aka 'ev')
-  - horizontalpodautoscalers (aka 'hpa')
-  - ingresses (aka 'ing')
-  - jobs
-  - limitranges (aka 'limits')
-  - namespaces (aka 'ns')
-  - networkpolicies (aka 'netpol')
-  - nodes (aka 'no')
-  - persistentvolumeclaims (aka 'pvc')
-  - persistentvolumes (aka 'pv')
-  - poddisruptionbudgets (aka 'pdb')
-  - podpreset
-  - pods (aka 'po')
-  - podsecuritypolicies (aka 'psp')
-  - podtemplates
-  - replicasets (aka 'rs')
-  - replicationcontrollers (aka 'rc')
-  - resourcequotas (aka 'quota')
-  - rolebindings
-  - roles
-  - secrets
-  - serviceaccounts (aka 'sa')
-  - services (aka 'svc')
-  - statefulsets (aka 'sts')
-  - storageclasses (aka 'sc')
-
 - `Kubectl`的使用方式
   - 入门命令
     - `create`: 创建集群资源
@@ -95,7 +57,7 @@ tags:
     - `annotate`: 给资源添加Annotation
     - `completion`: 输出不同Shell的自动补全配置
   - 其它
-    - `api-versions`: 输出API版本
+    - `api-versions`: 输出集群支持的API群组
     - `api-resources`: 输出集群支持的资源信息
     - `config`: 修改Kubectl使用的kubeconfig文件
     - `plugin`: 给集群添加插件

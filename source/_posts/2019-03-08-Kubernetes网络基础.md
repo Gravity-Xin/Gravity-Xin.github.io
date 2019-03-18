@@ -4,6 +4,9 @@ date: 2019-03-08 15:57:50
 categories: 
 - Docker/K8S
 tags: 
+- Node
+- Service
+- Pod
 ---
 
 - 三种网络

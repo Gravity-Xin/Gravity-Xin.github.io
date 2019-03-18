@@ -3,7 +3,7 @@ title: TODO
 tags:
 ---
 
-- 数据结构
+- 数据结构  https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84
   - golang 数据结构实现
   - b tree of golang etcd from google
   - LSM树
@@ -84,4 +84,7 @@ mount命令查看挂载情况
 
 linux源码阅读 https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/fs/eventpoll.c?h=linux-5.0.y
 
-cs io多路复用接口使用与分析 
+cs io多路复用接口使用与分析
+
+go语言经典库分析: GitHub上的stars数较多的开源库
+- httprouter
