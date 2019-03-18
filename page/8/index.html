@@ -249,6 +249,243 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/15/NSQ入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/15/NSQ入门/" itemprop="url">NSQ入门</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-15T17:38:37+08:00">
+                2018-11-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NSQ/" itemprop="url" rel="index">
+                    <span itemprop="name">NSQ</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/15/NSQ入门/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/11/15/NSQ入门/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Why-MQ"><a href="#Why-MQ" class="headerlink" title="Why MQ"></a>Why MQ</h2><p>优点:</p>
+<ul>
+<li>模块解耦 模块间不存在直接依赖</li>
+<li>异步调用 将耗时的请求异步处理，不影响主流程，提高响应速度</li>
+<li>流量削峰 将请求缓存，慢慢处理</li>
+</ul>
+<p>缺点:</p>
+<ul>
+<li>需要保证MQ的高可用，否则会降低系统的可用性</li>
+<li>可能存在消息丢失，消息重复等问题，降低系统稳定性</li>
+</ul>
+<h2 id="NSQ中的基本概念"><a href="#NSQ中的基本概念" class="headerlink" title="NSQ中的基本概念"></a>NSQ中的基本概念</h2><p>分布式实时消息架构，具有分布式和去中心化拓扑结构，具有无单点故障、故障容错、高可用和保证消息可靠传递的特点。</p>
+<ul>
+<li><p>topic <strong>消息主题</strong></p>
+<p>  用topic对消息进行分类</p>
+</li>
+<li><p>channel <strong>消费者组</strong></p>
+<p>  与消费者相关，多个消费者组成一个消费者组。当发布者发送一条消息到一个topic上时，消息会被复制到所有消费者连接的channel上，消费者通过这个channel读取消息。同一条消息只会被消费者组里面的一个消费者所消费。如果消费者来不及消费消息，则消息首先会在内存中排队，当量超过一定限制后会保存到磁盘上。</p>
+</li>
+<li><p>message <strong>消息对象</strong></p>
+<p>  消费者可以在获取消息后，可以选择结束消息，表明消息已被正常处理；也可将消息重新入队待到后面再处理。</p>
+</li>
+</ul>
+<h2 id="NSQ的主要组成"><a href="#NSQ的主要组成" class="headerlink" title="NSQ的主要组成"></a>NSQ的主要组成</h2><p><img src="/images/NSQ之基本组成.png" alt="image"></p>
+<ul>
+<li><p>nsqlookupd</p>
+<p>  管理nsqd节点拓扑信息并提供最终一致性的发现服务的守护进程。<br>  类似于zk/etcd一样的kv存储服务，存储了producer/topic/channel/consumer的信息。<br>  提供两个接口。TCP接口用来进行广播，HTTP接口给消费者进行服务发现和管理,客户端可以根据特定的topic查询nsqlookupd来发现nsqd生产者及nsqd广播topic和channel信息。</p>
+</li>
+<li><p>nsqd <strong>推荐一个生产者部署一个nsqd</strong></p>
+<p>  负责接收、排队、转发消息到客户端的守护进程。可以独立运行，并且定时向nsqlookupd服务发送心跳。</p>
+</li>
+<li><p>nsqadmin</p>
+<p>  nsq的web统计界面，可以实时查看集群的统计数据和执行某些管理任务。</p>
+</li>
+<li><p>tools</p>
+<ul>
+<li><p>nsq_stat</p>
+<p>查看指定topic/channel的状态</p>
+</li>
+<li><p>nsq_tail</p>
+<p>消费指定topic/channel的消息，并将其打印到stdout中</p>
+</li>
+<li><p>nsq_to_file</p>
+<p>消费指定topic/channel，并将消息写到文件中，并且有选择的滚动和压缩文件</p>
+</li>
+<li><p>nsq_to_http</p>
+<p>消费指定topic/channel，执行HTTP Request到指定的端点</p>
+</li>
+<li><p>nsq_to_nsq</p>
+<p>消费指定topic/channel，通过TCP将消息重发到指定目的地</p>
+</li>
+<li><p>to_nsq</p>
+<p>从std中获取输入并通过TCP将消息发布到指定nsqd中</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="消息传递流程"><a href="#消息传递流程" class="headerlink" title="消息传递流程"></a>消息传递流程</h2><p>Topic/Channel/Consumer</p>
+<p><img src="/images/NSQ之消息传递流程.gif" alt="image"></p>
+<p>消费者与NSQD的交互</p>
+<p><img src="/images/NSQ之消费者与NSQD的交互.png" alt="image"></p>
+<h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><ul>
+<li><p>消息传递担保</p>
+<p>  保证消息将至少交付一次<br>  如果消费者收到消息并成功执行，则返回给nsqd<code>FIN</code>，代表消息成功执行，此时nsqd将channel中的消息删除；如果消费者处理消息发生异常，则返回给nsqd<code>REQ</code>，此时nsqd将消息重新入队列，等待下次推送；如果消费者长时间没有响应导致超过了最大等待时间，则nsqd同样执行重入队列操作。<strong>因此消费者必须保证消息处理的幂等性</strong></p>
+</li>
+<li><p>重试次数</p>
+<p>  nsqd推送的消息中包含<code>attempts</code>字段，表示尝试的次数。每次重入队列后再次推送过来的消息中<code>attempts</code>字段都会加1，消费者可以根据实际需求对重试次数进行限制。</p>
+</li>
+<li><p>消息顺序</p>
+<p>  nsqd推送过来的消息是无序的。</p>
+</li>
+<li><p>Push or Pull</p>
+<p>  nsqd采用push，push好处在于消息处理更加实时，因此nsqd选择将消息放到内存中，只有当队列里的消息数量超过<code>--mem-queue-size</code>时才会对消息进行持久化，刷到磁盘中<br>  push+内存存储 or pull+磁盘存储</p>
+</li>
+<li><p>Push的流量控制</p>
+<p>  消费者和nsqd建立好连接之后，当准备好接收消息时，给nsqd发送一个<code>RDY</code>的响应，同时带上<code>rdy_count</code>表示准备接受的消息的数量，于是nsqd会给消费者推送<code>rdy_count</code>条消息；当消费者觉得自己可以接受更多消息时，只需要再次发送一次<code>RDY</code>命令更新<code>rdy_count</code>的值。</p>
+</li>
+<li><p>单点故障</p>
+</li>
+<li><p>可扩展性</p>
+</li>
+<li><p>可靠性</p>
+</li>
+<li><p>性能</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/14/Golang-资源池/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1618,7 +1855,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">76</span>
+                  <span class="site-state-item-count">77</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1640,7 +1877,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-count">134</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

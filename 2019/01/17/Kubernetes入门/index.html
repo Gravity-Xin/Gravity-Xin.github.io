@@ -88,7 +88,7 @@
 <meta property="og:description" content="当前主流的容器编排技术包括  docker compose: Docker官方的单机版本的容器编排工具 docker swarm: Docker官方的多机版本的容器编排工具 mesos + marathon: Apache提供的集群资源管理和容器编排工具 kubernetes: Google提供的容器编排工具，事实上已经成为容器编排的标准工具  主要功能 基于容器的应用的自动部署、滚动升级、自动修">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/Kubernetes之系统架构.png">
-<meta property="og:updated_time" content="2019-03-15T08:16:01.788Z">
+<meta property="og:updated_time" content="2019-03-18T06:08:59.910Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes入门">
 <meta name="twitter:description" content="当前主流的容器编排技术包括  docker compose: Docker官方的单机版本的容器编排工具 docker swarm: Docker官方的多机版本的容器编排工具 mesos + marathon: Apache提供的集群资源管理和容器编排工具 kubernetes: Google提供的容器编排工具，事实上已经成为容器编排的标准工具  主要功能 基于容器的应用的自动部署、滚动升级、自动修">
@@ -456,29 +456,6 @@
 </li>
 </ul>
 <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
-<li><code>Object</code><ul>
-<li>对持久实体进行描述</li>
-<li>一般包含两个嵌套对象<ul>
-<li>spec: 对象所需要的状态 <strong>K8S的核心就是保证应用总是在期望的状态</strong></li>
-<li>status: 对象实际的状态</li>
-</ul>
-</li>
-<li>使用<code>Kubectl</code>对对象进行管理</li>
-<li>创建对象时，一般使用.yaml文件来进行描述<ul>
-<li>必填字段<ul>
-<li>apiVersion: K8S API的版本</li>
-<li>kind: 对象类型</li>
-<li>metadata: 对象唯一标识，包含name, uid, namespace等信息</li>
-<li>spec: 对象所需要的状态</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>常用的<code>Object</code>对象包括:</p>
-<ul>
 <li><p><code>Namespace</code>: 用于创建多个虚拟集群，对资源进行隔离</p>
 <ul>
 <li>命名空间的名称在系统中唯一</li>
@@ -666,7 +643,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">76</span>
+                  <span class="site-state-item-count">77</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -688,7 +665,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-count">134</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
