@@ -88,7 +88,7 @@
 <meta property="og:description" content="当前主流的容器编排技术包括  docker compose: Docker官方的单机版本的容器编排工具 docker swarm: Docker官方的多机版本的容器编排工具 mesos + marathon: Apache提供的集群资源管理和容器编排工具 kubernetes: Google提供的容器编排工具，事实上已经成为容器编排的标准工具  主要功能 基于容器的应用的自动部署、滚动升级、自动修">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/Kubernetes之系统架构.png">
-<meta property="og:updated_time" content="2019-03-18T06:08:59.910Z">
+<meta property="og:updated_time" content="2019-03-19T03:35:09.949Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes入门">
 <meta name="twitter:description" content="当前主流的容器编排技术包括  docker compose: Docker官方的单机版本的容器编排工具 docker swarm: Docker官方的多机版本的容器编排工具 mesos + marathon: Apache提供的集群资源管理和容器编排工具 kubernetes: Google提供的容器编排工具，事实上已经成为容器编排的标准工具  主要功能 基于容器的应用的自动部署、滚动升级、自动修">
@@ -494,20 +494,28 @@
 </ul>
 <p>管理<code>Object</code>的机制包括:</p>
 <ul>
-<li><p><code>Label</code>: 识别Object的标签</p>
-<ul>
-<li>key/value对</li>
-<li>使用Label Selector用于过滤出符合标签条件的Object<ul>
-<li>等式: app=nginx env != production</li>
+<li><code>Label</code>: 识别Object的标签<ul>
+<li>key/value对<ul>
+<li>key: 长度小于63字符，只能为数字、字母、下划线、_和.，且以字母开头</li>
+<li>value: 长度小于63字符，可以为空，只能为数字、字母、下划线、_和.，且以字母或数字开头结尾</li>
+</ul>
+</li>
+<li>使用<code>kubectl get --selector</code>命令可以通过指定的标签选择器过滤出符合条件的Object<ul>
+<li>等式: app=nginx env!=production</li>
 <li>集合: env in (production, test)</li>
 <li>组合: app=nginx, env=test</li>
 </ul>
 </li>
+<li>使用<code>kubectl label</code>命令更新对象的标签</li>
+<li>许多资源如<code>Deployment</code>支持使用内嵌字段来定义它们的标签选择器，从而从集群中获取符合条件的资源<ul>
+<li><code>matchLabels</code>: 直接给定标签的KV对</li>
+<li><code>matchExpressions</code>: 基于给定的表达式来定义标签选择器</li>
 </ul>
 </li>
-<li><p><code>Annotation</code>: 对Object的描述</p>
-<ul>
-<li>key/value对</li>
+</ul>
+</li>
+<li><code>Annotation</code>: 对Object的描述<ul>
+<li>key/value对，键值大小不受限制</li>
 <li>记录Object的一些附属信息</li>
 </ul>
 </li>
@@ -643,7 +651,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-count">79</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -665,7 +673,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">134</span>
+                  <span class="site-state-item-count">139</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
