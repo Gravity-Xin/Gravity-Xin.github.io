@@ -59,8 +59,6 @@ tags:
   - `labels`: 对象的标签
   - `annotations`: 对象的注解
 - `spec`: 对象应该满足的要求。不同类型的资源，该字段中包含的下级字段是有区别的 **K8S的核心就是通过控制器保证资源对象总是在期望的状态**
-  - `container`: 对象使用的容器
-  - `toleration`: 对象的容忍度
 - `status`: 对象实际的运行状态，该字段由集群进行维护，而不是用户自己定义
 
 使用`kubectl explain`来查看集群资源的定义方式，如`kubectl explain pod`, `kubectl explain pod.spec`等

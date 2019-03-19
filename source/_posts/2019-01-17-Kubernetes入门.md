@@ -118,11 +118,16 @@ Master-Slave(Node)结构
 
 - `Label`: 识别Object的标签
   - key/value对
-  - 使用Label Selector用于过滤出符合标签条件的Object
-    - 等式: app=nginx env != production
+    - key: 长度小于63字符，只能为数字、字母、下划线、_和.，且以字母开头
+    - value: 长度小于63字符，可以为空，只能为数字、字母、下划线、_和.，且以字母或数字开头结尾
+  - 使用`kubectl get --selector`命令可以通过指定的标签选择器过滤出符合条件的Object
+    - 等式: app=nginx env!=production
     - 集合: env in (production, test)
     - 组合: app=nginx, env=test
-
+  - 使用`kubectl label`命令更新对象的标签
+  - 许多资源如`Deployment`支持使用内嵌字段来定义它们的标签选择器，从而从集群中获取符合条件的资源
+    - `matchLabels`: 直接给定标签的KV对
+    - `matchExpressions`: 基于给定的表达式来定义标签选择器
 - `Annotation`: 对Object的描述
-  - key/value对
+  - key/value对，键值大小不受限制
   - 记录Object的一些附属信息
