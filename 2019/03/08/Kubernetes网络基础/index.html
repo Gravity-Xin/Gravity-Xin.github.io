@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="三种网络 节点网络: 所有Node组成的网络 集群网络: 所有Service组成的网络 Pod网络: 所有Pod组成的网络    三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络  所有的网络相关，其本质上都是iptables或者ipvs中的规则在起作用，以及dns解析在起作用   三种通信  Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过localhos">
+<meta name="description" content="三种网络 节点网络: 所有Node组成的网络，是真实有效的IP地址，与物理网卡或虚拟网卡绑定 集群网络: 所有Service组成的网络，是虚拟的IP地址，不与物理网卡或虚拟网卡绑定。通过DNS对Service名称进行解析，通过在iptables、ipvs中添加规则实现对Pod的访问 Pod网络: 所有Pod组成的网络，是真是有效的IP地址，与虚拟网卡绑定    三者处于不同的网段中，外部的访问分">
 <meta name="keywords" content="Pod,Service,Node">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kubernetes网络基础">
 <meta property="og:url" content="http://yoursite.com/2019/03/08/Kubernetes网络基础/index.html">
 <meta property="og:site_name" content="Yihang&#39;s Blog">
-<meta property="og:description" content="三种网络 节点网络: 所有Node组成的网络 集群网络: 所有Service组成的网络 Pod网络: 所有Pod组成的网络    三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络  所有的网络相关，其本质上都是iptables或者ipvs中的规则在起作用，以及dns解析在起作用   三种通信  Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过localhos">
+<meta property="og:description" content="三种网络 节点网络: 所有Node组成的网络，是真实有效的IP地址，与物理网卡或虚拟网卡绑定 集群网络: 所有Service组成的网络，是虚拟的IP地址，不与物理网卡或虚拟网卡绑定。通过DNS对Service名称进行解析，通过在iptables、ipvs中添加规则实现对Pod的访问 Pod网络: 所有Pod组成的网络，是真是有效的IP地址，与虚拟网卡绑定    三者处于不同的网段中，外部的访问分">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/Kubernetes之三种网络.png">
-<meta property="og:updated_time" content="2019-03-18T05:45:02.957Z">
+<meta property="og:updated_time" content="2019-03-20T08:52:49.747Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes网络基础">
-<meta name="twitter:description" content="三种网络 节点网络: 所有Node组成的网络 集群网络: 所有Service组成的网络 Pod网络: 所有Pod组成的网络    三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络  所有的网络相关，其本质上都是iptables或者ipvs中的规则在起作用，以及dns解析在起作用   三种通信  Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过localhos">
+<meta name="twitter:description" content="三种网络 节点网络: 所有Node组成的网络，是真实有效的IP地址，与物理网卡或虚拟网卡绑定 集群网络: 所有Service组成的网络，是虚拟的IP地址，不与物理网卡或虚拟网卡绑定。通过DNS对Service名称进行解析，通过在iptables、ipvs中添加规则实现对Pod的访问 Pod网络: 所有Pod组成的网络，是真是有效的IP地址，与虚拟网卡绑定    三者处于不同的网段中，外部的访问分">
 <meta name="twitter:image" content="http://yoursite.com/images/Kubernetes之三种网络.png">
 
 
@@ -356,9 +356,9 @@
       
         <ul>
 <li>三种网络<ul>
-<li>节点网络: 所有Node组成的网络</li>
-<li>集群网络: 所有Service组成的网络</li>
-<li>Pod网络: 所有Pod组成的网络</li>
+<li>节点网络: 所有Node组成的网络，是真实有效的IP地址，与物理网卡或虚拟网卡绑定</li>
+<li>集群网络: 所有Service组成的网络，是虚拟的IP地址，不与物理网卡或虚拟网卡绑定。通过DNS对Service名称进行解析，通过在iptables、ipvs中添加规则实现对Pod的访问</li>
+<li>Pod网络: 所有Pod组成的网络，是真是有效的IP地址，与虚拟网卡绑定</li>
 </ul>
 </li>
 </ul>
@@ -376,7 +376,7 @@
 <li>Pod与Service之间，由于Service在K8S集群中有独立的IP地址和DNS名称，可以通过其与Service直接进行通信</li>
 </ul>
 </li>
-<li><p>网络配置和网络策略</p>
+<li><p>网络配置和网络策略: 提供了<code>CNI</code>容器网络接口规范，可以将第三方插件纳入到集群中</p>
 <ul>
 <li>网络配置: Pod和Service的IP分配</li>
 <li>网络策略: Pod之间是否可以互相访问</li>
@@ -503,7 +503,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-count">81</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

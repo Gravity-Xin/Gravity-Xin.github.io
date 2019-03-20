@@ -249,6 +249,595 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/15/Golang-defer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/15/Golang-defer/" itemprop="url">Golang-defer</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-15T11:10:26+08:00">
+                2019-02-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/15/Golang-defer/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/15/Golang-defer/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>defer语句是Golang提供的一种用于<code>注册延时调用</code>的机制，可以让函数或者语句在当前函数执行完毕后<code>正常return和异常panic</code>执行</p>
+<ul>
+<li>使用场景</li>
+</ul>
+<p>一般defer语句用在资源回收的场景下，如关闭文件、释放锁、关闭连接等，如</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">f, err := os.Open(filename)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span>&#123;</span><br><span class="line">    <span class="built_in">panic</span>(err)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> f != <span class="literal">nil</span>&#123;</span><br><span class="line">    <span class="keyword">defer</span> f.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>底层原理</li>
+</ul>
+<p>defer语句在进行注册时，将注册的语句或函数压入到一个栈中，在当前函数return前，以<code>先进后出</code>的顺序执行，原因在于后面注册的语句或函数有可能依赖前面的资源，即资源的释放顺序应该与资源的申请顺序相反</p>
+<p>defer注册的语句或函数对外部变量的引用有两种方式，分别作为<code>函数参数</code>或<code>闭包引用</code>。在作为函数参数时，<code>在defer定义处就将变量当前值传递给defer，并且被缓存起来</code>；在作为闭包引用时，则<code>在注册的语句或函数真正调用时根据整个上下文确定变量当前值</code>。 <strong>函数参数中使用的是值传递；闭包中捕获的常量和变量都是引用传递</strong></p>
+<p>当变量以函数参数的形式被defer使用时，如果变量是值类型，则变量的值与defer定义时一致；如果变量是一个引用类型(如slice、map、chan或指针)时，虽然将变量当前值缓存了，但是引用指向的值可能会有变化</p>
+<p>defer注册的语句或函数在return之前执行，实际执行流程是</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">返回值 = xxx</span><br><span class="line">调用defer注册的语句或函数</span><br><span class="line">空的return</span><br></pre></td></tr></table></figure>
+<ul>
+<li>配合recover，实现异常处理</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/14/架构师必备的技术栈/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/14/架构师必备的技术栈/" itemprop="url">架构师必备的技术栈</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T10:44:26+08:00">
+                2019-02-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Others/" itemprop="url" rel="index">
+                    <span itemprop="name">Others</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/14/架构师必备的技术栈/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/14/架构师必备的技术栈/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ul>
+<li><p>计算机基础</p>
+<ul>
+<li>操作系统<ul>
+<li>CPU多级缓存</li>
+<li>进程/线程/协程</li>
+<li>系统空间/用户空间</li>
+<li>I/O模型<ul>
+<li>Block IO</li>
+<li>Non Block IO</li>
+<li>Multiplex IO (Reactor)<ul>
+<li>select</li>
+<li>poll</li>
+<li>epoll</li>
+</ul>
+</li>
+<li>Async IO (Proactor)</li>
+</ul>
+</li>
+<li>Linux原理</li>
+</ul>
+</li>
+<li>体系机构</li>
+<li>数据结构<ul>
+<li>队列</li>
+<li>集合</li>
+<li>链表、数组</li>
+<li>字典、关联数组</li>
+<li>栈</li>
+<li>树<ul>
+<li>二叉树</li>
+<li>完全二叉树</li>
+<li>平衡二叉树</li>
+<li>二叉查找时</li>
+<li>红黑树</li>
+<li>B, B+, B*树</li>
+<li>LSM树</li>
+</ul>
+</li>
+<li>BitSet</li>
+</ul>
+</li>
+<li>算法<ul>
+<li>排序<ul>
+<li>选择排序</li>
+<li>冒泡排序</li>
+<li>插入排序</li>
+<li>快速排序</li>
+<li>归并排序</li>
+<li>希尔排序</li>
+<li>堆排序</li>
+<li>计数排序</li>
+<li>桶排序</li>
+<li>基数排序</li>
+</ul>
+</li>
+<li>查找<ul>
+<li>二分查找</li>
+</ul>
+</li>
+<li>布隆过滤器</li>
+<li>字符串比较<ul>
+<li>KMP算法</li>
+</ul>
+</li>
+<li>深度/广度优先</li>
+<li>贪心算法</li>
+<li>回溯算法</li>
+<li>剪枝算法</li>
+<li>动态规划</li>
+<li>朴素贝叶斯</li>
+<li>推荐算法</li>
+<li>最小生成树</li>
+<li>最短路径</li>
+</ul>
+</li>
+<li>数据库<ul>
+<li>关系型<ul>
+<li>三大范式</li>
+</ul>
+</li>
+<li>Nosql</li>
+</ul>
+</li>
+<li>计算机网络<ul>
+<li>TCP/IP</li>
+<li>HTTP</li>
+<li>短连接/长连接</li>
+<li>序列化框架<ul>
+<li>Protobuf</li>
+</ul>
+</li>
+<li>WebSocket</li>
+</ul>
+</li>
+<li>编程语言<ul>
+<li>静态语言</li>
+<li>动态语言</li>
+<li>函数式</li>
+</ul>
+</li>
+<li>设计模式<ul>
+<li>六大原则</li>
+<li>23种常见设计模式与应用场景</li>
+<li>MVC</li>
+<li>UML</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>常用中间件</p>
+<ul>
+<li>RelationDB<ul>
+<li>Mysql<ul>
+<li>InnoDB/MyISAM</li>
+<li>优化</li>
+<li>索引<ul>
+<li>聚集/非聚集索引</li>
+<li>复合索引</li>
+</ul>
+</li>
+<li>Explain</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>搜索引擎<ul>
+<li>Lucene</li>
+<li>Solr</li>
+<li>Elasticsearch</li>
+<li>Sphinx</li>
+</ul>
+</li>
+<li>WebServer<ul>
+<li>Nginx</li>
+<li>Tomcat</li>
+</ul>
+</li>
+<li>Nosql<ul>
+<li>Redis</li>
+<li>Memcache</li>
+<li>HBase</li>
+</ul>
+</li>
+<li>消息队列<ul>
+<li>消息总线</li>
+<li>Kafka</li>
+<li>Redis</li>
+<li>ZeroMQ</li>
+<li>RabbitMQ</li>
+<li>NSQ</li>
+</ul>
+</li>
+<li>RPC<ul>
+<li>gRPC</li>
+<li>Thrit</li>
+</ul>
+</li>
+<li>日志系统<ul>
+<li>ELK</li>
+</ul>
+</li>
+<li>配置中心<ul>
+<li>Zookeeper</li>
+<li>Etcd</li>
+<li>Consul</li>
+</ul>
+</li>
+<li>大数据<ul>
+<li>流式计算<ul>
+<li>Storm</li>
+<li>Flink</li>
+<li>Kafka Stream</li>
+</ul>
+</li>
+<li>Hadoop<ul>
+<li>HDFS</li>
+<li>MapReduce</li>
+<li>Yarn</li>
+</ul>
+</li>
+<li>Spark</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>高性能问题</p>
+<ul>
+<li>高并发问题<ul>
+<li>多线程/多协程</li>
+<li>线程/协程安全</li>
+<li>I/O模型 Reactor/Proactor</li>
+<li>一致性与事务<ul>
+<li>ACID</li>
+<li>事务的隔离级别</li>
+<li>MVCC</li>
+</ul>
+</li>
+<li>锁<ul>
+<li>悲观/乐观锁</li>
+<li>读写锁</li>
+<li>可重入/不可重入</li>
+<li>RingBuffer</li>
+<li>CopyOnWrite</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>负载均衡</li>
+<li>读写分离</li>
+<li>分库分表</li>
+<li>Nosql</li>
+</ul>
+</li>
+<li><p>高可用问题</p>
+</li>
+<li><p>高可扩展性</p>
+</li>
+<li><p>分布式</p>
+</li>
+<li><p>微服务</p>
+<ul>
+<li>ServiceMesh</li>
+</ul>
+</li>
+<li><p>安全</p>
+<ul>
+<li>Web安全<ul>
+<li>XSS</li>
+<li>CSRF</li>
+<li>SQL注入</li>
+<li>脚本注入</li>
+</ul>
+</li>
+<li>DDos防范</li>
+<li>加密解密<ul>
+<li>对称加密</li>
+<li>非对称加密</li>
+</ul>
+</li>
+<li>授权认证<ul>
+<li>RBAC</li>
+<li>JWT</li>
+<li>OAuth2.0</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>运维部署</p>
+<ul>
+<li>监控</li>
+<li>CI/CD</li>
+<li>运维自动化</li>
+<li>容器技术<ul>
+<li>Docker</li>
+<li>K8S</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>项目管理</p>
+<ul>
+<li>架构评审</li>
+<li>重构</li>
+<li>代码规范</li>
+<li>代码审查</li>
+<li>看板管理</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/12/TCP-IP协议/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1731,401 +2320,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/11/CPU-GPU-FPGA-ASIC/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/11/CPU-GPU-FPGA-ASIC/" itemprop="url">CPU GPU FPGA ASIC</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-11T10:26:50+08:00">
-                2019-02-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Computer-Architecture/" itemprop="url" rel="index">
-                    <span itemprop="name">Computer Architecture</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/02/11/CPU-GPU-FPGA-ASIC/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/11/CPU-GPU-FPGA-ASIC/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li><p>数据的训练: 使用CPU或GPU</p>
-<ul>
-<li>CPU VS GPU<ul>
-<li>相同点<ul>
-<li>基于摩尔定律，该定律已步入晚年</li>
-<li>基于冯·诺依曼体系结构，指令译码执行、共享内存，主要包含控制器(Control)、寄存器(Cache、DRAM)和算术逻辑部件运算器(Arithmetic Logical Unit)等</li>
-<li>指令流的控制逻辑复杂，不可能有太多条独立的指令流，因此使用SIMD(单指令流多数据流)来让多个执行单元以同样的步调处理不同的数据</li>
-<li>使用内存来保存中间状态和进行单元间的通信，由于内存是共享的，因此需要提供访问仲裁的机制</li>
-<li>为了利用内存访问的局部性，每一个执行单元都有一个私有的缓存，因此需要提供维持缓存一致性的机制</li>
-</ul>
-</li>
-<li>不同点<ul>
-<li>CPU的执行单元可以执行任意指令，需要提供分支跳转处理逻辑等，因此控制器和寄存器占据了较大部分；GPU只需要进行高速运算，而不需要分支跳转处理逻辑等，因此ALU占据了较大部分</li>
-<li>CPU是基于低延时的设计，使用缓存、分支预测等降低延时；GPU是基于大吞吐量的设计，使用大量的可以并行执行的ALU来进行运算</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>数据的推断: 使用FPGA或ASIC</p>
-<ul>
-<li>FPGA(Field Programmable Gate Array，现场可编程门阵列)<ul>
-<li>无指令、无需共享内存的体系结构</li>
-<li>可以使用MIMD(多指令流多数据流)来执行</li>
-<li>每个逻辑单元的功能在重编程(烧写)时就已经确定，不需要指令</li>
-<li>寄存器和片上内存(BRAM)是属于各自的控制逻辑，无需内存访问仲裁和私有缓存</li>
-</ul>
-</li>
-<li>ASIC(Application Specific Integrated Circuit，专用芯片)<ul>
-<li>研发成本高，周期长</li>
-<li>针对特定功能深度学习算法量身定做，灵活性比FPGA差</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/25/Elasticsearch入门/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/25/Elasticsearch入门/" itemprop="url">Elasticsearch入门</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-25T17:35:48+08:00">
-                2019-01-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index">
-                    <span itemprop="name">Elasticsearch</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/01/25/Elasticsearch入门/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/25/Elasticsearch入门/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>一个基于lucene的分布式多用户的存储和全文搜索引擎，提供Restful接口</p>
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
-<li><p>Index: 索引，类似于mysql中的database</p>
-</li>
-<li><p>Type: 类型，类似于mysql中的table</p>
-</li>
-<li><p>Document: JSON文档，类似于mysql中的row</p>
-<ul>
-<li>包含多个Field</li>
-</ul>
-</li>
-<li><p>Mapping: JSON文档的schema，类似于mysql中的table schema</p>
-</li>
-<li><p>QueryDSL: 查询语句，类似于mysql中的sql语句</p>
-</li>
-<li><p>GET/PUT/POST/DELETE: Restful接口，实现文档的增删改查</p>
-</li>
-</ul>
-<h2 id="基本功能"><a href="#基本功能" class="headerlink" title="基本功能"></a>基本功能</h2><ul>
-<li><p>倒排索引</p>
-<ul>
-<li>对所有文档中的内容进行分词，得到单词列表<ul>
-<li>Elasticsearch会使用标准化规则来处理单词中的大小写、单复数、同义词等问题，提高查询的命中率</li>
-</ul>
-</li>
-<li>为每一个单词，赋予唯一的ID</li>
-<li>建立文档中的单词ID与文档ID的关系</li>
-<li>还可以记录每一个单词在文档中出现的次数称为单词频率信息、每一个单词在文档中出现的位置等</li>
-<li>这样便通过分词获取到相关的文档，还可以通过单词频率信息确定单词与文档的相似度以进行排序</li>
-</ul>
-</li>
-<li><p>分词器: 从一串文本中切分出一个一个的词条，同时对每一个词条进行标准化处理</p>
-<ul>
-<li>处理过程<ul>
-<li>character filter: 分词前的预处理，如过滤HTML标签、特殊符号转换等</li>
-<li>tokenizer: 分词操作</li>
-<li>token filter: 标准化操作</li>
-</ul>
-</li>
-<li>内置分词器<ul>
-<li>standard: 默认分词器，将词汇单元转换为小写形式，去除停用词和标点符号，支持中文的单字切分</li>
-<li>simple: 使用非字母字符来分割文本信息，将词汇单元统一为小写形式，去除数字类型的字符</li>
-<li>whitespace: 仅去除空格，不支持中文</li>
-<li>language: 特定语言的分词器，不支持中文</li>
-</ul>
-</li>
-<li>中文分词器: <a href="https://github.com/medcl/elasticsearch-analysis-ik/" target="_blank" rel="noopener">ik</a></li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2171,7 +2370,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-count">81</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

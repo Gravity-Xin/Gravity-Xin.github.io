@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="Pod资源的spec字段 containers: Pod使用的容器列表，一个Pod中可以含有多个容器 args: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数 command: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中 env: 容器中的环境变量 name: 容器名称 image: 容器使用的镜像 imagePullPolicy:">
+<meta name="description" content="Pod: Kubernetes中的最小调度单元，可以包含一个或多个容器 Pod资源的spec字段 containers: Pod使用的容器列表，一个Pod中可以含有多个容器 args: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数 command: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中 env: 容器中的环境变量 name: 容">
 <meta name="keywords" content="Pod">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kubernetes中的Pod">
 <meta property="og:url" content="http://yoursite.com/2019/03/19/Kubernetes中的Pod/index.html">
 <meta property="og:site_name" content="Yihang&#39;s Blog">
-<meta property="og:description" content="Pod资源的spec字段 containers: Pod使用的容器列表，一个Pod中可以含有多个容器 args: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数 command: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中 env: 容器中的环境变量 name: 容器名称 image: 容器使用的镜像 imagePullPolicy:">
+<meta property="og:description" content="Pod: Kubernetes中的最小调度单元，可以包含一个或多个容器 Pod资源的spec字段 containers: Pod使用的容器列表，一个Pod中可以含有多个容器 args: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数 command: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中 env: 容器中的环境变量 name: 容">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/Kubernetes之Pod生命周期.png">
-<meta property="og:updated_time" content="2019-03-19T09:52:03.656Z">
+<meta property="og:updated_time" content="2019-03-20T06:20:59.727Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes中的Pod">
-<meta name="twitter:description" content="Pod资源的spec字段 containers: Pod使用的容器列表，一个Pod中可以含有多个容器 args: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数 command: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中 env: 容器中的环境变量 name: 容器名称 image: 容器使用的镜像 imagePullPolicy:">
+<meta name="twitter:description" content="Pod: Kubernetes中的最小调度单元，可以包含一个或多个容器 Pod资源的spec字段 containers: Pod使用的容器列表，一个Pod中可以含有多个容器 args: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数 command: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中 env: 容器中的环境变量 name: 容">
 <meta name="twitter:image" content="http://yoursite.com/images/Kubernetes之Pod生命周期.png">
 
 
@@ -354,7 +354,8 @@
       
 
       
-        <h2 id="Pod资源的spec字段"><a href="#Pod资源的spec字段" class="headerlink" title="Pod资源的spec字段"></a>Pod资源的spec字段</h2><ul>
+        <p>Pod: Kubernetes中的最小调度单元，可以包含一个或多个容器</p>
+<h2 id="Pod资源的spec字段"><a href="#Pod资源的spec字段" class="headerlink" title="Pod资源的spec字段"></a>Pod资源的spec字段</h2><ul>
 <li><code>containers</code>: Pod使用的容器列表，一个Pod中可以含有多个容器<ul>
 <li><code>args</code>: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数</li>
 <li><code>command</code>: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中</li>
@@ -374,6 +375,9 @@
 <li><code>volumeMounts</code>: 存储卷在容器中的挂载点</li>
 </ul>
 </li>
+<li><code>hostIPC</code>: 设置Pod中的容器是否与共享Node节点的IPC名称空间</li>
+<li><code>hostNetwork</code>: 设置Pod中的容器是否与共享Node节点的Network名称空间，此时可以直接访问Node地址来直接访问Pod，而不再需要通过Service将Pod暴露</li>
+<li><code>hostPID</code>: 设置Pod中的容器是否与共享Node节点的PID名称空间</li>
 <li><code>nodeName</code>: 节点名称，直接指定Pod运行的节点名称</li>
 <li><code>nodeSelector</code>: 节点选择器，被调度器使用，用于选择符合条件的Node节点</li>
 <li><code>initContainers</code>: 串行执行的初始化容器列表，一般用于给主容器初始化系统环境，在主容器启动前退出</li>
@@ -437,8 +441,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/03/19/Kubernetes中的控制器/" rel="prev" title="Kubernetes中的控制器">
-                Kubernetes中的控制器 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/03/19/Kubernetes中的无状态Pod控制器/" rel="prev" title="Kubernetes中的无状态Pod控制器">
+                Kubernetes中的无状态Pod控制器 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -522,7 +526,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-count">81</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

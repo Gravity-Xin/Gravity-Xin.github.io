@@ -249,6 +249,319 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/16/Golang-context/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/16/Golang-context/" itemprop="url">Golang-context</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-16T13:00:04+08:00">
+                2018-11-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/16/Golang-context/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/11/16/Golang-context/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>在Go编写的服务器程序中，多个请求在单独的goroutine中运行，Context为这些请求增加了<code>截止日期(请求超时)、主动取消请求、存储和请求相关的数据</code>的功能，并且是多goroutine下可以安全的使用</p>
+<h2 id="Context接口"><a href="#Context接口" class="headerlink" title="Context接口"></a>Context接口</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Context <span class="keyword">interface</span> &#123;</span><br><span class="line">    Deadline() (deadline time.Time, ok <span class="keyword">bool</span>) <span class="comment">//获取Context的截止日期，如果没有设置截止日期，则ok==false</span></span><br><span class="line"></span><br><span class="line">    Done() &lt;-<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125; <span class="comment">// 返回Context关闭时会被close的chan，这个chan可在多个goroutine上进行广播，在截止日期到达、主动关闭时Context会被关闭</span></span><br><span class="line">                           <span class="comment">// 一般用在select语句中</span></span><br><span class="line"></span><br><span class="line">    Err() error <span class="comment">// 返回Context关闭的原因，如果Context尚未被关闭，则返回nil</span></span><br><span class="line"></span><br><span class="line">    Value(key <span class="keyword">interface</span>&#123;&#125;) <span class="keyword">interface</span>&#123;&#125; <span class="comment">// 返回Context中存储的值，可以通过类型推断来获取值的具体类型</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="基本方法"><a href="#基本方法" class="headerlink" title="基本方法"></a>基本方法</h2><p>多个Context之间可以有继承关系</p>
+<p><code>Background</code>: 所有Context的root，没有截止日期，也不会被关闭<br><code>WithCancel</code>: 返回一个可以主动取消的Context，当父Context的Done被关闭或者主动取消时，该Context的Done会被关闭<br><code>WithDeadline</code>, <code>WithTimeout</code>: 返回一个可以主动取消和设置了截止时间的Context，当父Context的Done被关闭或者主动取消或到达截止时间时，该Context的Done会被关闭<br><code>WithValue</code>: 返回一个包含了K-V对的Context</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>主要关闭的Context</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">someHandler</span><span class="params">()</span></span> &#123;</span><br><span class="line">    ctx, cancel := context.WithCancel(context.Background())</span><br><span class="line">    <span class="keyword">go</span> doStuff(ctx)</span><br><span class="line">    time.Sleep(<span class="number">10</span> * time.Second) <span class="comment">//10秒后取消</span></span><br><span class="line">    cancel()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">doStuff</span><span class="params">(ctx context.Context)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        time.Sleep(<span class="number">1</span> * time.Second)</span><br><span class="line">        <span class="keyword">select</span> &#123; <span class="comment">//每1秒work一下，同时会判断ctx是否被取消了，如果是就退出</span></span><br><span class="line">        <span class="keyword">case</span> &lt;-ctx.Done():</span><br><span class="line">            logg.Printf(<span class="string">"done"</span>)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            logg.Printf(<span class="string">"work"</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/15/Golang-常见并发模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/15/Golang-常见并发模式/" itemprop="url">Golang-常见并发模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-15T20:10:54+08:00">
+                2018-11-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/15/Golang-常见并发模式/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/11/15/Golang-常见并发模式/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Ping-Pong"><a href="#Ping-Pong" class="headerlink" title="Ping-Pong"></a>Ping-Pong</h2><p>两个goroutine之间交替读取chan</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Ball <span class="keyword">struct</span>&#123;hits <span class="keyword">int</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    table := <span class="built_in">make</span>(<span class="keyword">chan</span> *Ball)</span><br><span class="line">    <span class="keyword">go</span> player(<span class="string">"ping"</span>, table)</span><br><span class="line">    <span class="keyword">go</span> player(<span class="string">"pong"</span>, table)</span><br><span class="line"></span><br><span class="line">    table &lt;- <span class="built_in">new</span>(Ball)</span><br><span class="line">    time.Sleep(<span class="number">1</span> * time.Second)</span><br><span class="line">    &lt;-table</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">player</span><span class="params">(name <span class="keyword">string</span>, table <span class="keyword">chan</span> *Ball)</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>&#123;</span><br><span class="line">        ball := &lt;-table</span><br><span class="line">        ball.hits++</span><br><span class="line">        fmt.Println(name, ball.hits)</span><br><span class="line">        time.Sleep(<span class="number">100</span> * time.Millisecond)</span><br><span class="line">        table &lt;- ball</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">pong 1</span><br><span class="line">ping 2</span><br><span class="line">pong 3</span><br><span class="line">ping 4</span><br><span class="line">pong 5</span><br><span class="line">ping 6</span><br><span class="line">pong 7</span><br><span class="line">ping 8</span><br><span class="line">pong 9</span><br><span class="line">ping 10</span><br></pre></td></tr></table></figure>
+<h2 id="Fan-In"><a href="#Fan-In" class="headerlink" title="Fan_In"></a>Fan_In</h2><p>任务的收集，一个Consumer，多个Producer</p>
+<h2 id="Fan-Out"><a href="#Fan-Out" class="headerlink" title="Fan_Out"></a>Fan_Out</h2><p>任务的分发，多个Consumer，一个Producer</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/15/NSQ与Kafka的对比/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1765,401 +2078,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/12/Docker入门/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/12/Docker入门/" itemprop="url">Docker入门</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-12T10:58:35+08:00">
-                2018-11-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Docker-K8S/" itemprop="url" rel="index">
-                    <span itemprop="name">Docker/K8S</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/11/12/Docker入门/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/11/12/Docker入门/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
-<li>虚拟化的实现方式<ul>
-<li>主机级别的虚拟化: 基于Hypervisor，模拟出一个完整的硬件平台，需要用户自行安装OS等软件，然后才能运行应用</li>
-<li>容器级别的虚拟化: 基于操作系统提供的接口<ul>
-<li>使用Namespaces对进程(PID)、进程间通信(IPC)、网络(Network)、文件(Mount)、用户(User)、主机名/域名(UTS)等进行隔离</li>
-<li>使用ControlGroups对CPU、内存、DiskIO、NetworkIO等资源进行分组和控制</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之虚拟机.png" alt="img"></p>
-<p><img src="/images/Docker之容器化.png" alt="img"></p>
-<ul>
-<li><p>容器级别的虚拟化功能最早由LXC(LinuX Container)提供，但是LXC不易使用</p>
-</li>
-<li><p>Docker简化了用户大规模使用容器技术的难度</p>
-<ul>
-<li>使用镜像文件来管理容器运行所需的数据</li>
-<li>对容器的创建、部署和删除等进行管理</li>
-<li><code>Build Once, Deploy AnyWhere</code></li>
-</ul>
-</li>
-<li><p>C/S架构: Client-Deamon</p>
-</li>
-<li><p>Image: 镜像(静态)</p>
-<ul>
-<li>使用分层的文件系统，bootfs(引导文件系统)-&gt;rootfs(操作系统)</li>
-<li>使用联合加载技术在rootfs上面加载更多层的<code>只读文件系统</code></li>
-<li>镜像名称: <code>Registry/用户名/仓库名(Repository):标签</code><ul>
-<li>默认是DockerHub中的镜像，此时Registry为空</li>
-<li>对于顶级镜像，如<code>nginx</code>、<code>redis</code>等，用户名为空</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Container: 容器(动态)</p>
-<ul>
-<li>交互式容器</li>
-<li>守护式容器</li>
-<li>写时复制特性，使用一个新的读写层来记录镜像的变化</li>
-</ul>
-</li>
-<li><p>Registry: 镜像仓库</p>
-<ul>
-<li>本地</li>
-<li>远程 <strong>必要时需要配置镜像加速器，如阿里云、网易、中科大等</strong></li>
-</ul>
-</li>
-</ul>
-<p>整体结构: <img src="/images/Docker之基本架构.jpg" alt="img"></p>
-<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><ul>
-<li><p>所有的命令按照Container、Image、Network、Volume等进行了分组，以便于记忆</p>
-</li>
-<li><p>Container生命周期相关</p>
-<ul>
-<li><code>docker container run [OPTIONS] IMAGE [COMMNAD] [arg...]</code>: 创建容器并启动容器和运行命令</li>
-<li><code>docker container create [OPTIONS] IMAGE [COMMAND] [arg...]</code>: 创建容器但并不启动它</li>
-<li><code>docker container start|stop|restart [OPTIONS] CONTAINER [CONTAINER...]</code>: 启动|停止|重启容器</li>
-<li><code>docker container kill [OPTIONS] CONTAINER</code>: 想容器发送信号</li>
-<li><code>docker container rm [OPRIONS] CONTAINER [CONTAINER...]</code>: 删除容器</li>
-<li><code>docker container pause|unpause CONTAINER [CONTAINER...]</code>: 暂停|恢复容器</li>
-<li><code>docker container exec [OPTIONS] CONTAINER COMMAND [arg...]</code>: 在运行的容器中执行命令</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之容器状态.png" alt="img"></p>
-<ul>
-<li><p>Container管理相关</p>
-<ul>
-<li><code>docker container ls [OPTIONS]</code>: 列出容器</li>
-<li><code>docker container inspect [OPTIONS] CONTAINER</code>: 查看容器的元数据</li>
-<li><code>docker container top CONTAINER</code>: 查看容器中运行的进程</li>
-<li><code>docker container stats CONTAINER</code>: 查看容器中的资源使用情况，如内存、CPU、网络IO、磁盘IO等</li>
-<li><code>docker container attach [OPTIONS] CONTANER</code>: 连接到正在运行的容器中</li>
-<li><code>docker container logs [OPTIONS] CONTAINER</code>: 查看容器中进程的日志</li>
-<li><code>docker container export [OPTIONS] CONTAINER</code>: 将容器中的文件系统打包为tar文件</li>
-<li><code>docker container commit [OPTIONS] CONTAINER</code>: 从指定容器创建一个新的镜像</li>
-<li><code>docker container cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH</code>: 文件从容器拷贝到宿主机</li>
-<li><code>docker container cp [OPTIONS] SRC_PATH CONTAINER:DEST_PATH</code>: 文件从宿主机拷贝到容器</li>
-<li><code>docker container diff CONTAINER</code>: 查看容器中文件结构的变化信息</li>
-</ul>
-</li>
-<li><p>本地Image管理相关</p>
-<ul>
-<li><code>docker image ls [OPTIONS]</code>: 列出本地镜像</li>
-<li><code>docker image rm [OPTIONS] IMAGE [IMAGE...]</code>: 删除镜像</li>
-<li><code>docker image tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]</code>: 对本地的一个原始镜像进行标记，生成一个新的镜像</li>
-<li><code>docker image build [OPTIONS] PATH|URL|-</code>: 基于Dockerfile创建镜像</li>
-<li><code>docker image history [OPTIONS] IMAGE</code>: 查询镜像的创建历史</li>
-<li><code>docker image save [OPTIONS] IMAGE</code>: 将镜像保存为tar文件</li>
-<li><code>docker image import [OPTIONS] FILE|URL|- [REPOSITORY[:TAG]]</code>: 从tar文件中创建镜像</li>
-</ul>
-</li>
-<li><p>Registry相关: 如果是使用非官方的镜像仓库，则需要在镜像名称中添加镜像仓库地址</p>
-<ul>
-<li><code>docker login [OPTIONS] [SERVER]</code>: 登录到镜像仓库</li>
-<li><code>docker logout</code>: 从镜像仓库登出</li>
-<li><code>docker image pull [OPTIONS] NAME[:TAG|@DIGEST]</code>: 从镜像仓库中拉取或更新镜像</li>
-<li><code>docker image push [OPTIONS] NAME[:TAG]</code>: 将本地镜像上传到镜像仓库</li>
-<li><code>docker search [OPTIONS]</code>: 搜索镜像</li>
-</ul>
-</li>
-<li><p>Other</p>
-<ul>
-<li><code>docker info</code>: 查看Docker系统信息</li>
-<li><code>docker version</code>: 查看Docker版本</li>
-</ul>
-</li>
-</ul>
-<h2 id="数据卷-Volume"><a href="#数据卷-Volume" class="headerlink" title="数据卷(Volume)"></a>数据卷(Volume)</h2><ul>
-<li>“卷”是容器上的某个目录，该目录绕过联合文件系统，与宿主机上的某个目录进行绑定，方便容器进行<strong>数据共享</strong>和<strong>数据持久化</strong>操作</li>
-<li>在关闭和重启容器时，容器内的文件数据不会丢失；但是在删除容器后，容器内的文件更改会全部丢失</li>
-<li>完全独立于容器的生成周期，默认在删除容器时不会删除其挂载的数据卷</li>
-<li>Docker的数据卷默认是宿主机上的目录或文件，如果需要使用类似NFS的文件系统则需要手动挂载到宿主机上</li>
-</ul>
-<p>为容器添加数据卷: 可以通过<code>docker container inspect</code>命令查看容器的数据卷使用情况</p>
-<ul>
-<li><p>使用<code>docker container run -v src:dest:ro</code> <strong>宿主机上的绑定目录由用户指定</strong></p>
-<ul>
-<li>src为宿主机相对路径</li>
-<li>dest为容器内的绝对路径</li>
-<li>ro为容器对数据卷的访问权限，表示只读</li>
-</ul>
-</li>
-<li><p>使用Dockerfile中的VOLUME [“/data”]指令创建匿名数据卷  <strong>宿主机上的绑定目录由Docker自动创建</strong></p>
-<ul>
-<li>/data为容器中的dest目录，而宿主机中的src目录则会在运行该镜像时由docker自动创建</li>
-<li>同一个镜像被多次运行时，宿主机的src目录是不同的</li>
-<li>这种方式创建的数据卷无法在不同容器中进行数据共享</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之数据卷.png" alt="volume"></p>
-<p>数据卷容器:</p>
-<p>创建一个使用数据卷的容器，其它的容器通过复制这个容器使用的数据卷实现数据共享，那么该容器成为数据卷容器 <strong>当不能访问宿主机目录时，可以通过数据卷容器进行数据共享</strong></p>
-<ul>
-<li>使用数据卷容器: <code>docker container run --volumes-from [CONTAINER]</code></li>
-<li>删除容器: <code>docker container rm -v [CONTAINER]</code>，如果指定了-v选项，则会软删除与该容器关联的数据卷，<strong>但是只有当该数据卷不再被任何容器使用后，数据卷本身才会被真正删除</strong></li>
-</ul>
-<p><img src="/images/Docker之数据库卷器.png" alt="volume container"></p>
-<p>数据卷的备份与恢复:</p>
-<ul>
-<li>备份: <code>docker container run --volumes-from [CONTAINER] -v $PWD:/backup ubuntu tar cvf /backup/backup.tar [VOLUME]</code></li>
-<li>还原: <code>docker container run --volumes-from [CONTAINER] -v $PWD:/backup ubuntu tar xvf /backup/backup.tar [VOLUME]</code></li>
-</ul>
-<p><img src="/images/Docker之数据卷的备份与恢复.png" alt="volume"></p>
-<h2 id="网络-Network"><a href="#网络-Network" class="headerlink" title="网络(Network)"></a>网络(Network)</h2><p>默认为Bridge模式，Docker会为所有的容器设置IP地址，并创建新的虚拟网桥<code>docker0</code>，并将启动的容器与该网桥相连。</p>
-<ul>
-<li>docker0 Docker默认使用的虚拟网桥(数据链路层)，可以对其设置IP地址(网络层)</li>
-<li>启动容器时，会创建网络连接的两端，一端是容器内的eth0(以太网卡)，一端是运行Docker服务宿主机上docker0设备的veth*</li>
-</ul>
-<p><img src="/images/Docker之宿主机和容器的网络连接.png" alt="image"></p>
-<p>容器间的互联：</p>
-<ul>
-<li>通过自定义network<br>  <code>docker network create -d bridge my-net</code><br>  <code>docker container run --network my-net</code></li>
-</ul>
-<p>容器与外部网络的互联</p>
-<ul>
-<li>设置与宿主机的端口映射<br>  <code>docker container run -p ip:hostPort:containerPort | ip::containerPort | hostPort:containerPort</code></li>
-</ul>
-<h2 id="编写Dockerfile"><a href="#编写Dockerfile" class="headerlink" title="编写Dockerfile"></a>编写Dockerfile</h2><p>构建Docker镜像的方式:</p>
-<ul>
-<li><code>docker container commit</code>: 通过容器构建</li>
-<li><code>docker image build</code>: 通过Dockerfile文件构建</li>
-</ul>
-<p>使用<code>alpine</code>来作为基础镜像，可以大大减小镜像的大小</p>
-<p>Dockefile的组成</p>
-<ul>
-<li>Dockerfile是一个文本文件，其中包含了一条条的指令(Instruction)，每条指令构建一层</li>
-<li><code>FROM repository:tag</code>: 指定基础镜像，必须是第一条指令 <strong>scratch空白镜像</strong></li>
-<li><code>MAINTAINER name &lt;email&gt;</code>: 指定镜像的作者信息 <strong>Deprecated</strong></li>
-<li><code>LABEL key1=value1 key2=value2</code>: 添加镜像的metadata信息，比如作者信息</li>
-<li><code>RUN</code>: 指定镜像构建过程中运行的命令 <strong>每一个RUN命令都会在当前镜像层的上层创建一个新的可读写镜像层用于执行该命令，因此为了避免镜像的臃肿，应该将RUN中的命令使用&amp;&amp;进行连结</strong><ul>
-<li><code>RUN command param1 param2</code>: shell模式 -&gt; /bin/bash command param1 param2</li>
-<li><code>RUN {&quot;command&quot;, &quot;param1&quot;, &quot;param2&quot;}</code>: exec模式 -&gt; 可以指定其他shell来运行命令</li>
-</ul>
-</li>
-<li><code>EXPOSE port/protocol</code>: 指定运行该镜像的容器使用的端口，可指定多个 <strong>在运行该镜像时，并不会自动进行端口映射，仍然需要指定容器的端口映射规则</strong></li>
-<li><code>CMD</code>: 指定运行该镜像时，容器中默认运行的命令，<strong>如果启动容器时，同时指定了命令，则CMD会被覆盖；一旦该命令对应的进程退出，则容器也退出运行</strong><ul>
-<li><code>CMD command param1 param2</code>: shell模式。容器中先启动一个默认shell，然后在shell中启动该命令。同时退出shell并将该命令的进程ID设置为1，此时<code>docker container stop/kill</code>命令可以直接向该进程发送信号</li>
-<li><code>CMD {&quot;command&quot;, &quot;param1&quot;, &quot;param2&quot;}</code>: exec模式。容器中不启动shell，直接启动该命令，命令的进程ID为1，此时<code>docker container stop/kill</code>命令可以直接向该进程发送信号。同时<strong>该命令不应该依赖shell中的特性</strong>，如输入输出重定向、<code>${}</code>引用环境变量等。如果command中有空格的话，必须使用该模式</li>
-<li><code>CMD {&quot;param1&quot;, &quot;param2&quot;}</code>: 作为ENTRYPOINT指定的默认参数，如果在启动容器时指定了参数，该默认参数也会被覆盖</li>
-</ul>
-</li>
-<li><code>ENTRYPOINT</code>: 与CMD指定类似 <strong>如果运行容器时，同时指定了命令，则ENTRYPOINT不会被覆盖，除非使用了docker image run的–entrypoint参数</strong><ul>
-<li><code>ENTRYPOINT command param1 param2</code>: shell模式，含义与CMD命令相同</li>
-<li><code>ENTRYPOINT {&quot;command&quot;, &quot;param1&quot;, &quot;param2&quot;}</code>: exec模式，含义与CMD命令相同</li>
-</ul>
-</li>
-<li><code>ADD src dest</code>: 将文件或目录复制到镜像中，src为构建目录的相对路径，dest为镜像中的绝对路径 <strong>会自动解压本地的tar压缩文件</strong></li>
-<li><code>COPY src dest</code>: 将文件或目录复制到镜像中，src为构建目录的相对路径，dest为镜像中的绝对路径 <strong>如果只是单纯的复制文件，推荐使用COPY指令</strong></li>
-<li><code>VOLUME [&quot;/data]</code>: 向镜像运行的容器中添加数据卷 <strong>宿主机上的绑定目录由Docker自动创建</strong></li>
-<li><code>WORKDIR path</code>: 设置容器中运行的命令的工作目录，与CMD和ENTRYPOIN指令配合使用</li>
-<li><code>ENV key=value</code>: 设置容器中的环境变量，使用<code>${key}</code>来引用</li>
-<li><code>ARG key=value</code>: 设置在创建镜像过程中使用的参数变量。可以在<code>docker image build</code>时使用<code>--build-arg</code>选项来设置或覆盖默认参数值，参数值的引用方式与环境变量类似</li>
-<li><code>USER username</code>: 设置容器中运行命令的用户，默认使用root用户来运行命令</li>
-<li><code>ONBUILD [INSTRUCTION]</code>: 添加镜像触发器，当该镜像被其他镜像作为基础镜像时，执行触发器</li>
-<li><code>HEATHCHECK [OPTIONS] command</code>: 容器健康检查<ul>
-<li>可选参数<ul>
-<li><code>--interval=DURATION</code>: 设置健康检查时间间隔，默认30s</li>
-<li><code>--timeout=DURATION</code>: 设置调用超时时间，默认30s</li>
-<li><code>--start-period=DURATION</code>: 设置容器启动后开始健康检查的时间，默认0s</li>
-<li><code>--retries=N</code>: 设置健康检查重试次数，默认3</li>
-</ul>
-</li>
-<li>通过命令的返回值确认容器健康状态<ul>
-<li><code>0</code>: 健康</li>
-<li><code>1</code>: 不健康</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><code>SHELL command param1 param2</code>: 指定创建镜像和容器运行时使用的默认shell命令，对应RUN、CMD和ENTRYPOINT命令中的shell模式。Docker默认使用的是<code>/bin/sh -c</code></li>
-</ul>
-<p>镜像构建过程</p>
-<ul>
-<li>从基础镜像中运行一个容器</li>
-<li>执行一条指令，对容器进行修改</li>
-<li>执行类似docker commit的操作，提交一个新的镜像层</li>
-<li>基于刚提交的新的镜像层，运行一个新的容器</li>
-<li>再次执行Dockerfile中的下一条指令</li>
-<li>反复执行上述过程，直到所有指令执行完毕</li>
-<li><code>docker image build</code>会自动删除构建过程中运行的中间容器，但是不会删除构建过程中产生的中间层镜像，以方便使用缓存的镜像加快构建速度</li>
-</ul>
-<p>构建Golang应用</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FROM scratch</span><br><span class="line">ADD main /</span><br><span class="line">CMD [&quot;/main&quot;]</span><br></pre></td></tr></table></figure>
-<h2 id="Registry"><a href="#Registry" class="headerlink" title="Registry"></a>Registry</h2><p>Registry主要用来保存Docker镜像，包括镜像层次结构信息和镜像中的元数据</p>
-<p>分类</p>
-<ul>
-<li>私有</li>
-<li>官方 <code>Docker Hub</code></li>
-<li>第三方</li>
-</ul>
-<p>私有Registry搭建</p>
-<ul>
-<li>使用<code>registry</code>Docker镜像或<code>docker-distribution</code>包</li>
-<li>使用<code>harbor</code>，由VMVare提供的企业级的镜像仓库，是对<code>docker-distribution</code>的扩展</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span>
+    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2205,7 +2128,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-count">81</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
