@@ -41,8 +41,8 @@ kube-proxy对Service的代理有三种模式:
 - `type`: Service的类型
   - `ClusterIP`: 使用集群中的私有地址，此时Service只能被Node上的Pod访问
   - `NodePort`: 除了使用ClusterIP之外，也将Service的端口映射到每一个Node的端口上。这样便可以在集群外部通过访问Node的端口来访问Pod **比ClusterIP多一层数据转发**
-  - `LoadBalancer`: 使用云提供商的负载均衡API来创建Service的负责均衡器，然后访问ClusterIP或NodePort上的Service资源 **多了一层负载均衡**
-  - `ExternalName`: 为Pod提供了访问集群外部服务的能力。通过CNAME将某个Service和ExternalName进行绑定，Pod便可以通过访问该Service来访问集群外部的服务 **本质是将Service地址通过DNS解析为集群外部服务的地址**
+  - `LoadBalancer`: Service应该部署在公有云上，此时可以使用云提供商的负载均衡API来创建Service的负责均衡器，然后访问ClusterIP或NodePort上的Service资源 **多了一层负载均衡**
+  - `ExternalName`: 为Pod提供了访问集群外部服务的能力。通过CNAME将某个Service和ExternalName进行绑定，Pod便可以通过访问该Service来访问集群外部的服务 **本质是将Service名称通过DNS解析为集群外部服务的地址**
 - `sessionAffinity`: 对于Service的请求被转发到Service对应的Pod列表时使用的策略
   - ClientIP: 同一个客户端的请求总是被转发到同一个Pod中
   - None: 随机选择一个Pod
