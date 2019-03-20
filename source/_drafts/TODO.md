@@ -78,6 +78,7 @@ linux网络基础，多台主机上容器的通信方式
 - iptables 查看路由表
 - dns解析 nslookup
 - brctl
+- dig
 
 mount命令查看挂载情况
 

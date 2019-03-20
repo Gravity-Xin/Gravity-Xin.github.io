@@ -7,6 +7,8 @@ tags:
 - Pod
 ---
 
+Pod: Kubernetes中的最小调度单元，可以包含一个或多个容器
+
 ## Pod资源的spec字段
 
 - `containers`: Pod使用的容器列表，一个Pod中可以含有多个容器
@@ -24,6 +26,9 @@ tags:
   - `ports`: 需要从容器中暴露的端口列表，仅仅是给系统提供关于容器端口使用的信息。如果不指定，并不会阻止容器中的进程使用的端口被暴露
   - `resources`: 容器需要使用的系统资源列表
   - `volumeMounts`: 存储卷在容器中的挂载点
+- `hostIPC`: 设置Pod中的容器是否与共享Node节点的IPC名称空间
+- `hostNetwork`: 设置Pod中的容器是否与共享Node节点的Network名称空间，此时可以直接访问Node地址来直接访问Pod，而不再需要通过Service将Pod暴露
+- `hostPID`: 设置Pod中的容器是否与共享Node节点的PID名称空间
 - `nodeName`: 节点名称，直接指定Pod运行的节点名称
 - `nodeSelector`: 节点选择器，被调度器使用，用于选择符合条件的Node节点
 - `initContainers`: 串行执行的初始化容器列表，一般用于给主容器初始化系统环境，在主容器启动前退出

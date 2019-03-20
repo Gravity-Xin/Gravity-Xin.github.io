@@ -106,11 +106,6 @@ Master-Slave(Node)结构
   - 每一个Service会被分配一个Cluster IP和DNS名称
   - 外部用户和其他Service可以通过该Cluster IP或DNS名来访问服务，而不需要了解服务对应的Pod列表，可以将Service看做是对Pod的代理
   - Kube-Proxy将用户对Service的访问均衡负载到这些EndPoints上，从而实现了负载均衡和服务发现的功能  **本质上是DNS解析和在iptables添加了DNAT数据转发规则**
-  - 包含四种类型
-    - `ClusterIP`: 使用集群中的私有地址，此时Service只能被Node上的Pod访问。本质是在每一个Node上使用iptables，将发向ClusterIP的数据转发到Kube-Proxy中，然后Kube-Proxy内部查询到Service对应Pod的EndPoints，并以负载均衡式的将数据转发到对应的Pod
-    - `NodePort`: 除了使用ClusterIP之外，也将Service的端口映射到每一个Node的端口上，将Node上该端口的数据转发到Kube-Proxy上。这样便可以在集群外部通过访问Node的端口来访问Pod
-    - `LoadBalancer`: 使用云提供商的负载均衡器来访问ClusterIP或NodePort
-    - `ExternalName`: 通过CNAME将Service和ExternalName进行绑定，可以通过ExternalName来访问
 
 - `Volume`: 为Pod提供存储空间和文件共享
 
@@ -125,7 +120,7 @@ Master-Slave(Node)结构
     - 集合: env in (production, test)
     - 组合: app=nginx, env=test
   - 使用`kubectl label`命令更新对象的标签
-  - 许多资源如`Deployment`支持使用内嵌字段来定义它们的标签选择器，从而从集群中获取符合条件的资源
+  - 许多资源如`ReplicaSet`、`Deployment`支持使用内嵌字段来定义它们的标签选择器，从而从集群中获取符合条件的资源
     - `matchLabels`: 直接给定标签的KV对
     - `matchExpressions`: 基于给定的表达式来定义标签选择器
 - `Annotation`: 对Object的描述
