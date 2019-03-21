@@ -2,7 +2,7 @@
 title: CSAPP-Chapter 1-Introduction
 date: 2018-12-18 20:04:54
 categories:
-- CSAPP
+- 阅读分享
 tags:
 - computer system
 comments: true

@@ -2,7 +2,7 @@
 title: Kubernetes中的Service
 date: 2019-03-20 14:20:12
 categories: 
-- Docker/K8S
+- 系统架构
 tags: 
 - Service
 ---

@@ -2,7 +2,7 @@
 title: Linux Shell curl
 date: 2018-12-25 16:53:10
 categories:
-- Linux Shell
+- 编程技术
 tags:
 - curl
 - http

@@ -2,7 +2,7 @@
 title: Golang-pprof性能分析
 date: 2018-11-20 14:01:03
 categories:
-- Golang
+- 编程技术
 tags:
 - Golang
 - pprof

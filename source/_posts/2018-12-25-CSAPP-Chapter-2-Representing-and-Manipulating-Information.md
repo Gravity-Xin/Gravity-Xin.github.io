@@ -2,7 +2,7 @@
 title: CSAPP-Chapter 2-Representing and Manipulating Information
 date: 2018-12-25 14:08:34
 categories:
-- CSAPP
+- 阅读分享
 tags:
 - computer system
 comments: true

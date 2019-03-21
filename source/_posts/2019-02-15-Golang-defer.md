@@ -2,7 +2,7 @@
 title: Golang-defer
 date: 2019-02-15 11:10:26
 categories:
-- Golang
+- 编程技术
 tags:
 - defer
 - 闭包

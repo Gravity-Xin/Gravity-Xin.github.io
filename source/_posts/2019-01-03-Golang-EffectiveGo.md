@@ -1,8 +1,8 @@
 ---
-title: Golang-Effective Go
+title: Golang-EffectiveGo
 date: 2019-01-03 10:20:55
 categories:
-- Golang
+- 编程技术
 tags:
 comments: true
 ---

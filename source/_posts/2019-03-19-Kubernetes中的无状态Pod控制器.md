@@ -2,7 +2,7 @@
 title: Kubernetes中的无状态Pod控制器
 date: 2019-03-19 17:52:56
 categories: 
-- Docker/K8S
+- 系统架构
 tags: 
 - ReplicaSet
 - Deployment

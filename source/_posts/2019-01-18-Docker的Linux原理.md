@@ -2,7 +2,7 @@
 title: Docker的Linux原理
 date: 2019-01-18 14:07:53
 categories: 
-- Docker/K8S
+- 系统架构
 tags: 
 - namespace
 - cgroup

@@ -1,8 +1,8 @@
 ---
-title: Golang-实现简单的https服务器
+title: Golang-https服务器
 date: 2019-01-16 17:05:47
 categories:
-- Golang
+- 编程技术
 tags:
 - https
 comments: true

@@ -2,7 +2,7 @@
 title: Golang-channel
 date: 2018-11-19 14:17:46
 categories:
-- Golang
+- 编程技术
 tags:
 - Golang
 - channel

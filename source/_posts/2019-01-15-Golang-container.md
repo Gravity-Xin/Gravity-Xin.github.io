@@ -2,7 +2,7 @@
 title: Golang-container
 date: 2019-01-15 17:35:52
 categories:
-- Golang
+- 编程技术
 tags:
 - heap
 - double linked list

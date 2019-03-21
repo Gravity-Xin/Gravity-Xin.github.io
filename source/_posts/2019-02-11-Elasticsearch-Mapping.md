@@ -2,7 +2,7 @@
 title: Elasticsearch Mapping
 date: 2019-02-11 17:47:19
 categories: 
-- Elasticsearch
+- 系统架构
 tags:
 - mapping
 comments: true

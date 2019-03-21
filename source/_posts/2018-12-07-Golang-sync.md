@@ -2,7 +2,7 @@
 title: Golang-sync
 date: 2018-12-07 19:03:56
 categories:
-- Golang
+- 编程技术
 tags:
 - sync
 comments: true

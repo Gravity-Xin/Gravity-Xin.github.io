@@ -2,7 +2,7 @@
 title: CPU GPU FPGA ASIC
 date: 2019-02-11 10:26:50
 categories: 
-- Computer Architecture
+- 系统架构
 tags: 
 comments: true
 ---

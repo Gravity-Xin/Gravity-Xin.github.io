@@ -2,7 +2,7 @@
 title: Golang-goroutine泄露
 date: 2018-11-13 16:59:31
 categories:
-- Golang
+- 编程技术
 tags:
 - Golang
 - Goroutine

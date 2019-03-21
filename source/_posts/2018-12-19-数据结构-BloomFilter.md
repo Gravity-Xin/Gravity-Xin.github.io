@@ -1,8 +1,8 @@
 ---
-title: BloomFilter
+title: 数据结构-BloomFilter
 date: 2018-12-19 17:25:17
 categories: 
-- Algo/DS
+- 编程技术
 tags: 
 - BloomFilter
 comments: true

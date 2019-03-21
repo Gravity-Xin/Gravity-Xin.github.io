@@ -2,7 +2,7 @@
 title: GDB/LLDB Debugger
 date: 2018-12-25 09:51:56
 categories:
-- Debugger
+- 编程技术
 tags:
 - gdb
 - lldb

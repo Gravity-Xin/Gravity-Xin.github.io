@@ -2,7 +2,7 @@
 title: Elasticsearch 文档版本控制
 date: 2019-02-11 17:58:10
 categories: 
-- Elasticsearch
+- 系统架构
 tags:
 - document
 ---

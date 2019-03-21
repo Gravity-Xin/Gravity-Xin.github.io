@@ -2,7 +2,7 @@
 title: Golang-rpc
 date: 2018-12-11 19:04:40
 categories:
-- Golang
+- 编程技术
 tags:
 - rpc
 comments: true

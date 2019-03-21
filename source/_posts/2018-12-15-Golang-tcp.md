@@ -2,7 +2,7 @@
 title: Golang-tcp
 date: 2018-12-15 11:35:04
 categories:
-- Golang
+- 编程技术
 tags:
 - Golang
 - tcp

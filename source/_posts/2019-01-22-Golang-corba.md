@@ -2,7 +2,7 @@
 title: Golang-corba
 date: 2019-01-22 11:18:51
 categories:
-- Golang
+- 编程技术
 tags:
 - Golang
 - cli

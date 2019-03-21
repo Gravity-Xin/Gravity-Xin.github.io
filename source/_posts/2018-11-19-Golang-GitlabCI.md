@@ -1,8 +1,8 @@
 ---
-title: Golang-Gitlab-CI
+title: Golang-GitlabCI
 date: 2018-11-19 16:08:24
 categories:
-- CI/CD
+- 编程技术
 tags:
 - Golang
 - Gitlab

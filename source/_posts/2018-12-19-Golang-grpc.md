@@ -2,7 +2,7 @@
 title: Golang-grpc
 date: 2018-12-19 09:55:33
 categories:
-- Golang
+- 编程技术
 tags:
 - grpc
 comments: true

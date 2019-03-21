@@ -2,7 +2,7 @@
 title: Kubernetes中的有状态Pod控制器
 date: 2019-03-20 14:18:32
 categories: 
-- Docker/K8S
+- 系统架构
 tags: 
 - StatefulSet
 ---

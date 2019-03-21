@@ -2,7 +2,7 @@
 title: Kubernetes资源定义
 date: 2019-03-18 13:44:40
 categories: 
-- Docker/K8S
+- 系统架构
 tags: 
 - Kubernetes
 - Namespace

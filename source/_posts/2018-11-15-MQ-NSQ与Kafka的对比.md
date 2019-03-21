@@ -1,8 +1,8 @@
 ---
-title: NSQ与Kafka的对比
+title: MQ-NSQ与Kafka的对比
 date: 2018-11-15 17:39:51
 categories: 
-- NSQ
+- 系统架构
 tags: 
 - NSQ
 - Kafka

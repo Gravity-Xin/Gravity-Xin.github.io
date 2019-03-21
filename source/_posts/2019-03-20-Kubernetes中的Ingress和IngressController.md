@@ -2,7 +2,7 @@
 title: Kubernetes中的Ingress和IngressController
 date: 2019-03-20 23:21:15
 categories: 
-- Docker/K8S
+- 系统架构
 tags: 
 - Ingress
 - IngressController

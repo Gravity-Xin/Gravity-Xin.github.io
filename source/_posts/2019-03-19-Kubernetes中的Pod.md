@@ -2,7 +2,7 @@
 title: Kubernetes中的Pod
 date: 2019-03-19 13:43:17
 categories: 
-- Docker/K8S
+- 系统架构
 tags: 
 - Pod
 ---

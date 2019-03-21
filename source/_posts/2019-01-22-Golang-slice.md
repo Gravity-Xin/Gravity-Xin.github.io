@@ -2,7 +2,7 @@
 title: Golang-slice
 date: 2019-01-22 17:25:33
 categories:
-- Golang
+- 编程技术
 tags:
 - slice
 - len

@@ -2,7 +2,7 @@
 title: Kubernetes安装部署
 date: 2019-01-18 17:15:06
 categories: 
-- Docker/K8S
+- 系统架构
 tags: 
 - Kubernetes
 ---

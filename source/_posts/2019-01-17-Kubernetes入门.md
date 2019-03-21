@@ -2,7 +2,7 @@
 title: Kubernetes入门
 date: 2019-01-17 16:31:32
 categories: 
-- Docker/K8S
+- 系统架构
 tags: 
 - Kubernetes
 - Namespace

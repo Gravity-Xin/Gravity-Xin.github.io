@@ -2,7 +2,7 @@
 title: Golang-runtime
 date: 2018-11-14 09:57:07
 categories:
-- Golang
+- 编程技术
 tags:
 - Golang
 - runtime
