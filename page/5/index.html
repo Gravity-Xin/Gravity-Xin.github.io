@@ -249,6 +249,217 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/16/Golang-实现简单的https服务器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/16/Golang-实现简单的https服务器/" itemprop="url">Golang-实现简单的https服务器</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-16T17:05:47+08:00">
+                2019-01-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/16/Golang-实现简单的https服务器/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/16/Golang-实现简单的https服务器/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="加密、签名和数字证书"><a href="#加密、签名和数字证书" class="headerlink" title="加密、签名和数字证书"></a>加密、签名和数字证书</h2><ul>
+<li><p>对称加密: 加密和解密的密钥是相同的</p>
+<ul>
+<li>需要使用安全的渠道在通信双方首次通信时协商一个共同的密钥</li>
+<li>密钥的数目多了之后比较难于管理</li>
+<li>常见对称加密算法有: <code>DES</code></li>
+</ul>
+</li>
+<li><p>非对称加密: 加密和解密的密钥是不同的，分为私钥和公钥。其中公钥是公开的，任何人都可以获取，而私钥是私有的。使用公钥加密的数据可以使用私钥来解密；使用私钥加密的数据可以使用公钥来解密</p>
+<ul>
+<li>通信A方将自己的公钥公开，得到该公钥的B方使用其对发送数据进行加密，A方收到数据后再使用自己的私钥进行解密</li>
+<li>常见非对称加密算法有: <code>RSA</code></li>
+</ul>
+</li>
+<li><p>签名: 在发送的数据之后增加一段内容，用于证明数据未被修改。一般是通过对数据进行一个Hash计算得到，是不可逆的。签名和要数据会被一起发送出去</p>
+</li>
+<li><p>数字证书: 确保数字证书里面的公钥确实是这个证书的所有者的，即用证书来确认对方的身份</p>
+<ul>
+<li>如果客户端需要对服务器进行验证，则需要服务器提供数字证书</li>
+<li>如果服务器需要对客户端进行验证，则需要客户端提供数字证书</li>
+<li>证书的主要内容<ul>
+<li><code>Issuer</code>: 证书颁发机构</li>
+<li><code>Valid From、Valid To</code>: 证书的有效期</li>
+<li><code>Public Key</code>: 公钥</li>
+<li><code>Subject</code>: 证书的所有者，一般为某人、某公司名称、某网站地址等</li>
+</ul>
+</li>
+<li>由权威的第三方机构颁发</li>
+</ul>
+</li>
+</ul>
+<h2 id="TLS协议"><a href="#TLS协议" class="headerlink" title="TLS协议"></a>TLS协议</h2><p>https协议使用TLS(Transport Layer Security, 传输层安全协议)来保证通信的安全性和数据的完整性，该协议工作在TCP协议之上，可以看做是SSL协议的升级版</p>
+<p>TLS基于X.509来进行认证，然后使用非对称加密算法来进行通信双方的身份认证，然后进行公钥的交换，并使用公钥对通信双方的数据进行加密</p>
+<p>HTTPS连接的建立过程: 使用非对称加密来交换对称加密的密钥</p>
+<p><img src="/images/HTTPs的建立过程.png" alt="img"></p>
+<h2 id="生成证书"><a href="#生成证书" class="headerlink" title="生成证书"></a>生成证书</h2><ul>
+<li>生成服务端证书</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 生成私钥</span><br><span class="line">openssl genrsa -out server.key 2048</span><br><span class="line"><span class="meta">#</span> 生成证书</span><br><span class="line">openssl req -new -x509 -key server.key -out server.pem -days 3650</span><br></pre></td></tr></table></figure>
+<p>或者直接使用go内置工具</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go run $GOROOT/src/crypto/tls/generate_cert.go --host localhost</span><br></pre></td></tr></table></figure>
+<ul>
+<li>生成客户端证书</li>
+</ul>
+<p>并不是必须的<br>但在某些需要验证客户端身份的场景下，服务器需要客户端提供证书</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 生成私钥</span><br><span class="line">openssl genrsa -out client.key 2048</span><br><span class="line"><span class="meta">#</span> 生成证书</span><br><span class="line">openssl req -new -x509 -key client.key -out client.pem -days 3650</span><br></pre></td></tr></table></figure>
+<h2 id="证书的使用"><a href="#证书的使用" class="headerlink" title="证书的使用"></a>证书的使用</h2><p>golang的<code>crypto/tls</code>实现了TLS1.2的功能，<code>crypto/x509</code>实现了证书管理的功能</p>
+<ul>
+<li>TCP服务器</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cert, err := tls.LoadX509KeyPair(<span class="string">"server.pem"</span>, <span class="string">"server.key"</span>) <span class="comment">// 获取服务端证书</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    certBytes, err := ioutil.ReadFile(<span class="string">"client.pem"</span>) <span class="comment">// 读取客户端证书</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(<span class="string">"Unable to read cert.pem"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    clientCertPool := x509.NewCertPool()</span><br><span class="line">    ok := clientCertPool.AppendCertsFromPEM(certBytes)</span><br><span class="line">    <span class="keyword">if</span> !ok &#123;</span><br><span class="line">        <span class="built_in">panic</span>(<span class="string">"failed to parse root certificate"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    config := &amp;tls.Config&#123;</span><br><span class="line">        Certificates: []tls.Certificate&#123;cert&#125;,</span><br><span class="line">        ClientAuth:   tls.RequireAndVerifyClientCert, <span class="comment">// 设置需要对客户端身份进行认证</span></span><br><span class="line">        ClientCAs:    clientCertPool, <span class="comment">// 添加客户端证书池</span></span><br><span class="line">    &#125;</span><br><span class="line">    config := &amp;tls.Config&#123;Certificates: []tls.Certificate&#123;cert&#125;&#125; <span class="comment">// 创建tls配置</span></span><br><span class="line">    ln, err := tls.Listen(<span class="string">"tcp"</span>, <span class="string">":443"</span>, config) <span class="comment">// 开启监听</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">defer</span> ln.Close()</span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        conn, err := ln.Accept() <span class="comment">// 建立连接</span></span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Println(err)</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">go</span> handleConn(conn) <span class="comment">// 处理请求</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">handleConn</span><span class="params">(conn net.Conn)</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> conn.Close()</span><br><span class="line">    r := bufio.NewReader(conn)</span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        msg, err := r.ReadString(<span class="string">'\n'</span>)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Println(err)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        log.Println(msg)</span><br><span class="line">        n, err := conn.Write([]<span class="keyword">byte</span>(<span class="string">"world\n"</span>))</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Println(n, err)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>TCP客户端</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cert, err := tls.LoadX509KeyPair(<span class="string">"client.pem"</span>, <span class="string">"client.key"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    certBytes, err := ioutil.ReadFile(<span class="string">"client.pem"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(<span class="string">"Unable to read cert.pem"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    clientCertPool := x509.NewCertPool()</span><br><span class="line">    ok := clientCertPool.AppendCertsFromPEM(certBytes)</span><br><span class="line">    <span class="keyword">if</span> !ok &#123;</span><br><span class="line">        <span class="built_in">panic</span>(<span class="string">"failed to parse root certificate"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    conf := &amp;tls.Config&#123;</span><br><span class="line">        RootCAs:            clientCertPool,</span><br><span class="line">        Certificates:       []tls.Certificate&#123;cert&#125;, <span class="comment">// 在tls配置中添加客户端证书信息</span></span><br><span class="line">        InsecureSkipVerify: <span class="literal">true</span>, <span class="comment">// 设置为true，则不会校验服务器证书以及证书中的主机名和服务器主机名是否一致</span></span><br><span class="line">    &#125;</span><br><span class="line">    conn, err := tls.Dial(<span class="string">"tcp"</span>, <span class="string">"127.0.0.1:443"</span>, conf) <span class="comment">// 建立连接</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">defer</span> conn.Close()</span><br><span class="line">    n, err := conn.Write([]<span class="keyword">byte</span>(<span class="string">"hello\n"</span>)) <span class="comment">// 写数据</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(n, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">100</span>)</span><br><span class="line">    n, err = conn.Read(buf) <span class="comment">// 读数据</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(n, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    log.Println(<span class="keyword">string</span>(buf[:n]))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>HTTPs服务器</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    http.HandleFunc(<span class="string">"/hello"</span>, helloServerfunc)</span><br><span class="line">    server := &amp;http.Server&#123;</span><br><span class="line">        Addr: <span class="string">":443"</span>,</span><br><span class="line">        TLSConfig: &amp;tls.Config&#123;</span><br><span class="line">            ClientAuth: tls.RequestClientCert, <span class="comment">// 配置需要对客户端证书进行验证</span></span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;</span><br><span class="line">    err := server.ListenAndServeTLS(<span class="string">"cert/server.pem"</span>, <span class="string">"cert/server.key"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Fatal(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">helloServerfunc</span><span class="params">(rw http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    rw.Header().Set(<span class="string">"Content-Type"</span>, <span class="string">"text/plain"</span>)</span><br><span class="line">    rw.Write([]<span class="keyword">byte</span>(<span class="string">"This is an example server.\n"</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在浏览器中输入<code>https://localhost/hello</code>即可访问</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/15/Golang-container/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1868,258 +2079,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/20/微服务架构基本内容/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/20/微服务架构基本内容/" itemprop="url">微服务架构基本内容</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-20T20:15:46+08:00">
-                2018-12-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MicroService/" itemprop="url" rel="index">
-                    <span itemprop="name">MicroService</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/12/20/微服务架构基本内容/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/12/20/微服务架构基本内容/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="服务框架"><a href="#服务框架" class="headerlink" title="服务框架"></a>服务框架</h2><ul>
-<li><p>RPC vs REST</p>
-<ul>
-<li>RPC<ul>
-<li>同步</li>
-<li>异步</li>
-<li>流式</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>TCP vs HTTP</p>
-</li>
-<li><p>序列化机制</p>
-</li>
-<li><p>跨语言</p>
-</li>
-<li><p>IDL</p>
-</li>
-</ul>
-<h2 id="服务容错"><a href="#服务容错" class="headerlink" title="服务容错"></a>服务容错</h2><ul>
-<li><p>超时</p>
-</li>
-<li><p>熔断</p>
-</li>
-<li><p>隔离</p>
-</li>
-<li><p>限流</p>
-</li>
-<li><p>降级</p>
-</li>
-</ul>
-<h2 id="服务运行支撑"><a href="#服务运行支撑" class="headerlink" title="服务运行支撑"></a>服务运行支撑</h2><ul>
-<li><p>服务网关</p>
-<ul>
-<li>统一处理多个请求的转发与请求结果的合并</li>
-<li>独立请求的结果可以并发获取</li>
-<li>系统统一的鉴权</li>
-<li>可以在服务网关中进行负载均衡和结果缓存</li>
-</ul>
-</li>
-<li><p>服务注册发现</p>
-<ul>
-<li>注册<ul>
-<li>自注册</li>
-<li>第三方注册</li>
-</ul>
-</li>
-<li>发现<ul>
-<li>客户端发现</li>
-<li>服务端发现</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>负载均衡</p>
-</li>
-<li><p>统一配置中心</p>
-</li>
-</ul>
-<h2 id="服务安全"><a href="#服务安全" class="headerlink" title="服务安全"></a>服务安全</h2><ul>
-<li><p>OAuth</p>
-</li>
-<li><p>JWT</p>
-</li>
-</ul>
-<h2 id="服务监控与告警"><a href="#服务监控与告警" class="headerlink" title="服务监控与告警"></a>服务监控与告警</h2><ul>
-<li><p>日志监控</p>
-<ul>
-<li>ELK</li>
-</ul>
-</li>
-<li><p>调用链监控</p>
-</li>
-<li><p>Metric监控</p>
-</li>
-<li><p>健康检查</p>
-</li>
-</ul>
-<h2 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h2><ul>
-<li><p>消息队列</p>
-</li>
-<li><p>分布式数据库访问</p>
-<ul>
-<li>Sql</li>
-<li>Nosql</li>
-</ul>
-</li>
-<li><p>缓存管理</p>
-</li>
-</ul>
-<h2 id="服务部署"><a href="#服务部署" class="headerlink" title="服务部署"></a>服务部署</h2><ul>
-<li><p>代码管理平台</p>
-</li>
-<li><p>镜像管理平台</p>
-</li>
-<li><p>容器调度平台</p>
-</li>
-<li><p>服务发布平台</p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2170,7 +2129,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">81</span>
+                  <span class="site-state-item-count">82</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2192,7 +2151,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">139</span>
+                  <span class="site-state-item-count">141</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -90,7 +90,7 @@
 <meta property="og:image" content="http://yoursite.com/images/Kubernetes之Service的userspace代理.png">
 <meta property="og:image" content="http://yoursite.com/images/Kubernetes之Service的iptables代理.png">
 <meta property="og:image" content="http://yoursite.com/images/Kubernetes之Service的ipvs代理.png">
-<meta property="og:updated_time" content="2019-03-20T10:43:24.807Z">
+<meta property="og:updated_time" content="2019-03-21T05:43:46.559Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes中的Service">
 <meta name="twitter:description" content="Service: 是一组Pod的逻辑集合和访问方式的抽象 当Service或者Pod发生变化时:  ServiceController会基于云提供商的负载均衡API来创建Serivice的负载均衡器；EndpointController会维护Service对象对应的Pod列表、创建Pod列表对应的Endpoint列表、将Endpoint列表和Service关联  Service-&amp;gt;Endpo">
@@ -377,7 +377,7 @@
 <p><img src="/images/Kubernetes之Service的ipvs代理.png" alt="img"></p>
 <h2 id="Service资源的spec字段"><a href="#Service资源的spec字段" class="headerlink" title="Service资源的spec字段"></a>Service资源的spec字段</h2><ul>
 <li><code>clusterIP</code>: Service在集群中的地址，一般由系统随机指定，当Service类型不为ExternalName才有用。当用户将其手动指定为None时，Service变为HeadLess Service，对Service名称的DNS解析不再返回clusterIP，而是返回Service管理的一组Pod的IP地址</li>
-<li><code>externalName</code>: 当Service的类型为ExternalName时，Service对应的外部服务地址 <strong>通过DNS将Service地址解析为externalName</strong></li>
+<li><code>externalName</code>: 当Service的类型为ExternalName时，Service对应的外部服务地址 <strong>通过DNS将Service名称解析为externalName</strong></li>
 <li><code>ports</code>: Service暴露的端口信息列表<ul>
 <li><code>name</code>: 端口名称</li>
 <li><code>nodePort</code>: 当Service类型为NodePort或LoadBalancer时，Service映射到Node节点上的端口</li>
@@ -386,11 +386,11 @@
 </ul>
 </li>
 <li><code>selector</code>: 标签选择器，用来过滤出自己所管理的Pod</li>
-<li><code>type</code>: Service的类型<ul>
+<li><code>type</code>: Service的类型，NodePort和LoadBalancer提供了将外部流量引入集群内存的能力，ExternalName提供了将内部流量导出到外部服务的能力<ul>
 <li><code>ClusterIP</code>: 使用集群中的私有地址，此时Service只能被Node上的Pod访问</li>
 <li><code>NodePort</code>: 除了使用ClusterIP之外，也将Service的端口映射到每一个Node的端口上。这样便可以在集群外部通过访问Node的端口来访问Pod <strong>比ClusterIP多一层数据转发</strong></li>
-<li><code>LoadBalancer</code>: 使用云提供商的负载均衡API来创建Service的负责均衡器，然后访问ClusterIP或NodePort上的Service资源 <strong>多了一层负载均衡</strong></li>
-<li><code>ExternalName</code>: 为Pod提供了访问集群外部服务的能力。通过CNAME将某个Service和ExternalName进行绑定，Pod便可以通过访问该Service来访问集群外部的服务 <strong>本质是将Service地址通过DNS解析为集群外部服务的地址</strong></li>
+<li><code>LoadBalancer</code>: Service应该部署在公有云上，此时可以使用云提供商的负载均衡API来创建Service的负责均衡器，负载均衡器可以根据需要动态创建多个Service。对负载均衡器的访问可以被转发到相应的Service上 <strong>多了一层负载均衡</strong></li>
+<li><code>ExternalName</code>: 为Pod提供了访问集群外部服务的能力。通过CNAME将某个Service和ExternalName进行绑定，Pod便可以通过访问该Service来访问集群外部的服务 <strong>本质是将Service名称通过DNS解析为集群外部服务的地址</strong></li>
 </ul>
 </li>
 <li><code>sessionAffinity</code>: 对于Service的请求被转发到Service对应的Pod列表时使用的策略<ul>
@@ -440,6 +440,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/20/Kubernetes中的Ingress和IngressController/" rel="prev" title="Kubernetes中的Ingress和IngressController">
+                Kubernetes中的Ingress和IngressController <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -522,7 +526,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">81</span>
+                  <span class="site-state-item-count">82</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -544,7 +548,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">139</span>
+                  <span class="site-state-item-count">141</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

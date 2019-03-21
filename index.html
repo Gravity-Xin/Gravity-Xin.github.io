@@ -249,6 +249,181 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/20/Kubernetes中的Ingress和IngressController/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/20/Kubernetes中的Ingress和IngressController/" itemprop="url">Kubernetes中的Ingress和IngressController</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-20T23:21:15+08:00">
+                2019-03-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker-K8S/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker/K8S</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/20/Kubernetes中的Ingress和IngressController/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/20/Kubernetes中的Ingress和IngressController/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Ingress: 为多个Service提供代理，可以根据访问路径或子域名将请求转发到不同的Service中</p>
+<ul>
+<li>Service可以看作是一组Pod的L4级别的代理和负载均衡，因为其基于的iptables和ipvs都是L4级别的机制</li>
+<li>Ingress可以看做是一组Service的L7级别的反向代理和负载均衡，其工作在L7级别</li>
+<li>使用Service可以保证一组Pod使用相同的L4协议，比如TCP、UPD</li>
+<li>使用Ingress可以保证一组Service使用相同的L7协议，比如HTTP、HTTPs</li>
+</ul>
+<p>IngressController: 本质是一个工作在L7的应用服务，可以使用类型为NodePort的Service对其进行管理。它可以对集群中定义的Ingress资源进行管理并实现Ingress的L7代理功能</p>
+<ul>
+<li><p>当Ingress所管理的Service对应的Pod发生变化时，IngressController会自动更新相应的配置，确保可以正确进行代理，不需要手动修改配置</p>
+</li>
+<li><p>主流的IngressController实现方式</p>
+<ul>
+<li>Nginx</li>
+<li>Traefik</li>
+<li>Envoy<ul>
+<li>Contour</li>
+<li>Istio</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Kubernetes之Ingress与IngressController.png" alt="img"></p>
+<h2 id="Ingress资源的spec字段"><a href="#Ingress资源的spec字段" class="headerlink" title="Ingress资源的spec字段"></a>Ingress资源的spec字段</h2>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/20/Kubernetes中的Service/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -373,7 +548,7 @@
 <p><img src="/images/Kubernetes之Service的ipvs代理.png" alt="img"></p>
 <h2 id="Service资源的spec字段"><a href="#Service资源的spec字段" class="headerlink" title="Service资源的spec字段"></a>Service资源的spec字段</h2><ul>
 <li><code>clusterIP</code>: Service在集群中的地址，一般由系统随机指定，当Service类型不为ExternalName才有用。当用户将其手动指定为None时，Service变为HeadLess Service，对Service名称的DNS解析不再返回clusterIP，而是返回Service管理的一组Pod的IP地址</li>
-<li><code>externalName</code>: 当Service的类型为ExternalName时，Service对应的外部服务地址 <strong>通过DNS将Service地址解析为externalName</strong></li>
+<li><code>externalName</code>: 当Service的类型为ExternalName时，Service对应的外部服务地址 <strong>通过DNS将Service名称解析为externalName</strong></li>
 <li><code>ports</code>: Service暴露的端口信息列表<ul>
 <li><code>name</code>: 端口名称</li>
 <li><code>nodePort</code>: 当Service类型为NodePort或LoadBalancer时，Service映射到Node节点上的端口</li>
@@ -382,11 +557,11 @@
 </ul>
 </li>
 <li><code>selector</code>: 标签选择器，用来过滤出自己所管理的Pod</li>
-<li><code>type</code>: Service的类型<ul>
+<li><code>type</code>: Service的类型，NodePort和LoadBalancer提供了将外部流量引入集群内存的能力，ExternalName提供了将内部流量导出到外部服务的能力<ul>
 <li><code>ClusterIP</code>: 使用集群中的私有地址，此时Service只能被Node上的Pod访问</li>
 <li><code>NodePort</code>: 除了使用ClusterIP之外，也将Service的端口映射到每一个Node的端口上。这样便可以在集群外部通过访问Node的端口来访问Pod <strong>比ClusterIP多一层数据转发</strong></li>
-<li><code>LoadBalancer</code>: 使用云提供商的负载均衡API来创建Service的负责均衡器，然后访问ClusterIP或NodePort上的Service资源 <strong>多了一层负载均衡</strong></li>
-<li><code>ExternalName</code>: 为Pod提供了访问集群外部服务的能力。通过CNAME将某个Service和ExternalName进行绑定，Pod便可以通过访问该Service来访问集群外部的服务 <strong>本质是将Service地址通过DNS解析为集群外部服务的地址</strong></li>
+<li><code>LoadBalancer</code>: Service应该部署在公有云上，此时可以使用云提供商的负载均衡API来创建Service的负责均衡器，负载均衡器可以根据需要动态创建多个Service。对负载均衡器的访问可以被转发到相应的Service上 <strong>多了一层负载均衡</strong></li>
+<li><code>ExternalName</code>: 为Pod提供了访问集群外部服务的能力。通过CNAME将某个Service和ExternalName进行绑定，Pod便可以通过访问该Service来访问集群外部的服务 <strong>本质是将Service名称通过DNS解析为集群外部服务的地址</strong></li>
 </ul>
 </li>
 <li><code>sessionAffinity</code>: 对于Service的请求被转发到Service对应的Pod列表时使用的策略<ul>
@@ -2307,236 +2482,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/09/Kubernetes基本使用/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/09/Kubernetes基本使用/" itemprop="url">Kubernetes基本使用</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-09T12:25:57+08:00">
-                2019-03-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Docker-K8S/" itemprop="url" rel="index">
-                    <span itemprop="name">Docker/K8S</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/09/Kubernetes基本使用/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/09/Kubernetes基本使用/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在Kubernetes中，主要通过Kubectl命令行工具对集群中的资源进行增删改查的操作，集群中的资源包括Pod、Service、各种控制器、Node等等</p>
-<ul>
-<li><code>Kubectl</code>的使用方式<ul>
-<li>入门命令<ul>
-<li><code>create</code>: 创建集群资源</li>
-<li><code>expose</code>: 使用Pod、Service或各种控制器来创建Service资源，外部可以通过该Service实现对Pod的访问</li>
-<li><code>run</code>: 在集群上运行特定镜像，创建Pod资源并使用Deployment或Job来对其进行控制</li>
-<li><code>set</code>: 给集群中的特定资源进行配置，可以设置Pod中的环境变量、镜像名称、LabelSelector等</li>
-</ul>
-</li>
-<li>中级命令<ul>
-<li><code>get</code>: 查看集群中的各类资源的状态<ul>
-<li><code>pod</code>: 查看Pod资源状态</li>
-<li><code>deployment</code>: 查看Deployment控制器状态</li>
-<li><code>service</code>: 查看Service资源状态</li>
-</ul>
-</li>
-<li><code>explain</code>: 查看资源中各类资源的说明</li>
-<li><code>edit</code>: 对集群中的资源对应的yaml文件进行编辑，保存后自动生效</li>
-<li><code>delete</code>: 对集群中的资源进行删除</li>
-</ul>
-</li>
-<li>部署管理<ul>
-<li><code>rollout</code>: 对资源的更新部署进行管理，比如查看更新的状态，暂停和恢复更新，版本回滚等</li>
-<li><code>rolling-update</code>: 对资源的部署进行滚动更新</li>
-<li><code>scale</code>: 手动对资源进行扩容或缩容</li>
-<li><code>autoscale</code>: 设置资源的自动水平伸缩</li>
-</ul>
-</li>
-<li>集群管理<ul>
-<li><code>certificate</code>: 修改集群认证信息</li>
-<li><code>cluster-info</code>: 查询集群信息</li>
-<li><code>top</code>: 查看集群中资源使用情况，如CPU、内存、磁盘等</li>
-<li><code>cordon</code>: 标记集群中某节点不可被调度</li>
-<li><code>uncordon</code>: 标记集群中某节点可以被调度</li>
-<li><code>drain</code>: 将集群中某节点上运行的资源赶到其它节点上</li>
-<li><code>taint</code>: 将集群中的某节点增加污点，与Pod的Toleration来配合使用，实现高级的调度</li>
-</ul>
-</li>
-<li>故障排除和调试<ul>
-<li><code>describe</code>: 显示集群某资源的详细信息<ul>
-<li><code>pod</code>: 查看Pod的详细信息</li>
-<li><code>service</code>: 查看Service的详细信息，以及Service对应Pod的EndPoints列表等</li>
-</ul>
-</li>
-<li><code>logs</code>: 查看集群中某个Pod上的日志</li>
-<li><code>attach</code>: 附加到某个Pod中</li>
-<li><code>exec</code>: 在某个Pod中运行命令</li>
-<li><code>port-forward</code>: 设置某个Pod的端口和本地端口的映射</li>
-<li><code>proxy</code>: 在本地启动对集群API Server的代理</li>
-<li><code>cp</code>: 在<code>Pod</code>和本地之间进行文件拷贝</li>
-<li><code>auth</code>: 进行操作权限的校验</li>
-</ul>
-</li>
-<li>高级命令<ul>
-<li><code>apply</code>: 对集群中的资源进行配置</li>
-<li><code>patch</code>: 更新集群中的资源配置</li>
-<li><code>replace</code>: 对集群中的资源进行替换</li>
-<li><code>convert</code>: 将配置文件转换为不同的API版本</li>
-</ul>
-</li>
-<li>资源管理<ul>
-<li><code>label</code>: 给资源添加Label</li>
-<li><code>annotate</code>: 给资源添加Annotation</li>
-<li><code>completion</code>: 输出不同Shell的自动补全配置</li>
-</ul>
-</li>
-<li>其它<ul>
-<li><code>api-versions</code>: 输出集群支持的API群组</li>
-<li><code>api-resources</code>: 输出集群支持的资源信息</li>
-<li><code>config</code>: 修改Kubectl使用的kubeconfig文件</li>
-<li><code>plugin</code>: 给集群添加插件</li>
-<li><code>version</code>: 输出客户端和服务端的版本信息</li>
-<li><code>cluster_info</code>: 查看集群中Master上系统Service信息</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2587,7 +2532,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">81</span>
+                  <span class="site-state-item-count">82</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2609,7 +2554,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">139</span>
+                  <span class="site-state-item-count">141</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

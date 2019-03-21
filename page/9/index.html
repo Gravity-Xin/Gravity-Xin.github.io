@@ -249,6 +249,182 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/12/Golang-定时器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/12/Golang-定时器/" itemprop="url">Golang-定时器</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-12T16:18:15+08:00">
+                2018-11-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/12/Golang-定时器/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/11/12/Golang-定时器/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Golang中提供了两类定时器</p>
+<ul>
+<li>Timer: 一次触发</li>
+<li>Ticker: 等间隔触发</li>
+</ul>
+<h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><p>Timer:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    timer1 := time.NewTimer(time.Second)</span><br><span class="line">    &lt;-timer1.C</span><br><span class="line">    fmt.Println(<span class="string">"timer1 expired"</span>)</span><br><span class="line">    timer2 := time.NewTimer(time.Second * <span class="number">2</span>)</span><br><span class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">        &lt;-timer2.C</span><br><span class="line">        fmt.Println(<span class="string">"timer2 expired"</span>)</span><br><span class="line">    &#125;()</span><br><span class="line">    <span class="keyword">if</span> timer2.Stop() &#123;</span><br><span class="line">        fmt.Println(<span class="string">"timer2 stopped"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Ticker:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    ticker := time.NewTicker(time.Second * <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">defer</span> ticker.Stop()</span><br><span class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">for</span> t := <span class="keyword">range</span> ticker.C &#123;</span><br><span class="line">            fmt.Println(<span class="string">"tick arrive at:"</span> + t.String())</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;()</span><br><span class="line">    time.Sleep(time.Second * <span class="number">10</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h2><p>并没有使用SIGALARM信号实现，而是采用最小堆的方式实现，具体存储结构为数组实现的四叉树</p>
+<ul>
+<li>timer对象: 定时器对象，每创建一个定时器就会增加一个该对象</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> timer <span class="keyword">struct</span> &#123;</span><br><span class="line">    tb *timersBucket <span class="comment">// timer所在的桶，本质是一个最小堆</span></span><br><span class="line">    i  <span class="keyword">int</span>           <span class="comment">// heap index，timer在堆中的索引</span></span><br><span class="line">    when   <span class="keyword">int64</span> <span class="comment">//timer在该时间点被触发</span></span><br><span class="line">    period <span class="keyword">int64</span> <span class="comment">//当period大于0时，timer还会在when+period时间点被触发 Timer和Ticker的区别</span></span><br><span class="line">    f      <span class="function"><span class="keyword">func</span><span class="params">(<span class="keyword">interface</span>&#123;&#125;, <span class="keyword">uintptr</span>)</span> //<span class="title">timer</span>被触发时调用的函数和参数</span></span><br><span class="line"><span class="function">    <span class="title">arg</span>    <span class="title">interface</span></span>&#123;&#125;</span><br><span class="line">    seq    <span class="keyword">uintptr</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>timersBucket对象: 定时器数组对象，实现最小堆的数据结构</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> timersBucket <span class="keyword">struct</span> &#123;</span><br><span class="line">    lock         mutex <span class="comment">//锁，保护t</span></span><br><span class="line">    gp           *g</span><br><span class="line">    created      <span class="keyword">bool</span></span><br><span class="line">    sleeping     <span class="keyword">bool</span></span><br><span class="line">    rescheduling <span class="keyword">bool</span></span><br><span class="line">    sleepUntil   <span class="keyword">int64</span></span><br><span class="line">    waitnote     note</span><br><span class="line">    t            []*timer <span class="comment">//存储的timer数组</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>NewTicker的过程</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewTicker</span><span class="params">(d Duration)</span> *<span class="title">Ticker</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> d &lt;= <span class="number">0</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(errors.New(<span class="string">"non-positive interval for NewTicker"</span>)<span class="number">0</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    c := <span class="built_in">make</span>(<span class="keyword">chan</span> Time, <span class="number">1</span>) <span class="comment">//使用缓冲区为1的chan，当consumer消费速度慢时，可以用于缓冲</span></span><br><span class="line">    t := &amp;Ticker&#123;</span><br><span class="line">        C: c,</span><br><span class="line">        r: runtimeTimer&#123; <span class="comment">//runtimerTimer对应的即为runtimer包中的timer对象</span></span><br><span class="line">            when:   when(d),</span><br><span class="line">            period: <span class="keyword">int64</span>(d),</span><br><span class="line">            f:      sendTime,</span><br><span class="line">            arg:    c,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;</span><br><span class="line">    startTimer(&amp;t.r) <span class="comment">//在此将timer添加到timersBucket中</span></span><br><span class="line">                     <span class="comment">//对应runtime.startTimer(t *runtime.timer)函数 通过go:linkname来实现</span></span><br><span class="line">    <span class="keyword">return</span> t</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">startTimer</span><span class="params">(t *timer)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> raceenabled &#123;</span><br><span class="line">        racerelease(unsafe.Pointer(t))</span><br><span class="line">    &#125;</span><br><span class="line">    addtimer(t)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">addtimer</span><span class="params">(t *timer)</span></span> &#123;</span><br><span class="line">    tb := t.assignBucket() <span class="comment">//获取timer应该所属的bucket</span></span><br><span class="line">    lock(&amp;tb.lock) <span class="comment">//</span></span><br><span class="line">    tb.addtimerLocked(t)</span><br><span class="line">    unlock(&amp;tb.lock)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *timer)</span> <span class="title">assignBucket</span><span class="params">()</span> *<span class="title">timersBucket</span></span> &#123;</span><br><span class="line">    id := <span class="keyword">uint8</span>(getg().m.p.ptr().id) % timersLen <span class="comment">//使用goroutine的id与timersLen进行取余操作，得到bucket的下标</span></span><br><span class="line">    t.tb = &amp;timers[id].timersBucket</span><br><span class="line">    <span class="keyword">return</span> t.tb</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(tb *timersBucket)</span> <span class="title">addtimerLocked</span><span class="params">(t *timer)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> t.when &lt; <span class="number">0</span> &#123;</span><br><span class="line">        t.when = <span class="number">1</span>&lt;&lt;<span class="number">63</span> - <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">    t.i = <span class="built_in">len</span>(tb.t) <span class="comment">//timer的索引将是bucket的末尾</span></span><br><span class="line">    tb.t = <span class="built_in">append</span>(tb.t, t) <span class="comment">//将timer保存到bucket的末尾</span></span><br><span class="line">    siftupTimer(tb.t, t.i) <span class="comment">//使用数组实现的四叉树最小堆根据when进行排序，调整堆中数据</span></span><br><span class="line">    <span class="keyword">if</span> t.i == <span class="number">0</span> &#123; <span class="comment">//堆调整之后，如果新加入的timer处于堆顶的话，需要唤醒或者重启timerproc</span></span><br><span class="line">        <span class="keyword">if</span> tb.sleeping &#123;</span><br><span class="line">            tb.sleeping = <span class="literal">false</span></span><br><span class="line">            notewakeup(&amp;tb.waitnote)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> tb.rescheduling &#123;</span><br><span class="line">            tb.rescheduling = <span class="literal">false</span></span><br><span class="line">            goready(tb.gp, <span class="number">0</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> !tb.created &#123;</span><br><span class="line">        tb.created = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">go</span> timerproc(tb) <span class="comment">//第一次使用该bucket时，启动timerproc</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">timerproc</span><span class="params">(tb *timersBucket)</span></span> &#123; <span class="comment">//运行时间驱动的事件</span></span><br><span class="line">    tb.gp = getg()</span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        lock(&amp;tb.lock)</span><br><span class="line">        tb.sleeping = <span class="literal">false</span></span><br><span class="line">        now := nanotime()</span><br><span class="line">        delta := <span class="keyword">int64</span>(<span class="number">-1</span>)</span><br><span class="line">        <span class="keyword">for</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(tb.t) == <span class="number">0</span> &#123;</span><br><span class="line">                delta = <span class="number">-1</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line">            t := tb.t[<span class="number">0</span>] <span class="comment">//取出堆顶元素</span></span><br><span class="line">            delta = t.when - now <span class="comment">//设置的触发时间和当前时间的差值</span></span><br><span class="line">            <span class="keyword">if</span> delta &gt; <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">break</span>   <span class="comment">//时间未到</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> t.period &gt; <span class="number">0</span> &#123; <span class="comment">//period大于0，则计算下一次被唤醒的时间</span></span><br><span class="line">                t.when += t.period * (<span class="number">1</span> + -delta/t.period)</span><br><span class="line">                siftdownTimer(tb.t, <span class="number">0</span>) <span class="comment">//调整堆中数据</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123; <span class="comment">//从堆中移除timer</span></span><br><span class="line">                last := <span class="built_in">len</span>(tb.t) - <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> last &gt; <span class="number">0</span> &#123; <span class="comment">//将堆底元素放入到堆顶，然后调整堆中数据</span></span><br><span class="line">                    tb.t[<span class="number">0</span>] = tb.t[last]</span><br><span class="line">                    tb.t[<span class="number">0</span>].i = <span class="number">0</span></span><br><span class="line">                &#125;</span><br><span class="line">                tb.t[last] = <span class="literal">nil</span></span><br><span class="line">                tb.t = tb.t[:last]</span><br><span class="line">                <span class="keyword">if</span> last &gt; <span class="number">0</span> &#123;</span><br><span class="line">                    siftdownTimer(tb.t, <span class="number">0</span>)</span><br><span class="line">                &#125;</span><br><span class="line">                t.i = <span class="number">-1</span> <span class="comment">// 标记清除</span></span><br><span class="line">            &#125;</span><br><span class="line">            f := t.f</span><br><span class="line">            arg := t.arg</span><br><span class="line">            seq := t.seq</span><br><span class="line">            unlock(&amp;tb.lock)</span><br><span class="line">            <span class="keyword">if</span> raceenabled &#123;</span><br><span class="line">                raceacquire(unsafe.Pointer(t))</span><br><span class="line">            &#125;</span><br><span class="line">            f(arg, seq) <span class="comment">//调用timer中设置的触发函数</span></span><br><span class="line">            lock(&amp;tb.lock)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> delta &lt; <span class="number">0</span> || faketime &gt; <span class="number">0</span> &#123;</span><br><span class="line">            <span class="comment">// 没有可用的timer，将timerproc进行睡眠</span></span><br><span class="line">            tb.rescheduling = <span class="literal">true</span></span><br><span class="line">            goparkunlock(&amp;tb.lock, <span class="string">"timer goroutine (idle)"</span>, traceEvGoBlock, <span class="number">1</span>)</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        tb.sleeping = <span class="literal">true</span></span><br><span class="line">        tb.sleepUntil = now + delta</span><br><span class="line">        noteclear(&amp;tb.waitnote)</span><br><span class="line">        unlock(&amp;tb.lock)</span><br><span class="line">        notetsleepg(&amp;tb.waitnote, delta)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>timersBucket对应的最小堆的结构如下</p>
+<p><img src="/images/golang_timer_heap.jpg" alt="Golang timersBucket"></p>
+<p>所以，定时器的本质就是一个最小优先级队列，通过将当前时间转为绝对时间，作为定时器的权重，然后维护一个最小优先级队列，获取距离最近的定时任务</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/12/Docker入门/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -676,7 +852,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">81</span>
+                  <span class="site-state-item-count">82</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -698,7 +874,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">139</span>
+                  <span class="site-state-item-count">141</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
