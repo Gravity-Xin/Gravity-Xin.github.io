@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Sort,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="算法概述可以分为两大类  比较类: 通过比较来决定元素间的相对次序，时间复杂度不能突破O(nlogn)，也称为非线性时间排序 交换 冒泡排序 快速排序   插入 插入排序 希尔排序   选择 选择排序 堆排序   归并 二路归并排序 多路归并排序     非比较类: 不通过比较来决定元素间的相对次数，时间复杂度可以突破O(nlogn)，以线性时间运行，也称为线性时间排序 计数排序 桶排序 基数排序">
+<meta name="keywords" content="Sort">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法-Sort">
+<meta property="og:url" content="http://yoursite.com/2019/03/13/算法-Sort/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="算法概述可以分为两大类  比较类: 通过比较来决定元素间的相对次序，时间复杂度不能突破O(nlogn)，也称为非线性时间排序 交换 冒泡排序 快速排序   插入 插入排序 希尔排序   选择 选择排序 堆排序   归并 二路归并排序 多路归并排序     非比较类: 不通过比较来决定元素间的相对次数，时间复杂度可以突破O(nlogn)，以线性时间运行，也称为线性时间排序 计数排序 桶排序 基数排序">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/排序之冒泡排序.gif">
+<meta property="og:image" content="http://yoursite.com/images/排序之快速排序.gif">
+<meta property="og:image" content="http://yoursite.com/images/排序之插入排序.gif">
+<meta property="og:image" content="http://yoursite.com/images/排序之希尔排序.gif">
+<meta property="og:image" content="http://yoursite.com/images/排序之选择排序.gif">
+<meta property="og:image" content="http://yoursite.com/images/排序之堆排序.gif">
+<meta property="og:image" content="http://yoursite.com/images/排序之归并排序.gif">
+<meta property="og:image" content="http://yoursite.com/images/排序之计数排序.gif">
+<meta property="og:image" content="http://yoursite.com/images/排序之桶排序.png">
+<meta property="og:image" content="http://yoursite.com/images/排序之基数排序.gif">
+<meta property="og:updated_time" content="2019-03-21T11:02:58.944Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="算法-Sort">
+<meta name="twitter:description" content="算法概述可以分为两大类  比较类: 通过比较来决定元素间的相对次序，时间复杂度不能突破O(nlogn)，也称为非线性时间排序 交换 冒泡排序 快速排序   插入 插入排序 希尔排序   选择 选择排序 堆排序   归并 二路归并排序 多路归并排序     非比较类: 不通过比较来决定元素间的相对次数，时间复杂度可以突破O(nlogn)，以线性时间运行，也称为线性时间排序 计数排序 桶排序 基数排序">
+<meta name="twitter:image" content="http://yoursite.com/images/排序之冒泡排序.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/13/算法-Sort/">
+
+
+
+
+
+  <title>算法-Sort | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/13/算法-Sort/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">算法-Sort</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-13T10:00:20+08:00">
+                2019-03-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程基础/" itemprop="url" rel="index">
+                    <span itemprop="name">编程基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/13/算法-Sort/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/13/算法-Sort/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="算法概述"><a href="#算法概述" class="headerlink" title="算法概述"></a>算法概述</h2><p>可以分为两大类</p>
+<ul>
+<li>比较类: 通过比较来决定元素间的相对次序，时间复杂度不能突破O(nlogn)，也称为非线性时间排序<ul>
+<li>交换<ul>
+<li>冒泡排序</li>
+<li>快速排序</li>
+</ul>
+</li>
+<li>插入<ul>
+<li>插入排序</li>
+<li>希尔排序</li>
+</ul>
+</li>
+<li>选择<ul>
+<li>选择排序</li>
+<li>堆排序</li>
+</ul>
+</li>
+<li>归并<ul>
+<li>二路归并排序</li>
+<li>多路归并排序</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>非比较类: 不通过比较来决定元素间的相对次数，时间复杂度可以突破O(nlogn)，以线性时间运行，也称为线性时间排序<ul>
+<li>计数排序</li>
+<li>桶排序</li>
+<li>基数排序</li>
+</ul>
+</li>
+</ul>
+<p>时间复杂度</p>
+<table>
+<thead>
+<tr>
+<th>排序方法</th>
+<th>平均时间复杂度</th>
+<th>最坏时间复杂度</th>
+<th>最好时间复杂度</th>
+<th>空间复杂度</th>
+<th>稳定性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>冒泡排序</td>
+<td>O(n^2)</td>
+<td>O(n^2)</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>快速排序</td>
+<td>O(nlogn)</td>
+<td>O(n^2)</td>
+<td>O(nlogn)</td>
+<td>O(nlogn)</td>
+<td>不稳定</td>
+</tr>
+<tr>
+<td>插入排序</td>
+<td>O(n^2)</td>
+<td>O(n^2)</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>希尔排序</td>
+<td>O(n^1.3)</td>
+<td>O(n^2)</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td>不稳定</td>
+</tr>
+<tr>
+<td>选择排序</td>
+<td>O(n^2)</td>
+<td>O(n^2)</td>
+<td>O(n^2)</td>
+<td>O(1)</td>
+<td>不稳定</td>
+</tr>
+<tr>
+<td>堆排序</td>
+<td>O(nlogn)</td>
+<td>O(nlogn)</td>
+<td>O(nlogn)</td>
+<td>O(1)</td>
+<td>不稳定</td>
+</tr>
+<tr>
+<td>归并排序</td>
+<td>O(nlogn)</td>
+<td>O(nlogn)</td>
+<td>O(nlogn)</td>
+<td>O(n)</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>计数排序</td>
+<td>O(n+k)</td>
+<td>O(n+k)</td>
+<td>O(n+k)</td>
+<td>O(n+k)</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>桶排序</td>
+<td>O(n+k)</td>
+<td>O(n^2)</td>
+<td>O(n)</td>
+<td>O(n+k)</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>基数排序</td>
+<td>O(n*k)</td>
+<td>O(n*k)</td>
+<td>O(n*k)</td>
+<td>O(n+k)</td>
+<td>稳定</td>
+</tr>
+</tbody>
+</table>
+<h2 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h2><p>n: 待排序的序列长度</p>
+<ul>
+<li>冒泡排序(Bubble Sort)<ul>
+<li>遍历一遍序列，依次比较相邻的两个元素，如果它们次序错误则将其进行交换，这样末尾的元素为最大</li>
+<li>除了最后一个元素之外，重复进行上述步骤</li>
+<li>当一次遍历中未发生交换操作或者遍历了n次后，整个序列有序</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之冒泡排序.gif" alt="img"></p>
+<ul>
+<li>快速排序(Quick Sort): <code>递归分治法的思想</code><ul>
+<li>选择序列中的第一个元素作为基准</li>
+<li>进行分区操作，即遍历一遍序列，将所有元素小于该基准的放在基准前面，大于该基准的放在基准后面，此时该基准元素位于序列中正确的排序位置</li>
+<li>分别对基准元素前面和后面的子序列进行同样的操作，直到整个序列有序</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之快速排序.gif" alt="img"></p>
+<ul>
+<li>插入排序(Insertion Sort)<ul>
+<li>将序列上的第一个元素看做已经有序</li>
+<li>取出序列中的第二个元素作为待加入元素，在已有序的子序列中从后向前遍历</li>
+<li>如果子序列中的元素较大，则将其向后移位，直到待加入元素已经插入到正确位置，形成一个有序的子序列</li>
+<li>重复上述操作，直到整个序列有序</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之插入排序.gif" alt="img"></p>
+<ul>
+<li>希尔排序(Shell Sort): <code>对插入排序的改进，通过设置不同的增量依次进行插入排序，也叫缩小增量排序</code><ul>
+<li>选择一个增量序列t1,t2,……,tk，其中ti&gt;ti+1, tk=1</li>
+<li>对于每一个增量ti，将序列分割为ti个子序列，对各个子序列分别进行插入排序</li>
+<li>当增量为1时，其实是将整个序列作为一个子序列进行插入排序</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之希尔排序.gif" alt="img"></p>
+<ul>
+<li>选择排序(Selection Sort)<ul>
+<li>遍历一次序列，从中选择最小的元素，然后将其和序列中第一个元素进行交换</li>
+<li>此时序列中第一个元素有序，然后对剩下的元素再次进行上述操作，直到整个序列有序</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之选择排序.gif" alt="img"></p>
+<ul>
+<li>堆排序(Heap Sort): <code>依赖堆数据结构</code> <a href="https://gravity-xin.github.io/2018/11/12/Heap/" target="_blank" rel="noopener">Heap</a><ul>
+<li>构造堆</li>
+<li>从堆中Pop堆顶元素，然后调整生成新的堆</li>
+<li>重复上述操作，直到排序完成</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之堆排序.gif" alt="img"></p>
+<ul>
+<li>归并排序(Merge Sort): <code>递归分治法的思想，分为拆分子序列和合并子序列两个过程</code><ul>
+<li>将序列拆分为长度为n/2的子序列</li>
+<li>对每个子序列继续进行拆分，直到无法拆分为止</li>
+<li>对两个子序列进行合并，得到最终有序的序列</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之归并排序.gif" alt="img"></p>
+<ul>
+<li>计数排序(Counting Sort): <code>要求序列中的元素为有确定范围的整数，将序列中的元素作为下标存储到额外开辟的数组空间中</code><ul>
+<li>确定输入序列中的最小元素和最大元素，构建额外的数组C，数组元素初始化为0</li>
+<li>对序列中的每一个值为i的元素，数组C的第i项的数组元素值加1</li>
+<li>遍历数组C，对于每一个数组元素i，每反向填充到序列一次就减1，直到为0</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之计数排序.gif" alt="img"></p>
+<ul>
+<li>桶排序(Bucket Sort): <code>利用某个函数将序列中的元素映射到有限数量的桶中，然后对每一个分别进行排序，最后将元素进行拼接</code><ul>
+<li>设置确定数量的桶</li>
+<li>遍历序列，将其中的每一个元素分别映射到对应的桶中</li>
+<li>对于每一个桶使用某方法进行排序，比如快排</li>
+<li>将不为空的桶中的元素进行拼接</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之桶排序.png" alt="img"></p>
+<ul>
+<li>基数排序(Radix Sort): <code>对序列中的元素先按照低位进行排序，然后再按照高位进行排序</code><ul>
+<li>获取序列中的最大元素，并获取其位数为n</li>
+<li>从最低位开始，取得序列中每个元素在该位的值，构建radix数组</li>
+<li>对radix数组进行计数排序</li>
+<li>重复上述步骤n次，最终得到有序序列</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之基数排序.gif" alt="img"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Sort/" rel="tag"># Sort</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/12/Mysql常用SQL/" rel="next" title="Mysql常用SQL">
+                <i class="fa fa-chevron-left"></i> Mysql常用SQL
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/18/Kubernetes资源定义/" rel="prev" title="Kubernetes资源定义">
+                Kubernetes资源定义 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2019/03/13/算法-Sort/" data-title="算法-Sort" data-url="http://yoursite.com/2019/03/13/算法-Sort/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">81</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">142</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#算法概述"><span class="nav-number">1.</span> <span class="nav-text">算法概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法原理"><span class="nav-number">2.</span> <span class="nav-text">算法原理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Raft,Etcd,WAL,Snapshot,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在etcd的代码中，实现了raft协议，主要功能包括日志复制、选主、Snapshot、成员变更等功能，raft库还定义了一个Storage接口，包含对LogEntry的存取操作，需要由raft库的使用者实现同时，代码里还提供了一个使用了raft库的例子，名为raftexample，该应用对外提供HTTP REST的KV存储接口 简单使用 编译  1go build -o raftexample .">
+<meta name="keywords" content="Raft,Etcd,WAL,Snapshot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Etcd-示例源码">
+<meta property="og:url" content="http://yoursite.com/2018/12/05/Etcd-示例源码/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="在etcd的代码中，实现了raft协议，主要功能包括日志复制、选主、Snapshot、成员变更等功能，raft库还定义了一个Storage接口，包含对LogEntry的存取操作，需要由raft库的使用者实现同时，代码里还提供了一个使用了raft库的例子，名为raftexample，该应用对外提供HTTP REST的KV存储接口 简单使用 编译  1go build -o raftexample .">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-21T11:05:00.377Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Etcd-示例源码">
+<meta name="twitter:description" content="在etcd的代码中，实现了raft协议，主要功能包括日志复制、选主、Snapshot、成员变更等功能，raft库还定义了一个Storage接口，包含对LogEntry的存取操作，需要由raft库的使用者实现同时，代码里还提供了一个使用了raft库的例子，名为raftexample，该应用对外提供HTTP REST的KV存储接口 简单使用 编译  1go build -o raftexample .">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/05/Etcd-示例源码/">
+
+
+
+
+
+  <title>Etcd-示例源码 | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/05/Etcd-示例源码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Etcd-示例源码</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-05T16:53:16+08:00">
+                2018-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/05/Etcd-示例源码/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/12/05/Etcd-示例源码/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在etcd的代码中，实现了raft协议，主要功能包括日志复制、选主、Snapshot、成员变更等功能，raft库还定义了一个<code>Storage</code>接口，包含对LogEntry的存取操作，需要由raft库的使用者实现<br>同时，代码里还提供了一个使用了raft库的例子，名为raftexample，该应用对外提供HTTP REST的KV存储接口</p>
+<h2 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h2><ul>
+<li>编译</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go build -o raftexample ./contrib/raftexample</span><br></pre></td></tr></table></figure>
+<ul>
+<li>启动集群</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./raftexample --id 1 --cluster http://127.0.0.1:12379,http://127.0.0.1:22379,http://127.0.0.1:32379 --port 12380</span><br><span class="line">./raftexample --id 2 --cluster http://127.0.0.1:12379,http://127.0.0.1:22379,http://127.0.0.1:32379 --port 22380</span><br><span class="line">./raftexample --id 3 --cluster http://127.0.0.1:12379,http://127.0.0.1:22379,http://127.0.0.1:32379 --port 32380</span><br></pre></td></tr></table></figure>
+<ul>
+<li>读写数据</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -L http://127.0.0.1:12380/my-key -XPUT -d bar</span><br><span class="line">curl -L http://127.0.0.1:32380/my-key</span><br></pre></td></tr></table></figure>
+<ul>
+<li>集群变更</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 通知Leader增加一个节点</span><br><span class="line">curl -L http://127.0.0.1:12380/4 -XPOST -d http://127.0.0.1:42379</span><br><span class="line"><span class="meta">#</span> 启动新加入的节点</span><br><span class="line">./raftexample --id 4 --cluster http://127.0.0.1:12379,http://127.0.0.1:22379,http://127.0.0.1:32379,http://127.0.0.1:42379 --port 42380 --join</span><br><span class="line"><span class="meta">#</span> 通知Leader删除一个节点</span><br><span class="line">curl -L http://127.0.0.1:12380/3 -XDELETE</span><br><span class="line"><span class="meta">#</span> 关闭节点3</span><br></pre></td></tr></table></figure>
+<h2 id="程序组成"><a href="#程序组成" class="headerlink" title="程序组成"></a>程序组成</h2><p>程序中主要包含三个部分：KV存储、HTTP REST API服务、基于Raft的分布式集群</p>
+<p>客户通过HTTP接口向应用发起请求，对于读请求，直接从应用的状态机中获取并返回；对于写请求，将请求传递到Raft库，Raft与多个节点进行通信达到一致性后，将已提交的KV对告知应用，应用将其保存到自己的状态机中</p>
+<ul>
+<li>KV存储</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> kvstore <span class="keyword">struct</span> &#123;</span><br><span class="line">    proposeC    <span class="keyword">chan</span>&lt;- <span class="keyword">string</span> <span class="comment">//应用和底层Raft库之间的通信管道，接口来自用户的请求并传递给Raft库</span></span><br><span class="line">    mu          sync.RWMutex</span><br><span class="line">    kvStore     <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span> <span class="comment">//应用的状态机，一个简单的KV，对应Raft库中已经被提交的KV对</span></span><br><span class="line">    snapshotter *snap.Snapshotter <span class="comment">//应该管理Snapshot的接口</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Raft库</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 应用层对Raft节点的描述</span></span><br><span class="line"><span class="keyword">type</span> raftNode <span class="keyword">struct</span> &#123;</span><br><span class="line">    proposeC    &lt;-<span class="keyword">chan</span> <span class="keyword">string</span>               <span class="comment">//应用和底层Raft库之间的通信管道，接口来自用户的读写请求并传递给Raft库</span></span><br><span class="line">    confChangeC &lt;-<span class="keyword">chan</span> raftpb.ConfChange    <span class="comment">//应用和底层Raft库之间的通信管道，接口来自用户成员变更请求并传递给Raft库</span></span><br><span class="line">    commitC     <span class="keyword">chan</span>&lt;- *<span class="keyword">string</span>              <span class="comment">// 底层Raft库和应用之间的通信管道，底层Raft通过该管道通知应用准备提交KV</span></span><br><span class="line">    errorC      <span class="keyword">chan</span>&lt;- error                <span class="comment">// 底层Raft库和应用之间的通信管理，底层Raft通过该管道通知应用出现错误</span></span><br><span class="line"></span><br><span class="line">    id          <span class="keyword">int</span>                     <span class="comment">// Raft节点ID</span></span><br><span class="line">    peers       []<span class="keyword">string</span>                <span class="comment">// Raft其他节点URL</span></span><br><span class="line">    join        <span class="keyword">bool</span>                    <span class="comment">// Raft节点是否需要加入一个新的集群</span></span><br><span class="line">    waldir      <span class="keyword">string</span>                  <span class="comment">// WAL文件的目录</span></span><br><span class="line">    snapdir     <span class="keyword">string</span>                  <span class="comment">// Snapshot文件的目录</span></span><br><span class="line">    getSnapshot <span class="function"><span class="keyword">func</span><span class="params">()</span> <span class="params">([]<span class="keyword">byte</span>, error)</span>  // 应用层提供的进行<span class="title">Snapshot</span>的入口函数</span></span><br><span class="line"><span class="function">    <span class="title">lastIndex</span>   <span class="title">uint64</span>                  // 启动时，<span class="title">Raft</span>中<span class="title">LogEntry</span>的最大<span class="title">Index</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    <span class="title">confState</span>     <span class="title">raftpb</span>.<span class="title">ConfState</span></span></span><br><span class="line"><span class="function">    <span class="title">snapshotIndex</span> <span class="title">uint64</span></span></span><br><span class="line"><span class="function">    <span class="title">appliedIndex</span>  <span class="title">uint64</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    <span class="title">node</span>        <span class="title">raft</span>.<span class="title">Node</span>                   // <span class="title">Raft</span>底层库的接口</span></span><br><span class="line"><span class="function">    <span class="title">raftStorage</span> *<span class="title">raft</span>.<span class="title">MemoryStorage</span>         // <span class="title">Raft</span>节点的内存存储</span></span><br><span class="line"><span class="function">    <span class="title">wal</span>         *<span class="title">wal</span>.<span class="title">WAL</span>                    // <span class="title">Raft</span>节点的<span class="title">WAL</span>日志</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    <span class="title">snapshotter</span>      *<span class="title">snap</span>.<span class="title">Snapshotter</span>          // <span class="title">Raft</span>节点的<span class="title">Snapshotter</span></span></span><br><span class="line"><span class="function">    <span class="title">snapshotterReady</span> <span class="title">chan</span> *<span class="title">snap</span>.<span class="title">Snapshotter</span>     // 通知应用层<span class="title">snapshotter</span>创建完毕的管道</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    <span class="title">snapCount</span> <span class="title">uint64</span></span></span><br><span class="line"><span class="function">    <span class="title">transport</span> *<span class="title">rafthttp</span>.<span class="title">Transport</span> //传输层定义</span></span><br><span class="line"><span class="function">    <span class="title">stopc</span>     <span class="title">chan</span> <span class="title">struct</span></span>&#123;&#125; <span class="comment">// 通知节点已关闭</span></span><br><span class="line">    httpstopc <span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125; <span class="comment">// 通知关闭HTTP服务</span></span><br><span class="line">    httpdonec <span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125; <span class="comment">// 通知已经关闭了HTTP服务</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Raft底层库的接口，描述集群中的单个节点</span></span><br><span class="line"><span class="keyword">type</span> Node <span class="keyword">interface</span> &#123;</span><br><span class="line">    Tick() <span class="comment">// 时钟操作，每调用一次时钟加1，Heartbeat Timeout和Election Timeout都是基于此进行判断</span></span><br><span class="line"></span><br><span class="line">    Campaign(ctx context.Context) error <span class="comment">//将节点状态改为candidate，然后发起选主操作</span></span><br><span class="line"></span><br><span class="line">    Propose(ctx context.Context, data []<span class="keyword">byte</span>) error <span class="comment">//发起Append Log操作，可能会失败，因此需要应用层重试</span></span><br><span class="line"></span><br><span class="line">    ProposeConfChange(ctx context.Context, cc pb.ConfChange) error <span class="comment">//发起成员变更操作，当应用EntryConfChange的Entry类型时，应用层需要调用ApplyConfChange</span></span><br><span class="line"></span><br><span class="line">    Step(ctx context.Context, msg pb.Message) error <span class="comment">// 使用指定的msg来更新状态机</span></span><br><span class="line"></span><br><span class="line">    Ready() &lt;-<span class="keyword">chan</span> Ready <span class="comment">// 返回一个可读的chan，Ready封装了各种状态，应用通过Ready获取了状态之后，需要调用Advance</span></span><br><span class="line"></span><br><span class="line">    Advance() <span class="comment">// 应用层调用该方法告知Raft节点已经同步到最新的Ready状态</span></span><br><span class="line"></span><br><span class="line">    ApplyConfChange(cc pb.ConfChange) *pb.ConfState <span class="comment">// 将成员变更操作应用到本地节点</span></span><br><span class="line"></span><br><span class="line">    TransferLeadership(ctx context.Context, lead, transferee <span class="keyword">uint64</span>) <span class="comment">//尝试将Leader交给transferee</span></span><br><span class="line"></span><br><span class="line">    ReadIndex(ctx context.Context, rctx []<span class="keyword">byte</span>) error</span><br><span class="line"></span><br><span class="line">    Status() Status <span class="comment">// 获取当前节点上的状态机</span></span><br><span class="line"></span><br><span class="line">    ReportUnreachable(id <span class="keyword">uint64</span>)</span><br><span class="line"></span><br><span class="line">    ReportSnapshot(id <span class="keyword">uint64</span>, status SnapshotStatus)</span><br><span class="line"></span><br><span class="line">    Stop() <span class="comment">// 关闭当前节点</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Ready <span class="keyword">struct</span> &#123; <span class="comment">//保存了多种状态的数据，是raft库与应用层之间进行沟通的桥梁</span></span><br><span class="line">    *SoftState</span><br><span class="line"></span><br><span class="line">    pb.HardState <span class="comment">// 发送消息之前需要进行持久化的状态</span></span><br><span class="line"></span><br><span class="line">    ReadStates []ReadState</span><br><span class="line"></span><br><span class="line">    Entries []pb.Entry <span class="comment">// 发送消息之前需要持久化的Entry</span></span><br><span class="line"></span><br><span class="line">    Snapshot pb.Snapshot <span class="comment">// 需要持久化的Snapshot</span></span><br><span class="line"></span><br><span class="line">    CommittedEntries []pb.Entry</span><br><span class="line"></span><br><span class="line">    Messages []pb.Message</span><br><span class="line"></span><br><span class="line">    MustSync <span class="keyword">bool</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>HTTP REST API服务</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(h *httpKVAPI)</span> <span class="title">ServeHTTP</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    key := r.RequestURI</span><br><span class="line">    <span class="keyword">switch</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> r.Method == <span class="string">"PUT"</span>: <span class="comment">//PUT 用来更新Key</span></span><br><span class="line">        v, err := ioutil.ReadAll(r.Body)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Printf(<span class="string">"Failed to read on PUT (%v)\n"</span>, err)</span><br><span class="line">            http.Error(w, <span class="string">"Failed on PUT"</span>, http.StatusBadRequest)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        h.store.Propose(key, <span class="keyword">string</span>(v)) <span class="comment">// 将更新请求发送到底层Raft库</span></span><br><span class="line">        w.WriteHeader(http.StatusNoContent) <span class="comment">// 在此处不等待Raft库完成更新操作，直接返回；后续的读请求可能会得到旧的Value</span></span><br><span class="line">    <span class="keyword">case</span> r.Method == <span class="string">"GET"</span>: <span class="comment">//GET 用来读取Key</span></span><br><span class="line">        <span class="keyword">if</span> v, ok := h.store.Lookup(key); ok &#123; <span class="comment">// 直接从应用层的状态机中查询</span></span><br><span class="line">            w.Write([]<span class="keyword">byte</span>(v))</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            http.Error(w, <span class="string">"Failed to GET"</span>, http.StatusNotFound)</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">case</span> r.Method == <span class="string">"POST"</span>: <span class="comment">//POST 用来执行成员变更-增加成员操作</span></span><br><span class="line">        url, err := ioutil.ReadAll(r.Body)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Printf(<span class="string">"Failed to read on POST (%v)\n"</span>, err)</span><br><span class="line">            http.Error(w, <span class="string">"Failed on POST"</span>, http.StatusBadRequest)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        nodeId, err := strconv.ParseUint(key[<span class="number">1</span>:], <span class="number">0</span>, <span class="number">64</span>)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Printf(<span class="string">"Failed to convert ID for conf change (%v)\n"</span>, err)</span><br><span class="line">            http.Error(w, <span class="string">"Failed on POST"</span>, http.StatusBadRequest)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        cc := raftpb.ConfChange&#123;</span><br><span class="line">            Type:    raftpb.ConfChangeAddNode,</span><br><span class="line">            NodeID:  nodeId,</span><br><span class="line">            Context: url,</span><br><span class="line">        &#125;</span><br><span class="line">        h.confChangeC &lt;- cc <span class="comment">// 将变更请求提交给Raft库</span></span><br><span class="line">        w.WriteHeader(http.StatusNoContent) <span class="comment">// 与更新Key一样，不等待Raft库完成集群变更操作</span></span><br><span class="line">    <span class="keyword">case</span> r.Method == <span class="string">"DELETE"</span>: <span class="comment">// DELETE 用来执行成员变更-删除成员操作</span></span><br><span class="line">        nodeId, err := strconv.ParseUint(key[<span class="number">1</span>:], <span class="number">0</span>, <span class="number">64</span>)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Printf(<span class="string">"Failed to convert ID for conf change (%v)\n"</span>, err)</span><br><span class="line">            http.Error(w, <span class="string">"Failed on DELETE"</span>, http.StatusBadRequest)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        cc := raftpb.ConfChange&#123;</span><br><span class="line">            Type:   raftpb.ConfChangeRemoveNode,</span><br><span class="line">            NodeID: nodeId,</span><br><span class="line">        &#125;</span><br><span class="line">        h.confChangeC &lt;- cc</span><br><span class="line">        w.WriteHeader(http.StatusNoContent)</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        w.Header().Set(<span class="string">"Allow"</span>, <span class="string">"PUT"</span>)</span><br><span class="line">        w.Header().Add(<span class="string">"Allow"</span>, <span class="string">"GET"</span>)</span><br><span class="line">        w.Header().Add(<span class="string">"Allow"</span>, <span class="string">"POST"</span>)</span><br><span class="line">        w.Header().Add(<span class="string">"Allow"</span>, <span class="string">"DELETE"</span>)</span><br><span class="line">        http.Error(w, <span class="string">"Method not allowed"</span>, http.StatusMethodNotAllowed)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="启动流程"><a href="#启动流程" class="headerlink" title="启动流程"></a>启动流程</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">main()</span><br><span class="line">|- flag.Pasre()                                                         解析启动参数，如cluster、id、port、join</span><br><span class="line">|- <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">string</span>)                                                    初始化proposeC管道，用于应用层向Raft发送KV数据</span><br><span class="line">|- <span class="built_in">make</span>(<span class="keyword">chan</span> raftpb.ConfChange)                                         初始化confChangeC管道，用于应用层向Raft发送成员变更消息</span><br><span class="line">|- newRaftNode()                                                        新建raftNode对象，返回comitC、errorC的管道和snapshotterReady管道</span><br><span class="line">|  |                                                                    前者是Raft告知应用层已被提交的消息、出现错误的管道，后者是告知snapshotter已被建立的管道</span><br><span class="line">|  |- raftNode&#123;&#125;                                                        新建raftNode对象，将各个管道复制，初始化各个参数</span><br><span class="line">|  |- <span class="keyword">go</span> raftNode.startRaft()                                           启动节点</span><br><span class="line">|  |  |- os.Mkdir()                                                     如果snapDir目录不存在，则创建该目录</span><br><span class="line">|  |  |- snap.New()                                                     创建snapshotter对象，并通过snapshotterReady将该对象传出</span><br><span class="line">|  |  |- wal.Exist()                                                    判断WAL日志目录是否存在，用于确定该节点是否是第一次启动</span><br><span class="line">|  |  |- raftNode.replayWAL()                                           读取snapshot，并将其赋值到raftNode.wal中</span><br><span class="line">|  |  |  |- raftNode.loadSnapshot()                                     加载snapshot</span><br><span class="line">|  |  |  |  |- raftNode.snapshotter.Load()                              使用节点的snapshotter对象来加载snapshot</span><br><span class="line">|  |  |  |  |  |- snapshotter.snapNames()                               遍历snapshot目录下的文件，并按照文件名称进行排序</span><br><span class="line">|  |  |  |  |  |- snap.loadSnap()                                       依次加载每一个文件，只要成功加载一个就返回结果</span><br><span class="line">|  |  |  |  |  |  |- snap.Read()                                        读取文件内容并进行反序列化，使用CRC和snapshot内部格式判断snapshot的有效性</span><br><span class="line">|  |  |  |- raftNode.openWAL()                                          根据生成的snapshot中的Index和Term，生成可读的WAL对象</span><br><span class="line">|  |  |  |  |- wal.Open()                                               读取WAL文件，生成WAL对象</span><br><span class="line">|  |  |  |  |  |- wal.openAtIndex()                                     从指定Index读取WAL文件</span><br><span class="line">|  |  |  |  |  |  |- wal.readWALNames()                                 查找WAL目录下的WAL文件</span><br><span class="line">|  |  |  |  |  |  |- wai.searchIndex()                                  查找每一个WAL的Index</span><br><span class="line">|  |  |  |- raftNode.wal.ReadAll()                                      读取所有的WAL</span><br><span class="line">|  |  |  |- raft.NewMemoryStorage()                                     使用raft中的内存存储，并将其赋值到raftNode.raftStorage中</span><br><span class="line">|  |  |  |- raftNode.raftStorage.ApplySnapshot()                        将snapshot存入到内存存储中，实际上是更新内存存储的snapshot成员并添加一个最新的LogEntry</span><br><span class="line">|  |  |  |- raftNode.raftStorage.SetHardState()                         设置内存存储的hardState成员</span><br><span class="line">|  |  |  |- raftNode.raftStorage.Append()                               将LogEntry添加到内存存储中，根据LogEntry的Index和Term决定将Append哪些LogEntry</span><br><span class="line">|  |  |  |- raftNode.lastIndex                                          设置lastIndex</span><br><span class="line">|  |  |- raft.Config&#123;&#125;                                                  生成Raft配置，包括节点ID、超时时间等等</span><br><span class="line">|  |  |</span><br><span class="line">|  |  |- raft.RestartNode()                                             如果之前WAL目录已经存在，则直接重启服务，返回raft.Node对象赋值给raftNode.node</span><br><span class="line">|  |  |  |- raft.newRaft()                                              生成raft.raft对象，是真正的底层raft对象</span><br><span class="line">|  |  |  |  |- raft.becomeFollower()                                    raft对象默认为Follower</span><br><span class="line">|  |  |  |- raft.newNode()                                              生成raft.node对象，该对象实现了raft.Node接口</span><br><span class="line">|  |  |  |- <span class="keyword">go</span> node.run()                                               开启raft节点的状态管理协程</span><br><span class="line">|  |  |</span><br><span class="line">|  |  |- raft.StartNode()                                               如果之前WAL目录不存在，则启动服务并重新部署集群配置，返回raft.Node对象赋值给raftNode.node</span><br><span class="line">|  |  |</span><br><span class="line">|  |  |- rafthttp.Transport&#123;&#125;                                           设置raftNode.transport，传输层参数</span><br><span class="line">|  |  |- raftNode.transport.Start()                                     启动HTTP服务</span><br><span class="line">|  |  |  |- newStreamRoundTripper()                                     设置transport的stream的RoundTripper，表示长连接</span><br><span class="line">|  |  |  |- NewRoundTripper()                                           设置transport的pipline的RoundTripper，用于接收HTTP请求</span><br><span class="line">|  |  |- raftNode.transport.AddPeer()                                   将其他节点加入</span><br><span class="line">|  |  |  |- transport.startPeer()                                       启动与其他节点的通信</span><br><span class="line">|  |  |  |  |- pipeline.start()                                         启动pipline</span><br><span class="line">|  |  |  |  |  |- <span class="keyword">go</span> pipline.handle()                                   在协程中处理网络读写</span><br><span class="line">|  |  |  |  |- peer&#123;&#125;                                                   新建peer对象，代表远程raft节点</span><br><span class="line">|  |  |  |  |- <span class="keyword">go</span> raft.Process(&lt;-peer.recvc)                            在协程中处理peer中recvc <span class="keyword">chan</span> 的信息</span><br><span class="line">|  |  |  |  |- <span class="keyword">go</span> raft.Process(&lt;-peer.propc)                            在协程中处理peer中propc <span class="keyword">chan</span> 的信息</span><br><span class="line">|  |  |  |  |- peer.msgAppV2Reader.start()                              streamReader初始化、启动与peer的连接</span><br><span class="line">|  |  |  |  |- peer.msgAppReader.star()                                 streamReader初始化、启动与peer的连接</span><br><span class="line">|  |  |- <span class="keyword">go</span> raftNode.serveRaft()                                        启动raft库的HTTP监听，接收来自peer的请求</span><br><span class="line">|  |  |- <span class="keyword">go</span> raftNode.serveChannels()                                    应用层协程信号处理，包含处理用户请求和与raft库交互</span><br><span class="line">|  |  |  |- <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span>                                                   处理用户请求</span></span><br><span class="line"><span class="function">|  |  |  |  |- <span class="title">raftNode</span>.<span class="title">node</span>.<span class="title">Propose</span><span class="params">()</span>                                  处理<span class="title">KV</span>更新</span></span><br><span class="line"><span class="function">|  |  |  |  |- <span class="title">raftNode</span>.<span class="title">node</span>.<span class="title">ProposeConfChange</span><span class="params">()</span>                        处理成员变更</span></span><br><span class="line"><span class="function">|  |  |  |- <span class="title">raftNode</span>.<span class="title">node</span>.<span class="title">Tick</span><span class="params">()</span>                                        进行时钟更新</span></span><br><span class="line"><span class="function">|  |  |  |- <span class="title">raftNode</span>.<span class="title">wal</span>.<span class="title">Save</span><span class="params">()</span>...                                      处理<span class="title">raft</span>库通知的<span class="title">Ready</span>消息,包括更新<span class="title">WAL</span>、保存<span class="title">snapshot</span>、更新<span class="title">Storage</span>等等</span></span><br><span class="line"><span class="function">|- <span class="title">newKVStore</span><span class="params">()</span>                                                         初始化应用层的<span class="title">KV</span>存储</span></span><br><span class="line"><span class="function">|  |- <span class="title">kvstore</span></span>&#123;&#125;                                                         创建KVStore对象</span><br><span class="line">|  |- kvstore.readCommits()                                             读取已经被raft库提交的KV</span><br><span class="line">|- serveHttpKVAPI()                                                     应用层启动HTTP服务</span><br></pre></td></tr></table></figure>
+<h2 id="触发选主流程"><a href="#触发选主流程" class="headerlink" title="触发选主流程"></a>触发选主流程</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">|- raftNode.node.Tick()                                                 应用层时钟操作，通过 tickc <span class="keyword">chan</span> 将消息通知raft节点</span><br><span class="line">|- node.run()                                                           raft节点的状态管理轮询</span><br><span class="line">|  |- raft.tick()                                                       接收到应用层的tick消息，进行tick操作</span><br><span class="line">|  |                                                                    tick是一个函数对象，根据节点处于Leader或非Leader状态，分别设置为tickHeartbeat或者tickElection</span><br><span class="line">|  |  |- raft.tickElection()                                            处于Follower或Candidate的节点执行该方法</span><br><span class="line">|  |  |  |- raft.Step()                                                 当超过ElectionTimeout之后，执行Step方法，传入pb.MsgHup消息</span><br><span class="line">|  |  |  |  |- raft.campaign()                                          发起选主</span><br><span class="line">|  |  |  |  |  |- raft.becomeCandidate()                                设置自身为Candidate状态</span><br><span class="line">|  |  |  |  |  |- raft.poll()                                           模拟收到自己给自己投票的消息</span><br><span class="line">|  |  |  |  |  |- raft.quorum()                                         获取Quorum法定人数，适用于集群为单节点的情况</span><br><span class="line">|  |  |  |  |  |  |- raft.becomeLeader()                                设置自身为Leader状态</span><br><span class="line">|  |  |  |  |  |- raft.send()                                           如果不是单节点集群，则将其他Peers发起Vote请求</span><br><span class="line">|  |  |- raft.tickHeartbeat()                                           处于Leader状态的节点执行该方法</span><br><span class="line">|  |  |  |- raft.Step()                                                 当超过HeartbeatTimeout之后，执行Step方法，传入pb.MsgBeat</span><br><span class="line">|  |  |  |  |- raft.step()                                              step为函数对象，</span><br><span class="line">|  |  |  |  |                                                           根据节点状态，分别设置为stepLeader、stepFollower、stepCandidate</span><br><span class="line">|  |  |  |  |  |- raft.stepLeader()                                     leader执行操作</span><br><span class="line">|  |  |  |  |  |  |-raft.bcastHeartbeat()                               向Peers发送心跳</span><br></pre></td></tr></table></figure>
+<h2 id="用户写数据流程"><a href="#用户写数据流程" class="headerlink" title="用户写数据流程"></a>用户写数据流程</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http.Put() -&gt; kvstore.Propose() -&gt; <span class="keyword">chan</span> proposeC -&gt; node.Propose -&gt; <span class="keyword">chan</span> node.propc -&gt; raft.step() -&gt; <span class="keyword">chan</span> ready -&gt; raftnode.publishEntried() <span class="keyword">chan</span> commitC -&gt; kvstore.<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span></span><br></pre></td></tr></table></figure>
+<p>存在多个状态处理协程：<br>node.run(): 维护raft集群内部状态变化，同时处理来自应用层的请求，并将raft的消息传递给应用层<br>raftNode.serveChannels: 应用层接收来自raft的消息，并进行处理</p>
+<p>多个协程之间通过chan进行通信</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Raft/" rel="tag"># Raft</a>
+          
+            <a href="/tags/Etcd/" rel="tag"># Etcd</a>
+          
+            <a href="/tags/WAL/" rel="tag"># WAL</a>
+          
+            <a href="/tags/Snapshot/" rel="tag"># Snapshot</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/04/Etcd-基础知识/" rel="next" title="Etcd-基础知识">
+                <i class="fa fa-chevron-left"></i> Etcd-基础知识
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/07/Golang-sync/" rel="prev" title="Golang-sync">
+                Golang-sync <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2018/12/05/Etcd-示例源码/" data-title="Etcd-示例源码" data-url="http://yoursite.com/2018/12/05/Etcd-示例源码/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">81</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">142</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简单使用"><span class="nav-number">1.</span> <span class="nav-text">简单使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#程序组成"><span class="nav-number">2.</span> <span class="nav-text">程序组成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动流程"><span class="nav-number">3.</span> <span class="nav-text">启动流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#触发选主流程"><span class="nav-number">4.</span> <span class="nav-text">触发选主流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户写数据流程"><span class="nav-number">5.</span> <span class="nav-text">用户写数据流程</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
