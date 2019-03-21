@@ -75,7 +75,7 @@ linux网络基础，多台主机上容器的通信方式
   - overlay 叠加网络
 - hostname /etc/hosts /etc/resolv.conf
 - ip命令 netns link
-- iptables 查看路由表
+- iptables/ipvs 查看路由表
 - dns解析 nslookup
 - brctl
 - dig

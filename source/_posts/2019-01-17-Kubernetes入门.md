@@ -69,6 +69,8 @@ Master-Slave(Node)结构
     - `AddONs`: 插件，也是以Pod+Service的形式运行
       - DNS: 解析规则会根据集群状态的变化而自动改变
       - Dashboard: 集群管理页面
+      - Heapster: 集群监控
+      - IngressController: Ingress资源管理
 
 - K8S Node(Slave): Pod真正运行的机器
   - 带有容器的运行时，比如Docker
