@@ -249,6 +249,280 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/22/Kubernetes中的存储机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/22/Kubernetes中的存储机制/" itemprop="url">Kubernetes中的存储机制</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-22T10:08:15+08:00">
+                2019-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/22/Kubernetes中的存储机制/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/22/Kubernetes中的存储机制/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Docker中提供了存储卷的方式来实现容器内数据持久化的功能，本质是将宿主机上的文件和容器中的文件进行绑定</p>
+<p>在K8S中，Pod是可被调度的最小单元，有可能会被调度到不同的Node节点上运行，因此Docker中提供的这种方式无法满足Pod在跨节点调度时的数据持久化功能</p>
+<p>为了给Pod提供跨Node节点的数据持久化机制，需要将传统网络存储、分布式存储或云存储挂载到Node节点上，然后将存储卷和Node节点上的挂载目录进行绑定</p>
+<p>在K8S的Pod的容器中使用存储卷的步骤</p>
+<ul>
+<li>在Pod资源定义中使用<code>volumes</code>来定义Pod需要的存储卷<ul>
+<li>使用节点本地存储，只可以在Node节点本地使用<ul>
+<li><code>emptyDir</code>: 可以被Pod访问的临时空间，可以基于磁盘或内存。当Pod删除时，该存储卷也会被删除，即该数据卷的生命周期和Pod相同<ul>
+<li><code>medium</code>: 定义存储卷的存储方式。为空表示使用磁盘存储，Memory表示使用内存存储</li>
+<li><code>sizeLimit</code>: 定义存储卷的容量</li>
+</ul>
+</li>
+<li><code>hostPath</code>: 使用Node节点上的文件路径作为存储卷。当Pod删除时，该存储卷不会被删除，可以看作是Node节点级别的持久化机制  <strong>Docker上的存储卷机制</strong><ul>
+<li><code>path</code>: Node节点上的路径</li>
+<li><code>type</code>: 数据卷的类型<ul>
+<li><code>DirectoryOrCreate</code>: 路径为目录，如果目录不存在则自动创建</li>
+<li><code>Directory</code>: 路径为目录，如果目录不存在则报错</li>
+<li><code>FileOrCreate</code>: 路径为文件，如果目录不存在则自动创建</li>
+<li><code>File</code>: 路径为文件，如果目录不存在则报错</li>
+<li><code>Socket</code>: 路径为Unix Socket文件，如果不存在则报错ß</li>
+<li><code>CharDevice</code>: 路径为字符设备，如果目录不存在则报错</li>
+<li><code>BlockDevice</code>: 路径为块设备，如果目录不存在则报错</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>configMap</code>: </li>
+<li><code>secret</code>: </li>
+<li><code>downwardAPI</code>: 使得一些向下API可以被Pod使用。挂载一个目录，并将请求的数据写入到纯文本文件中</li>
+</ul>
+</li>
+<li>使用传统网络存储、分布式存储或云存储等，可以跨Node节点使用，是真正的持久化。可以直接根据底层存储方式来指定Pod使用的存储卷，如ceph、glusterfs等，也可以通过PV对底层存储进行抽象，通过PVC向PV申请Pod使用的存储卷<ul>
+<li><code>awsElasticBlockStore</code>: AWS云存储</li>
+<li><code>azureDisk</code>: Azure云存储</li>
+<li><code>azureFile</code>: Azure云存储</li>
+<li><code>cephfs</code>: Ceph分布式存储</li>
+<li><code>cinder</code>: OpenStack云存储</li>
+<li><code>fc</code>: SAN网络存储</li>
+<li><code>flexVolume</code>: 存储服务</li>
+<li><code>flocker</code>: 存储服务</li>
+<li><code>gcePersistentDisk</code>: Google云存储</li>
+<li><code>gitRepo</code>: git仓库<ul>
+<li>建立在emptyDir之上，只是数据卷中的数据初始化为git仓库中的数据</li>
+<li>git仓库和数据卷中的数据不会自动同步，即不会自动执行git pull和git push的操作</li>
+</ul>
+</li>
+<li><code>glusterfs</code>: glusterfs分布式存储</li>
+<li><code>iscsi</code>: SAN网络存储</li>
+<li><code>nfs</code>: NFS网络存储<ul>
+<li><code>path</code>: NFS服务器上的导出路径</li>
+<li><code>readOnly</code>: 对NFS上的文件是否仅可读</li>
+<li><code>server</code>: NFS服务器地址</li>
+</ul>
+</li>
+<li><code>persistentVolumeClaim</code>: 使用PVC向PV申请存储资源<ul>
+<li><code>claimName</code>: PVC资源名称</li>
+<li><code>readOnly</code>: 申请的存储资源是否仅可读</li>
+</ul>
+</li>
+<li><code>photonPersistentDisk</code></li>
+<li><code>portworxVolume</code></li>
+<li><code>projected</code>: 将几个现有的存储卷映射到同一个目录中</li>
+<li><code>quobyte</code></li>
+<li><code>rbd</code>: Ceph分布式块存储</li>
+<li><code>scaleIO</code></li>
+<li><code>storageos</code>: 存储操作系统，封装了多个云存储</li>
+<li><code>vsphereVolume</code>: vSphere云存储</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在Pod资源的容器定义中使用<code>volumeMounts</code>定义容器中存储卷的挂载方式<ul>
+<li><code>mountPath</code>: 存储卷在容器中的挂载路径</li>
+<li><code>mountPropagation</code>: 挂载的存储卷的传播方式 None HostToContainer BiDirection</li>
+<li><code>name</code>: 挂载的存储卷的名称</li>
+<li><code>readOnly</code>: 存储卷是否只可读</li>
+<li><code>subPath</code>: 从存储卷中进行挂载的子目录</li>
+</ul>
+</li>
+</ul>
+<h2 id="PersistentVolume-PersistentVolumeClaim"><a href="#PersistentVolume-PersistentVolumeClaim" class="headerlink" title="PersistentVolume/PersistentVolumeClaim"></a>PersistentVolume/PersistentVolumeClaim</h2><p>通过PV对集群中的各种存储系统进行封装，Pod通过PVC从PV中申请存储资源，这样便实现了Pod和存储系统的解耦</p>
+<p>PV和PVC是一对一的绑定关系</p>
+<p>PVC和Pod是一对多的绑定关系</p>
+<p><img src="/images/Kubernetes之PV和PVC.png" alt="img"></p>
+<p><img src="/images/Kubernetes之PV和PVC的使用.png" alt="img"></p>
+<h3 id="PV的spec字段"><a href="#PV的spec字段" class="headerlink" title="PV的spec字段"></a>PV的spec字段</h3><p>PV是集群级别的资源，不属于任何Namespace</p>
+<p>对集群中的各类存储系统进行管理，同时向PVC提供存储资源的访问入口</p>
+<ul>
+<li>使用的底层存储系统配置: 网络存储、分布式存储、云存储等等，与直接在Pod中定义存储卷类似</li>
+<li><code>accessModes</code>: PV可以被Node节点的挂载方式和使用方式 <strong>还需要保证底层的存储系统支持该模式</strong><ul>
+<li><code>ReadWriteOnce</code>: 只可以被单个节点挂载，且可读可写</li>
+<li><code>ReadOnlyMany</code>: 可以被多个节点挂载，且只读</li>
+<li><code>ReadWriteMany</code>: 可以被多个节点挂载，且可读可写</li>
+</ul>
+</li>
+<li><code>capacity</code>: 存储资源容量设置</li>
+<li><code>claimRef</code>: PV和PVC之间进行绑定的配置</li>
+<li><code>mountOptions</code>: 存储资源进行挂载操作时的选项</li>
+<li><code>nodeAffinity</code>: 对PV能够被挂载到的Node节点进行限制</li>
+<li><code>persistentVolumeReclaimPolicy</code>: 当PV和PVC之间分离之后的回收策略<ul>
+<li><code>Retain</code>: 保留PV，保留数据</li>
+<li><code>Delete</code>: 删除PV，清空数据</li>
+<li><code>Recycle</code>: 保留PV，PV可被重新绑定，清空数据</li>
+</ul>
+</li>
+<li><code>storageClassName</code>: PV所属的存储类名称</li>
+<li><code>volumeMode</code>: 存储资源的文件系统类型</li>
+</ul>
+<h3 id="PVC的spec的字段"><a href="#PVC的spec的字段" class="headerlink" title="PVC的spec的字段"></a>PVC的spec的字段</h3><p>PVC是Namespace级别的资源</p>
+<p>对于Pod中需要如何使用存储资源和如何寻找合适的PV进行描述</p>
+<p>当PVC被创建之后，会自动从集群中寻找符合条件的PV资源并进行绑定</p>
+<ul>
+<li><code>accessModes</code>: 规定PV应支持的访问模式</li>
+<li><code>resources</code>: 规定PV中应包含的资源<ul>
+<li><code>limits</code>: 设置最大的PV存储空间</li>
+<li><code>requests</code>: 设置最小的PV存储空间</li>
+</ul>
+</li>
+<li><code>selector</code>: 使用标签选择器来匹配可以被选择的PV资源</li>
+<li><code>storageClassName</code>: 存储类名称</li>
+<li><code>volumeMode</code>: 存储卷的模式，用于和PV进行绑定</li>
+<li><code>volumeName</code>: 存储卷的名称，用于和PV进行绑定</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/20/Kubernetes中的Ingress和IngressController/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1205,7 +1479,7 @@
 <li><code>terminationGracePeriodSeconds</code>: Pod终止时，会向容器中的进程发送Term信号。在等待设置的时间后，再向容器中的进程发送Kill信号。因此容器响应Term信号的时间应小于该值，从而实现平滑终止</li>
 </ul>
 <h2 id="Pod资源的生命周期"><a href="#Pod资源的生命周期" class="headerlink" title="Pod资源的生命周期"></a>Pod资源的生命周期</h2><ul>
-<li><code>Pending</code>: Pod已被系统接受，但是容器镜像尚未创建。包括Pod调度到节点Node上和通过网络下载镜像的时间</li>
+<li><code>Pending</code>: Pod已被系统接受，但是容器镜像尚未创建。包括Pod调度到节点Node上、通过网络下载镜像的时间</li>
 <li><code>Running</code>: Pod已经和某个Node绑定，并且Pod中的容器都已被创建，至少有一个容器处于启动、运行或重启的状态<ul>
 <li>使用串行执行的初始化容器执行系统环境初始化操作</li>
 <li>启动主容器和其他辅助的容器</li>
@@ -1534,8 +1808,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程基础/" itemprop="url" rel="index">
-                    <span itemprop="name">编程基础</span>
+                  <a href="/categories/编程技术/" itemprop="url" rel="index">
+                    <span itemprop="name">编程技术</span>
                   </a>
                 </span>
 
@@ -2225,298 +2499,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/12/Mysql基础/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/12/Mysql基础/" itemprop="url">Mysql基础</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-12T10:57:10+08:00">
-                2019-03-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/12/Mysql基础/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/12/Mysql基础/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li>逻辑架构<ul>
-<li>客户端</li>
-<li>服务器</li>
-<li>存储引擎<ul>
-<li>InnoDB<ul>
-<li>mysql默认事务型引擎</li>
-<li>处理大量短期事务，应该优先考虑使用该引擎</li>
-<li>支持行锁和表锁</li>
-<li>支持事务和自动崩溃恢复</li>
-<li>索引文件和数据文件相同，根据主键查询为聚簇索引，索引data域为具体行数据；根据其它字段查询为非聚簇索引，索引data域为主键值，再根据主键的索引找到具体行</li>
-</ul>
-</li>
-<li>MyISAM<ul>
-<li>支持表锁</li>
-<li>不支持事务和自动崩溃恢复</li>
-<li>索引文件和数据文件分离，索引data域为行的地址，为非聚簇索引；主键索引与其它字段的索引格式一样，都是非聚簇索引</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>并发请求控制<ul>
-<li>读写锁</li>
-<li>表锁与行锁</li>
-</ul>
-</li>
-<li>事务<ul>
-<li>ACID特性</li>
-<li>隔离级别: 一个事务中所做的修改对于其他事务的可见性<ul>
-<li>READ UNCOMMITED: 未提交读 发生脏读的情况</li>
-<li>READ COMMITED: 提交读 发生不可重复读的情况</li>
-<li>REPEATABLE READ: 可重复读 解决了脏读的问题，还使用MVCC多版本控制来解决幻读的问题  <strong>mysql默认的隔离级别</strong></li>
-<li>SERIALIZABLE 可串行化 事务串行执行</li>
-</ul>
-</li>
-<li>死锁: 多个事务互相等待对方占用的锁</li>
-<li>使用事务日志来提高事务的执行效率，不直接改磁盘上的数据，而是记录事务日志，然后在后台慢慢将数据刷回到磁盘</li>
-<li>AUTOCOMMIT: 在InnoDB中，如果没有显式开始事务，则自动将每一个sql操作当做事务进行提交</li>
-</ul>
-</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>隔离级别</th>
-<th>脏读（Dirty Read）</th>
-<th>不可重复读（NonRepeatable Read）</th>
-<th>幻读（Phantom Read）</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>未提交读</td>
-<td>可能</td>
-<td>可能</td>
-<td>可能</td>
-</tr>
-<tr>
-<td>已提交读</td>
-<td>不可能</td>
-<td>可能</td>
-<td>可能</td>
-</tr>
-<tr>
-<td>可重复读</td>
-<td>不可能</td>
-<td>不可能</td>
-<td>可能</td>
-</tr>
-<tr>
-<td>可串行化</td>
-<td>不可能</td>
-<td>不可能</td>
-<td>不可能</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>多版本并发控制(MVCC): 保存数据在某个时间点的快照，使用乐观锁的方式<ul>
-<li>InnoDB在每行记录中添加额外的两个隐藏的列(创建时间和删除时间)来实现MVCC</li>
-</ul>
-</li>
-<li>索引<ul>
-<li>使用索引会降低增删改的速度，因为需要维护索引</li>
-<li>分类<ul>
-<li>主键索引 PRIMARY KEY</li>
-<li>唯一索引 UNIQUE</li>
-<li>普通索引 INDEX</li>
-<li>组合索引 INDEX</li>
-<li>全文索引 FULLTEXT</li>
-</ul>
-</li>
-<li>实现机制<ul>
-<li>B+树<ul>
-<li>磁盘IO次数为树的高度</li>
-<li>多个树节点占用磁盘一页的空间，可以利用磁盘缓存和访问局部性原理提高IO效率</li>
-</ul>
-</li>
-<li>哈希<ul>
-<li>每次只查询出一行，不支持范围查询</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>优化<ul>
-<li>使用explain命令定位性能瓶颈<ul>
-<li>是否为全表扫描</li>
-<li>用了哪些索引</li>
-</ul>
-</li>
-<li>索引的字段应尽量的小，减少单个索引占用的磁盘空间，从而可以增加磁盘上一页中的树节点数量，从而减少磁盘IO次数</li>
-<li>组合索引与最左前缀匹配原理<ul>
-<li>创建组合索引时，将使用最频繁的列放在左边</li>
-<li>使用组合索引查询时，where子句将使用最频繁的列放在最左边</li>
-</ul>
-</li>
-<li>使用区分度高的列作为索引</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>SQL语句执行顺序: <code>select -- from -- where -- group by -- having -- order by</code><ul>
-<li>from: 确定从哪些表中进行检索，多个表的执行顺序是从后往前，因此需要将数据量较少的表放到最后</li>
-<li>where: 确定表中数据的过滤条件，多个过滤条件的执行顺序是从后往前，因此可以过滤到最多数据的条件应放到最后 <strong>过滤条件对应的字段是表中所有的字段，过滤条件不能使聚合函数</strong></li>
-<li>group by: 确定过滤出的数据的数据分组</li>
-<li>having: 对已经分组的数据设置过滤条件 <strong>过滤条件对应的字段是表中被select查询出来的字段，过滤条件一般是聚合函数，一般配合分组进行使用</strong></li>
-<li>select: 获取符合条件的数据结果集</li>
-<li>order by: 对数据结果集进行排序，执行顺序为从前往后</li>
-</ul>
-</li>
-<li>大表优化<ul>
-<li>限制查询范围</li>
-<li>读写分离</li>
-<li>缓存</li>
-<li>垂直拆分: 根据表中内容的相关性拆分为几张表</li>
-<li>水平拆分: 按照某个字段进行分片</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2567,7 +2549,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">81</span>
+                  <span class="site-state-item-count">82</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2578,7 +2560,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2589,7 +2571,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">142</span>
+                  <span class="site-state-item-count">148</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Volume,EmptyDir,HostPath,ConfigMap,Secret,PersistentVolumeClaim,PersistentVolume,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Docker中提供了存储卷的方式来实现容器内数据持久化的功能，本质是将宿主机上的文件和容器中的文件进行绑定 在K8S中，Pod是可被调度的最小单元，有可能会被调度到不同的Node节点上运行，因此Docker中提供的这种方式无法满足Pod在跨节点调度时的数据持久化功能 为了给Pod提供跨Node节点的数据持久化机制，需要将传统网络存储、分布式存储或云存储挂载到Node节点上，然后将存储卷和Node节">
+<meta name="keywords" content="Volume,EmptyDir,HostPath,ConfigMap,Secret,PersistentVolumeClaim,PersistentVolume">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes中的存储机制">
+<meta property="og:url" content="http://yoursite.com/2019/03/22/Kubernetes中的存储机制/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="Docker中提供了存储卷的方式来实现容器内数据持久化的功能，本质是将宿主机上的文件和容器中的文件进行绑定 在K8S中，Pod是可被调度的最小单元，有可能会被调度到不同的Node节点上运行，因此Docker中提供的这种方式无法满足Pod在跨节点调度时的数据持久化功能 为了给Pod提供跨Node节点的数据持久化机制，需要将传统网络存储、分布式存储或云存储挂载到Node节点上，然后将存储卷和Node节">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/Kubernetes之PV和PVC.png">
+<meta property="og:image" content="http://yoursite.com/images/Kubernetes之PV和PVC的使用.png">
+<meta property="og:updated_time" content="2019-03-22T08:31:39.815Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kubernetes中的存储机制">
+<meta name="twitter:description" content="Docker中提供了存储卷的方式来实现容器内数据持久化的功能，本质是将宿主机上的文件和容器中的文件进行绑定 在K8S中，Pod是可被调度的最小单元，有可能会被调度到不同的Node节点上运行，因此Docker中提供的这种方式无法满足Pod在跨节点调度时的数据持久化功能 为了给Pod提供跨Node节点的数据持久化机制，需要将传统网络存储、分布式存储或云存储挂载到Node节点上，然后将存储卷和Node节">
+<meta name="twitter:image" content="http://yoursite.com/images/Kubernetes之PV和PVC.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/22/Kubernetes中的存储机制/">
+
+
+
+
+
+  <title>Kubernetes中的存储机制 | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/22/Kubernetes中的存储机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Kubernetes中的存储机制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-22T10:08:15+08:00">
+                2019-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/22/Kubernetes中的存储机制/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/22/Kubernetes中的存储机制/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Docker中提供了存储卷的方式来实现容器内数据持久化的功能，本质是将宿主机上的文件和容器中的文件进行绑定</p>
+<p>在K8S中，Pod是可被调度的最小单元，有可能会被调度到不同的Node节点上运行，因此Docker中提供的这种方式无法满足Pod在跨节点调度时的数据持久化功能</p>
+<p>为了给Pod提供跨Node节点的数据持久化机制，需要将传统网络存储、分布式存储或云存储挂载到Node节点上，然后将存储卷和Node节点上的挂载目录进行绑定</p>
+<p>在K8S的Pod的容器中使用存储卷的步骤</p>
+<ul>
+<li>在Pod资源定义中使用<code>volumes</code>来定义Pod需要的存储卷<ul>
+<li>使用节点本地存储，只可以在Node节点本地使用<ul>
+<li><code>emptyDir</code>: 可以被Pod访问的临时空间，可以基于磁盘或内存。当Pod删除时，该存储卷也会被删除，即该数据卷的生命周期和Pod相同<ul>
+<li><code>medium</code>: 定义存储卷的存储方式。为空表示使用磁盘存储，Memory表示使用内存存储</li>
+<li><code>sizeLimit</code>: 定义存储卷的容量</li>
+</ul>
+</li>
+<li><code>hostPath</code>: 使用Node节点上的文件路径作为存储卷。当Pod删除时，该存储卷不会被删除，可以看作是Node节点级别的持久化机制  <strong>Docker上的存储卷机制</strong><ul>
+<li><code>path</code>: Node节点上的路径</li>
+<li><code>type</code>: 数据卷的类型<ul>
+<li><code>DirectoryOrCreate</code>: 路径为目录，如果目录不存在则自动创建</li>
+<li><code>Directory</code>: 路径为目录，如果目录不存在则报错</li>
+<li><code>FileOrCreate</code>: 路径为文件，如果目录不存在则自动创建</li>
+<li><code>File</code>: 路径为文件，如果目录不存在则报错</li>
+<li><code>Socket</code>: 路径为Unix Socket文件，如果不存在则报错ß</li>
+<li><code>CharDevice</code>: 路径为字符设备，如果目录不存在则报错</li>
+<li><code>BlockDevice</code>: 路径为块设备，如果目录不存在则报错</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>configMap</code>: </li>
+<li><code>secret</code>: </li>
+<li><code>downwardAPI</code>: 使得一些向下API可以被Pod使用。挂载一个目录，并将请求的数据写入到纯文本文件中</li>
+</ul>
+</li>
+<li>使用传统网络存储、分布式存储或云存储等，可以跨Node节点使用，是真正的持久化。可以直接根据底层存储方式来指定Pod使用的存储卷，如ceph、glusterfs等，也可以通过PV对底层存储进行抽象，通过PVC向PV申请Pod使用的存储卷<ul>
+<li><code>awsElasticBlockStore</code>: AWS云存储</li>
+<li><code>azureDisk</code>: Azure云存储</li>
+<li><code>azureFile</code>: Azure云存储</li>
+<li><code>cephfs</code>: Ceph分布式存储</li>
+<li><code>cinder</code>: OpenStack云存储</li>
+<li><code>fc</code>: SAN网络存储</li>
+<li><code>flexVolume</code>: 存储服务</li>
+<li><code>flocker</code>: 存储服务</li>
+<li><code>gcePersistentDisk</code>: Google云存储</li>
+<li><code>gitRepo</code>: git仓库<ul>
+<li>建立在emptyDir之上，只是数据卷中的数据初始化为git仓库中的数据</li>
+<li>git仓库和数据卷中的数据不会自动同步，即不会自动执行git pull和git push的操作</li>
+</ul>
+</li>
+<li><code>glusterfs</code>: glusterfs分布式存储</li>
+<li><code>iscsi</code>: SAN网络存储</li>
+<li><code>nfs</code>: NFS网络存储<ul>
+<li><code>path</code>: NFS服务器上的导出路径</li>
+<li><code>readOnly</code>: 对NFS上的文件是否仅可读</li>
+<li><code>server</code>: NFS服务器地址</li>
+</ul>
+</li>
+<li><code>persistentVolumeClaim</code>: 使用PVC向PV申请存储资源<ul>
+<li><code>claimName</code>: PVC资源名称</li>
+<li><code>readOnly</code>: 申请的存储资源是否仅可读</li>
+</ul>
+</li>
+<li><code>photonPersistentDisk</code></li>
+<li><code>portworxVolume</code></li>
+<li><code>projected</code>: 将几个现有的存储卷映射到同一个目录中</li>
+<li><code>quobyte</code></li>
+<li><code>rbd</code>: Ceph分布式块存储</li>
+<li><code>scaleIO</code></li>
+<li><code>storageos</code>: 存储操作系统，封装了多个云存储</li>
+<li><code>vsphereVolume</code>: vSphere云存储</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在Pod资源的容器定义中使用<code>volumeMounts</code>定义容器中存储卷的挂载方式<ul>
+<li><code>mountPath</code>: 存储卷在容器中的挂载路径</li>
+<li><code>mountPropagation</code>: 挂载的存储卷的传播方式 None HostToContainer BiDirection</li>
+<li><code>name</code>: 挂载的存储卷的名称</li>
+<li><code>readOnly</code>: 存储卷是否只可读</li>
+<li><code>subPath</code>: 从存储卷中进行挂载的子目录</li>
+</ul>
+</li>
+</ul>
+<h2 id="PersistentVolume-PersistentVolumeClaim"><a href="#PersistentVolume-PersistentVolumeClaim" class="headerlink" title="PersistentVolume/PersistentVolumeClaim"></a>PersistentVolume/PersistentVolumeClaim</h2><p>通过PV对集群中的各种存储系统进行封装，Pod通过PVC从PV中申请存储资源，这样便实现了Pod和存储系统的解耦</p>
+<p>PV和PVC是一对一的绑定关系</p>
+<p>PVC和Pod是一对多的绑定关系</p>
+<p><img src="/images/Kubernetes之PV和PVC.png" alt="img"></p>
+<p><img src="/images/Kubernetes之PV和PVC的使用.png" alt="img"></p>
+<h3 id="PV的spec字段"><a href="#PV的spec字段" class="headerlink" title="PV的spec字段"></a>PV的spec字段</h3><p>PV是集群级别的资源，不属于任何Namespace</p>
+<p>对集群中的各类存储系统进行管理，同时向PVC提供存储资源的访问入口</p>
+<ul>
+<li>使用的底层存储系统配置: 网络存储、分布式存储、云存储等等，与直接在Pod中定义存储卷类似</li>
+<li><code>accessModes</code>: PV可以被Node节点的挂载方式和使用方式 <strong>还需要保证底层的存储系统支持该模式</strong><ul>
+<li><code>ReadWriteOnce</code>: 只可以被单个节点挂载，且可读可写</li>
+<li><code>ReadOnlyMany</code>: 可以被多个节点挂载，且只读</li>
+<li><code>ReadWriteMany</code>: 可以被多个节点挂载，且可读可写</li>
+</ul>
+</li>
+<li><code>capacity</code>: 存储资源容量设置</li>
+<li><code>claimRef</code>: PV和PVC之间进行绑定的配置</li>
+<li><code>mountOptions</code>: 存储资源进行挂载操作时的选项</li>
+<li><code>nodeAffinity</code>: 对PV能够被挂载到的Node节点进行限制</li>
+<li><code>persistentVolumeReclaimPolicy</code>: 当PV和PVC之间分离之后的回收策略<ul>
+<li><code>Retain</code>: 保留PV，保留数据</li>
+<li><code>Delete</code>: 删除PV，清空数据</li>
+<li><code>Recycle</code>: 保留PV，PV可被重新绑定，清空数据</li>
+</ul>
+</li>
+<li><code>storageClassName</code>: PV所属的存储类名称</li>
+<li><code>volumeMode</code>: 存储资源的文件系统类型</li>
+</ul>
+<h3 id="PVC的spec的字段"><a href="#PVC的spec的字段" class="headerlink" title="PVC的spec的字段"></a>PVC的spec的字段</h3><p>PVC是Namespace级别的资源</p>
+<p>对于Pod中需要如何使用存储资源和如何寻找合适的PV进行描述</p>
+<p>当PVC被创建之后，会自动从集群中寻找符合条件的PV资源并进行绑定</p>
+<ul>
+<li><code>accessModes</code>: 规定PV应支持的访问模式</li>
+<li><code>resources</code>: 规定PV中应包含的资源<ul>
+<li><code>limits</code>: 设置最大的PV存储空间</li>
+<li><code>requests</code>: 设置最小的PV存储空间</li>
+</ul>
+</li>
+<li><code>selector</code>: 使用标签选择器来匹配可以被选择的PV资源</li>
+<li><code>storageClassName</code>: 存储类名称</li>
+<li><code>volumeMode</code>: 存储卷的模式，用于和PV进行绑定</li>
+<li><code>volumeName</code>: 存储卷的名称，用于和PV进行绑定</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Volume/" rel="tag"># Volume</a>
+          
+            <a href="/tags/EmptyDir/" rel="tag"># EmptyDir</a>
+          
+            <a href="/tags/HostPath/" rel="tag"># HostPath</a>
+          
+            <a href="/tags/ConfigMap/" rel="tag"># ConfigMap</a>
+          
+            <a href="/tags/Secret/" rel="tag"># Secret</a>
+          
+            <a href="/tags/PersistentVolumeClaim/" rel="tag"># PersistentVolumeClaim</a>
+          
+            <a href="/tags/PersistentVolume/" rel="tag"># PersistentVolume</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/20/Kubernetes中的Ingress和IngressController/" rel="next" title="Kubernetes中的Ingress和IngressController">
+                <i class="fa fa-chevron-left"></i> Kubernetes中的Ingress和IngressController
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2019/03/22/Kubernetes中的存储机制/" data-title="Kubernetes中的存储机制" data-url="http://yoursite.com/2019/03/22/Kubernetes中的存储机制/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">82</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">148</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#PersistentVolume-PersistentVolumeClaim"><span class="nav-number">1.</span> <span class="nav-text">PersistentVolume/PersistentVolumeClaim</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PV的spec字段"><span class="nav-number">1.1.</span> <span class="nav-text">PV的spec字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PVC的spec的字段"><span class="nav-number">1.2.</span> <span class="nav-text">PVC的spec的字段</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
