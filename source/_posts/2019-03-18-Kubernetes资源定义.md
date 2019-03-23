@@ -30,7 +30,7 @@ tags:
 - 配置与存储型
   - ConfigMap
   - Secret
-  - Volume
+  - PersistentVolumeClaim
 - 集群型: 前三者都属于某个名称空间，而集群型资源不属于任何的名称空间
   - Namespace
   - Node

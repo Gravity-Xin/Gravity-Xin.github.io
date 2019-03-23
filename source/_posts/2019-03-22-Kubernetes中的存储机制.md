@@ -9,7 +9,7 @@ tags:
 - HostPath
 - ConfigMap
 - Secret
-- PersistentVolume
+- PersistentVolume
 - PersistentVolumeClaim
 ---
 
@@ -19,7 +19,7 @@ Docker中提供了存储卷的方式来实现容器内数据持久化的功能�
 
 为了给Pod提供跨Node节点的数据持久化机制，需要将传统网络存储、分布式存储或云存储挂载到Node节点上，然后将存储卷和Node节点上的挂载目录进行绑定
 
-在K8S的Pod的容器中使用存储卷的步骤
+在K8S的Pod的容器中使用存储卷的步骤:
 
 - 在Pod资源定义中使用`volumes`来定义Pod需要的存储卷
   - 使用节点本地存储，只可以在Node节点本地使用
@@ -36,8 +36,16 @@ Docker中提供了存储卷的方式来实现容器内数据持久化的功能�
         - `Socket`: 路径为Unix Socket文件，如果不存在则报错ß
         - `CharDevice`: 路径为字符设备，如果目录不存在则报错
         - `BlockDevice`: 路径为块设备，如果目录不存在则报错
-    - `configMap`: 
-    - `secret`: 
+    - `configMap`: 使用ConfigMap来创建存储卷。主要目的不是给Pod提供存储空间，而是向Pod中提供配置信息
+      - `defaultMode`: 配置文件的默认权限
+      - `items`: 指定从ConfigMap中要挂载的键列表
+      - `name`: 使用的ConfigMap资源名称
+      - `optional`: 设置对应的ConfigMap和其中的Key是否必须被定义
+    - `secret`: 使用Secret来创建存储卷。主要目的不是给Pod提供存储空间，而是向Pod中提供配置信息
+      - `defaultMode`: 配置文件的默认权限
+      - `items`: 指定要提供的配置键列表
+      - `secretName`: 使用的Secret资源名称
+      - `optional`: 设置对应的Secret和其中的配置是否必须被定义
     - `downwardAPI`: 使得一些向下API可以被Pod使用。挂载一个目录，并将请求的数据写入到纯文本文件中
   - 使用传统网络存储、分布式存储或云存储等，可以跨Node节点使用，是真正的持久化。可以直接根据底层存储方式来指定Pod使用的存储卷，如ceph、glusterfs等，也可以通过PV对底层存储进行抽象，通过PVC向PV申请Pod使用的存储卷
     - `awsElasticBlockStore`: AWS云存储
@@ -76,17 +84,65 @@ Docker中提供了存储卷的方式来实现容器内数据持久化的功能�
   - `readOnly`: 存储卷是否只可读
   - `subPath`: 从存储卷中进行挂载的子目录
 
+## ConfigMap
+
+ConfigMap是Namespace级别的资源，可以被同一个Namespace中的Pod使用
+
+提供了从外部向Pod提供配置信息的功能，且这些信息是明文存储的，可以将Pod和其运行时使用的配置进行分离
+
+使用方式:
+
+- 设置Pod的容器中环境变量的值，基于`spec.containers.env`字段；基于`spec.containers.args`字段来引用环境变量，还可以设置Pod的容器中的命令行参数  **通过环境变量来引用ConfigMap时仅仅在容器创建时注入配置，当ConfigMap中的配置发生变化时，容器中的环境变量值不会随之动态改变**
+- 在Pod中使用其创建存储卷，将ConfigMap中的配置变为一个个的文件，然后被Pod中的容器挂载和使用  **通过存储卷来引用ConfigMap时，当ConfigMap中的配置发生变化时，容器中的配置文件会动态改变**
+
+spec字段:
+
+- `binaryData`: 键值对，值为二进制的数据
+- `data`: 键值对，值为UTF-8编码的数据
+
+也可以通过`kubectl create configmap`命令从配置文件或键值对中创建
+
+## Secret
+
+Secret是Namespace级别的资源，可以被同一个Namespace中的Pod使用
+
+提供了从外部向Pod提供配置信息的功能，且这些信息使用Base64编码存储的，可以将Pod和其运行时使用的配置进行分离
+
+使用方式: 和ConfigMap类似
+
+spec字段:
+
+- `data`: 键值对，值为任意类型，将会使用Base64进行编码
+- `stringData`在: 键值对，值为字符串类型，将会使用Base64进行编码
+- `type`: 类型
+
+也可以通过`kubectl create secret`命令从配置文件或键值对来创建
+
+- docker-registry: 私有Docker Registry的访问配置
+- generic: 通用类型，比如密码
+- tls: TLS配置，私钥和证书
+
 ## PersistentVolume/PersistentVolumeClaim
 
 通过PV对集群中的各种存储系统进行封装，Pod通过PVC从PV中申请存储资源，这样便实现了Pod和存储系统的解耦
+
+底层存储系统和PV是一对多的绑定关系
 
 PV和PVC是一对一的绑定关系
 
 PVC和Pod是一对多的绑定关系
 
+PV含有两种创建方式: 静态创建和基于StorageClass动态创建。对于后者来说，PV不再直接向底层存储系统申请存储资源，而是通过StorageClass按需申请
+
+StorageClass也是集群资源，不属于任何Namespace。用于对底层存储系统进行分类，比如按照读写速度、容量大小、收费模式等
+
+StorageClass要求底层存储系统具备Restful风格的请求接口，它将使用该接口来进行底层存储系统的存储资源申请、释放等操作
+
 ![img](/images/Kubernetes之PV和PVC.png)
 
 ![img](/images/Kubernetes之PV和PVC的使用.png)
+
+![img](/images/Kubernetes之StorageClass.png)
 
 ### PV的spec字段
 

@@ -14,7 +14,14 @@ Pod: Kubernetes中的最小调度单元，可以包含一个或多个容器
 - `containers`: Pod使用的容器列表，一个Pod中可以含有多个容器
   - `args`: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数
   - `command`: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中
-  - `env`: 容器中的环境变量
+  - `env`: 容器中的环境变量，可以直接指定值，也可以从ConfigMap、Secret等指定值
+    - `name`: 环境变量名称
+    - `value`: 直接指定的环境变量值
+    - `valueFrom`: 从其他源指定环境变量值
+      - `configMapKeyRef`: 从ConfigMap中指定
+      - `fieldRef`: 从当前Pod字段描述中指定
+      - `resourceFieldRef`: 从当前容器资源描述中指定
+      - `secretKeyRef`: 从Secret中指定
   - `name`: 容器名称
   - `image`: 容器使用的镜像
   - `imagePullPolicy`: 拉取镜像的方式，可选值为Always、Never、IfNotPresent
@@ -29,6 +36,7 @@ Pod: Kubernetes中的最小调度单元，可以包含一个或多个容器
 - `hostIPC`: 设置Pod中的容器是否与共享Node节点的IPC名称空间
 - `hostNetwork`: 设置Pod中的容器是否与共享Node节点的Network名称空间，此时可以直接访问Node地址来直接访问Pod，而不再需要通过Service将Pod暴露
 - `hostPID`: 设置Pod中的容器是否与共享Node节点的PID名称空间
+- `imagePullSecrets`: 指定在拉取镜像时访问Registry的配置，和docker-registry类型的Secret资源进行绑定
 - `nodeName`: 节点名称，直接指定Pod运行的节点名称
 - `nodeSelector`: 节点选择器，被调度器使用，用于选择符合条件的Node节点
 - `initContainers`: 串行执行的初始化容器列表，一般用于给主容器初始化系统环境，在主容器启动前退出
