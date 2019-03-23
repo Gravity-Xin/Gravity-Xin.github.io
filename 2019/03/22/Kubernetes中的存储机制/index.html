@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Volume,EmptyDir,HostPath,ConfigMap,Secret,PersistentVolumeClaim,PersistentVolume,">
+  <meta name="keywords" content="Volume,EmptyDir,HostPath,ConfigMap,Secret,PersistentVolume,PersistentVolumeClaim,">
 
 
 
@@ -80,7 +80,7 @@
 
 
 <meta name="description" content="Docker中提供了存储卷的方式来实现容器内数据持久化的功能，本质是将宿主机上的文件和容器中的文件进行绑定 在K8S中，Pod是可被调度的最小单元，有可能会被调度到不同的Node节点上运行，因此Docker中提供的这种方式无法满足Pod在跨节点调度时的数据持久化功能 为了给Pod提供跨Node节点的数据持久化机制，需要将传统网络存储、分布式存储或云存储挂载到Node节点上，然后将存储卷和Node节">
-<meta name="keywords" content="Volume,EmptyDir,HostPath,ConfigMap,Secret,PersistentVolumeClaim,PersistentVolume">
+<meta name="keywords" content="Volume,EmptyDir,HostPath,ConfigMap,Secret,PersistentVolume,PersistentVolumeClaim">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kubernetes中的存储机制">
 <meta property="og:url" content="http://yoursite.com/2019/03/22/Kubernetes中的存储机制/index.html">
@@ -89,7 +89,8 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/Kubernetes之PV和PVC.png">
 <meta property="og:image" content="http://yoursite.com/images/Kubernetes之PV和PVC的使用.png">
-<meta property="og:updated_time" content="2019-03-22T08:31:39.815Z">
+<meta property="og:image" content="http://yoursite.com/images/Kubernetes之StorageClass.png">
+<meta property="og:updated_time" content="2019-03-23T04:07:59.873Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes中的存储机制">
 <meta name="twitter:description" content="Docker中提供了存储卷的方式来实现容器内数据持久化的功能，本质是将宿主机上的文件和容器中的文件进行绑定 在K8S中，Pod是可被调度的最小单元，有可能会被调度到不同的Node节点上运行，因此Docker中提供的这种方式无法满足Pod在跨节点调度时的数据持久化功能 为了给Pod提供跨Node节点的数据持久化机制，需要将传统网络存储、分布式存储或云存储挂载到Node节点上，然后将存储卷和Node节">
@@ -358,7 +359,7 @@
         <p>Docker中提供了存储卷的方式来实现容器内数据持久化的功能，本质是将宿主机上的文件和容器中的文件进行绑定</p>
 <p>在K8S中，Pod是可被调度的最小单元，有可能会被调度到不同的Node节点上运行，因此Docker中提供的这种方式无法满足Pod在跨节点调度时的数据持久化功能</p>
 <p>为了给Pod提供跨Node节点的数据持久化机制，需要将传统网络存储、分布式存储或云存储挂载到Node节点上，然后将存储卷和Node节点上的挂载目录进行绑定</p>
-<p>在K8S的Pod的容器中使用存储卷的步骤</p>
+<p>在K8S的Pod的容器中使用存储卷的步骤:</p>
 <ul>
 <li>在Pod资源定义中使用<code>volumes</code>来定义Pod需要的存储卷<ul>
 <li>使用节点本地存储，只可以在Node节点本地使用<ul>
@@ -381,8 +382,20 @@
 </li>
 </ul>
 </li>
-<li><code>configMap</code>: </li>
-<li><code>secret</code>: </li>
+<li><code>configMap</code>: 使用ConfigMap来创建存储卷。主要目的不是给Pod提供存储空间，而是向Pod中提供配置信息<ul>
+<li><code>defaultMode</code>: 配置文件的默认权限</li>
+<li><code>items</code>: 指定从ConfigMap中要挂载的键列表</li>
+<li><code>name</code>: 使用的ConfigMap资源名称</li>
+<li><code>optional</code>: 设置对应的ConfigMap和其中的Key是否必须被定义</li>
+</ul>
+</li>
+<li><code>secret</code>: 使用Secret来创建存储卷。主要目的不是给Pod提供存储空间，而是向Pod中提供配置信息<ul>
+<li><code>defaultMode</code>: 配置文件的默认权限</li>
+<li><code>items</code>: 指定要提供的配置键列表</li>
+<li><code>secretName</code>: 使用的Secret资源名称</li>
+<li><code>optional</code>: 设置对应的Secret和其中的配置是否必须被定义</li>
+</ul>
+</li>
 <li><code>downwardAPI</code>: 使得一些向下API可以被Pod使用。挂载一个目录，并将请求的数据写入到纯文本文件中</li>
 </ul>
 </li>
@@ -435,11 +448,44 @@
 </ul>
 </li>
 </ul>
+<h2 id="ConfigMap"><a href="#ConfigMap" class="headerlink" title="ConfigMap"></a>ConfigMap</h2><p>ConfigMap是Namespace级别的资源，可以被同一个Namespace中的Pod使用</p>
+<p>提供了从外部向Pod提供配置信息的功能，且这些信息是明文存储的，可以将Pod和其运行时使用的配置进行分离</p>
+<p>使用方式:</p>
+<ul>
+<li>设置Pod的容器中环境变量的值，基于<code>spec.containers.env</code>字段；基于<code>spec.containers.args</code>字段来引用环境变量，还可以设置Pod的容器中的命令行参数  <strong>通过环境变量来引用ConfigMap时仅仅在容器创建时注入配置，当ConfigMap中的配置发生变化时，容器中的环境变量值不会随之动态改变</strong></li>
+<li>在Pod中使用其创建存储卷，将ConfigMap中的配置变为一个个的文件，然后被Pod中的容器挂载和使用  <strong>通过存储卷来引用ConfigMap时，当ConfigMap中的配置发生变化时，容器中的配置文件会动态改变</strong></li>
+</ul>
+<p>spec字段:</p>
+<ul>
+<li><code>binaryData</code>: 键值对，值为二进制的数据</li>
+<li><code>data</code>: 键值对，值为UTF-8编码的数据</li>
+</ul>
+<p>也可以通过<code>kubectl create configmap</code>命令从配置文件或键值对中创建</p>
+<h2 id="Secret"><a href="#Secret" class="headerlink" title="Secret"></a>Secret</h2><p>Secret是Namespace级别的资源，可以被同一个Namespace中的Pod使用</p>
+<p>提供了从外部向Pod提供配置信息的功能，且这些信息使用Base64编码存储的，可以将Pod和其运行时使用的配置进行分离</p>
+<p>使用方式: 和ConfigMap类似</p>
+<p>spec字段:</p>
+<ul>
+<li><code>data</code>: 键值对，值为任意类型，将会使用Base64进行编码</li>
+<li><code>stringData</code>在: 键值对，值为字符串类型，将会使用Base64进行编码</li>
+<li><code>type</code>: 类型</li>
+</ul>
+<p>也可以通过<code>kubectl create secret</code>命令从配置文件或键值对来创建</p>
+<ul>
+<li>docker-registry: 私有Docker Registry的访问配置</li>
+<li>generic: 通用类型，比如密码</li>
+<li>tls: TLS配置，私钥和证书</li>
+</ul>
 <h2 id="PersistentVolume-PersistentVolumeClaim"><a href="#PersistentVolume-PersistentVolumeClaim" class="headerlink" title="PersistentVolume/PersistentVolumeClaim"></a>PersistentVolume/PersistentVolumeClaim</h2><p>通过PV对集群中的各种存储系统进行封装，Pod通过PVC从PV中申请存储资源，这样便实现了Pod和存储系统的解耦</p>
+<p>底层存储系统和PV是一对多的绑定关系</p>
 <p>PV和PVC是一对一的绑定关系</p>
 <p>PVC和Pod是一对多的绑定关系</p>
+<p>PV含有两种创建方式: 静态创建和基于StorageClass动态创建。对于后者来说，PV不再直接向底层存储系统申请存储资源，而是通过StorageClass按需申请</p>
+<p>StorageClass也是集群资源，不属于任何Namespace。用于对底层存储系统进行分类，比如按照读写速度、容量大小、收费模式等</p>
+<p>StorageClass要求底层存储系统具备Restful风格的请求接口，它将使用该接口来进行底层存储系统的存储资源申请、释放等操作</p>
 <p><img src="/images/Kubernetes之PV和PVC.png" alt="img"></p>
 <p><img src="/images/Kubernetes之PV和PVC的使用.png" alt="img"></p>
+<p><img src="/images/Kubernetes之StorageClass.png" alt="img"></p>
 <h3 id="PV的spec字段"><a href="#PV的spec字段" class="headerlink" title="PV的spec字段"></a>PV的spec字段</h3><p>PV是集群级别的资源，不属于任何Namespace</p>
 <p>对集群中的各类存储系统进行管理，同时向PVC提供存储资源的访问入口</p>
 <ul>
@@ -505,9 +551,9 @@
           
             <a href="/tags/Secret/" rel="tag"># Secret</a>
           
-            <a href="/tags/PersistentVolumeClaim/" rel="tag"># PersistentVolumeClaim</a>
-          
             <a href="/tags/PersistentVolume/" rel="tag"># PersistentVolume</a>
+          
+            <a href="/tags/PersistentVolumeClaim/" rel="tag"># PersistentVolumeClaim</a>
           
         </div>
       
@@ -529,6 +575,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/22/Golang经典库-Casbin/" rel="prev" title="Golang经典库-Casbin">
+                Golang经典库-Casbin <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -611,7 +661,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">82</span>
+                  <span class="site-state-item-count">83</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -633,7 +683,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">148</span>
+                  <span class="site-state-item-count">149</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -666,7 +716,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#PersistentVolume-PersistentVolumeClaim"><span class="nav-number">1.</span> <span class="nav-text">PersistentVolume/PersistentVolumeClaim</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PV的spec字段"><span class="nav-number">1.1.</span> <span class="nav-text">PV的spec字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PVC的spec的字段"><span class="nav-number">1.2.</span> <span class="nav-text">PVC的spec的字段</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ConfigMap"><span class="nav-number">1.</span> <span class="nav-text">ConfigMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Secret"><span class="nav-number">2.</span> <span class="nav-text">Secret</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PersistentVolume-PersistentVolumeClaim"><span class="nav-number">3.</span> <span class="nav-text">PersistentVolume/PersistentVolumeClaim</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PV的spec字段"><span class="nav-number">3.1.</span> <span class="nav-text">PV的spec字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PVC的spec的字段"><span class="nav-number">3.2.</span> <span class="nav-text">PVC的spec的字段</span></a></li></ol></li></ol></div>
             
 
           </div>

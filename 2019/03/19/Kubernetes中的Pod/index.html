@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="Pod: Kubernetes中的最小调度单元，可以包含一个或多个容器 Pod资源的spec字段 containers: Pod使用的容器列表，一个Pod中可以含有多个容器 args: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数 command: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中 env: 容器中的环境变量 name: 容">
+<meta name="description" content="Pod: Kubernetes中的最小调度单元，可以包含一个或多个容器 Pod资源的spec字段 containers: Pod使用的容器列表，一个Pod中可以含有多个容器 args: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数 command: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中 env: 容器中的环境变量，可以直接指定值">
 <meta name="keywords" content="Pod">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kubernetes中的Pod">
 <meta property="og:url" content="http://yoursite.com/2019/03/19/Kubernetes中的Pod/index.html">
 <meta property="og:site_name" content="Yihang&#39;s Blog">
-<meta property="og:description" content="Pod: Kubernetes中的最小调度单元，可以包含一个或多个容器 Pod资源的spec字段 containers: Pod使用的容器列表，一个Pod中可以含有多个容器 args: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数 command: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中 env: 容器中的环境变量 name: 容">
+<meta property="og:description" content="Pod: Kubernetes中的最小调度单元，可以包含一个或多个容器 Pod资源的spec字段 containers: Pod使用的容器列表，一个Pod中可以含有多个容器 args: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数 command: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中 env: 容器中的环境变量，可以直接指定值">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/Kubernetes之Pod生命周期.png">
-<meta property="og:updated_time" content="2019-03-22T08:23:48.915Z">
+<meta property="og:updated_time" content="2019-03-23T04:02:36.318Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes中的Pod">
-<meta name="twitter:description" content="Pod: Kubernetes中的最小调度单元，可以包含一个或多个容器 Pod资源的spec字段 containers: Pod使用的容器列表，一个Pod中可以含有多个容器 args: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数 command: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中 env: 容器中的环境变量 name: 容">
+<meta name="twitter:description" content="Pod: Kubernetes中的最小调度单元，可以包含一个或多个容器 Pod资源的spec字段 containers: Pod使用的容器列表，一个Pod中可以含有多个容器 args: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数 command: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中 env: 容器中的环境变量，可以直接指定值">
 <meta name="twitter:image" content="http://yoursite.com/images/Kubernetes之Pod生命周期.png">
 
 
@@ -359,7 +359,18 @@
 <li><code>containers</code>: Pod使用的容器列表，一个Pod中可以含有多个容器<ul>
 <li><code>args</code>: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数</li>
 <li><code>command</code>: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中</li>
-<li><code>env</code>: 容器中的环境变量</li>
+<li><code>env</code>: 容器中的环境变量，可以直接指定值，也可以从ConfigMap、Secret等指定值<ul>
+<li><code>name</code>: 环境变量名称</li>
+<li><code>value</code>: 直接指定的环境变量值</li>
+<li><code>valueFrom</code>: 从其他源指定环境变量值<ul>
+<li><code>configMapKeyRef</code>: 从ConfigMap中指定</li>
+<li><code>fieldRef</code>: 从当前Pod字段描述中指定</li>
+<li><code>resourceFieldRef</code>: 从当前容器资源描述中指定</li>
+<li><code>secretKeyRef</code>: 从Secret中指定</li>
+</ul>
+</li>
+</ul>
+</li>
 <li><code>name</code>: 容器名称</li>
 <li><code>image</code>: 容器使用的镜像</li>
 <li><code>imagePullPolicy</code>: 拉取镜像的方式，可选值为Always、Never、IfNotPresent</li>
@@ -378,6 +389,7 @@
 <li><code>hostIPC</code>: 设置Pod中的容器是否与共享Node节点的IPC名称空间</li>
 <li><code>hostNetwork</code>: 设置Pod中的容器是否与共享Node节点的Network名称空间，此时可以直接访问Node地址来直接访问Pod，而不再需要通过Service将Pod暴露</li>
 <li><code>hostPID</code>: 设置Pod中的容器是否与共享Node节点的PID名称空间</li>
+<li><code>imagePullSecrets</code>: 指定在拉取镜像时访问Registry的配置，和docker-registry类型的Secret资源进行绑定</li>
 <li><code>nodeName</code>: 节点名称，直接指定Pod运行的节点名称</li>
 <li><code>nodeSelector</code>: 节点选择器，被调度器使用，用于选择符合条件的Node节点</li>
 <li><code>initContainers</code>: 串行执行的初始化容器列表，一般用于给主容器初始化系统环境，在主容器启动前退出</li>
@@ -526,7 +538,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">82</span>
+                  <span class="site-state-item-count">83</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -548,7 +560,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">148</span>
+                  <span class="site-state-item-count">149</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

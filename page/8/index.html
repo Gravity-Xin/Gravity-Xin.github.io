@@ -249,6 +249,256 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/19/Golang-http/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/19/Golang-http/" itemprop="url">Golang-http</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-19T15:33:53+08:00">
+                2018-11-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程技术/" itemprop="url" rel="index">
+                    <span itemprop="name">编程技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/19/Golang-http/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/11/19/Golang-http/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>net/http包提供了HTTP客户端和服务端的实现</p>
+<ul>
+<li><p>客户端</p>
+<ul>
+<li>http.Request http请求</li>
+<li>http.Client http客户端</li>
+<li>http.Transport 代理、TLS配置、Keep-Alive、压缩等设置</li>
+</ul>
+</li>
+<li><p>服务端</p>
+<ul>
+<li>http.Server http服务</li>
+<li>http.DefaultServeMux http服务默认的多路复用处理器</li>
+<li>http.Handle和http.HandleFunc 向DefaultServeMux添加处理函数</li>
+</ul>
+</li>
+</ul>
+<h2 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h2><ul>
+<li>DefaultMaxHeaderBytes HTTP请求头的默认最大大小，默认1MB</li>
+<li>DefaultMaxIdleConnsPerHost 默认的持久连接设置，HTTP请求对应每个服务的持久连接数，默认2</li>
+<li>TimeFormat HTTP头中的时间格式</li>
+</ul>
+<h2 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h2><ul>
+<li>Client<ul>
+<li>HTTP客户端</li>
+<li>内部缓存了TCP连接(持久连接)，因此需要尽量复用该对象</li>
+<li>管理HTTP的Cookie和Header信息在进行重定向时的细节</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Client <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="comment">//执行独立、单次HTTP请求的机制</span></span><br><span class="line">    Transport RoundTripper</span><br><span class="line"></span><br><span class="line">    <span class="comment">//设置处理重定向的策略</span></span><br><span class="line">    <span class="comment">//req和via分别是将要执行的请求和已经执行的请求</span></span><br><span class="line">    CheckRedirect <span class="function"><span class="keyword">func</span><span class="params">(req *Request, via []*Request)</span> <span class="title">error</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //<span class="title">Cookie</span>管理器</span></span><br><span class="line"><span class="function">    <span class="title">Jar</span> <span class="title">CookieJar</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //请求的超时时间，包括连接时间、重定向和读取响应的时间</span></span><br><span class="line"><span class="function">    <span class="title">Timeout</span> <span class="title">time</span>.<span class="title">Duration</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>Transport<br>    实现了RoundTripper接口<br>    支持HTTP、HTTPs、HTTP代理(基于CONNECT)<br>    默认缓存TCP连接，可以通过CloseIdleConnections()、MaxIdleConnsPerHost和DisableKeepAlives对缓存的连接进行控制</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Transport <span class="keyword">struct</span> &#123;</span><br><span class="line">    idleMu     sync.Mutex</span><br><span class="line">    wantIdle   <span class="keyword">bool</span>                                <span class="comment">// user has requested to close all idle conns</span></span><br><span class="line">    idleConn   <span class="keyword">map</span>[connectMethodKey][]*persistConn <span class="comment">// most recently used at end</span></span><br><span class="line">    idleConnCh <span class="keyword">map</span>[connectMethodKey]<span class="keyword">chan</span> *persistConn</span><br><span class="line">    idleLRU    connLRU</span><br><span class="line"></span><br><span class="line">    reqMu       sync.Mutex</span><br><span class="line">    reqCanceler <span class="keyword">map</span>[*Request]<span class="function"><span class="keyword">func</span><span class="params">(error)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    <span class="title">altMu</span>    <span class="title">sync</span>.<span class="title">Mutex</span>   // <span class="title">guards</span> <span class="title">changing</span> <span class="title">altProto</span> <span class="title">only</span></span></span><br><span class="line"><span class="function">    <span class="title">altProto</span> <span class="title">atomic</span>.<span class="title">Value</span> // <span class="title">of</span> <span class="title">nil</span> <span class="title">or</span> <span class="title">map</span>[<span class="title">string</span>]<span class="title">RoundTripper</span>, <span class="title">key</span> <span class="title">is</span> <span class="title">URI</span> <span class="title">scheme</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //指定一个对给定请求返回<span class="title">URL</span>代理的函数</span></span><br><span class="line"><span class="function">    <span class="title">Proxy</span> <span class="title">func</span><span class="params">(*Request)</span> <span class="params">(*url.URL, error)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //指定创建<span class="title">TCP</span>连接的拨号函数，<span class="title">Dial</span>已被废弃</span></span><br><span class="line"><span class="function">    <span class="title">DialContext</span> <span class="title">func</span><span class="params">(ctx context.Context, network, addr <span class="keyword">string</span>)</span> <span class="params">(net.Conn, error)</span></span></span><br><span class="line"><span class="function">    <span class="title">Dial</span> <span class="title">func</span><span class="params">(network, addr <span class="keyword">string</span>)</span> <span class="params">(net.Conn, error)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //<span class="title">TLS</span>的拨号函数</span></span><br><span class="line"><span class="function">    <span class="title">DialTLS</span> <span class="title">func</span><span class="params">(network, addr <span class="keyword">string</span>)</span> <span class="params">(net.Conn, error)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //<span class="title">TLS</span>配置</span></span><br><span class="line"><span class="function">    <span class="title">TLSClientConfig</span> *<span class="title">tls</span>.<span class="title">Config</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //<span class="title">TLS</span>握手超时时间</span></span><br><span class="line"><span class="function">    <span class="title">TLSHandshakeTimeout</span> <span class="title">time</span>.<span class="title">Duration</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //是否使用持久连接，即对<span class="title">TCP</span>连接进行缓存和复用</span></span><br><span class="line"><span class="function">    <span class="title">DisableKeepAlives</span> <span class="title">bool</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //是否禁止压缩</span></span><br><span class="line"><span class="function">    <span class="title">DisableCompression</span> <span class="title">bool</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //所有主机下的最大闲置<span class="title">TCP</span>连接数</span></span><br><span class="line"><span class="function">    <span class="title">MaxIdleConns</span> <span class="title">int</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //每个主机下的最大闲置<span class="title">TCP</span>连接数</span></span><br><span class="line"><span class="function">    <span class="title">MaxIdleConnsPerHost</span> <span class="title">int</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //所有主机下的<span class="title">TCP</span>连接最大空闲时间</span></span><br><span class="line"><span class="function">    <span class="title">IdleConnTimeout</span> <span class="title">time</span>.<span class="title">Duration</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //等待<span class="title">HTTP</span>响应的超时时间，并不包含响应的读取时间</span></span><br><span class="line"><span class="function">    <span class="title">ResponseHeaderTimeout</span> <span class="title">time</span>.<span class="title">Duration</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //等待回复<span class="title">HTTP</span>头域的超时时间</span></span><br><span class="line"><span class="function">    <span class="title">ExpectContinueTimeout</span> <span class="title">time</span>.<span class="title">Duration</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    <span class="title">TLSNextProto</span> <span class="title">map</span>[<span class="title">string</span>]<span class="title">func</span><span class="params">(authority <span class="keyword">string</span>, c *tls.Conn)</span> <span class="title">RoundTripper</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //指定在通过<span class="title">CONNECT</span>处理代理时要发送的<span class="title">HTTP</span>头</span></span><br><span class="line"><span class="function">    <span class="title">ProxyConnectHeader</span> <span class="title">Header</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //<span class="title">HTTP</span>响应中头部数据的最大值</span></span><br><span class="line"><span class="function">    <span class="title">MaxResponseHeaderBytes</span> <span class="title">int64</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    <span class="title">nextProtoOnce</span> <span class="title">sync</span>.<span class="title">Once</span></span></span><br><span class="line"><span class="function">    <span class="title">h2transport</span>   *<span class="title">http2Transport</span> // <span class="title">non</span>-<span class="title">nil</span> <span class="title">if</span> <span class="title">http2</span> <span class="title">wired</span> <span class="title">up</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>Header<ul>
+<li>HTTP头部的键值对</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Header <span class="keyword">map</span>[<span class="keyword">string</span>][]<span class="keyword">string</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>Cookie<ul>
+<li>HTTP Cookie信息</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Cookie <span class="keyword">struct</span> &#123;</span><br><span class="line">    Name  <span class="keyword">string</span></span><br><span class="line">    Value <span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">    Path       <span class="keyword">string</span>    <span class="comment">// 路径</span></span><br><span class="line">    Domain     <span class="keyword">string</span>    <span class="comment">// 域名</span></span><br><span class="line">    Expires    time.Time <span class="comment">// 过期时间</span></span><br><span class="line">    RawExpires <span class="keyword">string</span>    <span class="comment">// for reading cookies only</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// MaxAge=0 means no 'Max-Age' attribute specified.</span></span><br><span class="line">    <span class="comment">// MaxAge&lt;0 means delete cookie now, equivalently 'Max-Age: 0'</span></span><br><span class="line">    <span class="comment">// MaxAge&gt;0 means Max-Age attribute present and given in seconds</span></span><br><span class="line">    MaxAge   <span class="keyword">int</span></span><br><span class="line">    Secure   <span class="keyword">bool</span></span><br><span class="line">    HttpOnly <span class="keyword">bool</span></span><br><span class="line">    SameSite SameSite <span class="comment">// Go 1.11</span></span><br><span class="line">    Raw      <span class="keyword">string</span></span><br><span class="line">    Unparsed []<span class="keyword">string</span> <span class="comment">// Raw text of unparsed attribute-value pairs</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Request<ul>
+<li>表示客户端发送出去或者服务端收到的HTTP请求</li>
+<li>在客户端和服务端中可能会有不同的语义</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Request <span class="keyword">struct</span> &#123;</span><br><span class="line">    Method <span class="keyword">string</span> <span class="comment">//请求方法</span></span><br><span class="line"></span><br><span class="line">    URL *url.URL <span class="comment">//请求URL</span></span><br><span class="line"></span><br><span class="line">    Proto      <span class="keyword">string</span> <span class="comment">// HTTP协议 HTTP/1.1 HTTP/2. HTTP/1.0</span></span><br><span class="line">    ProtoMajor <span class="keyword">int</span>    <span class="comment">// 1</span></span><br><span class="line">    ProtoMinor <span class="keyword">int</span>    <span class="comment">// 0</span></span><br><span class="line"></span><br><span class="line">    Header Header <span class="comment">// 请求头部信息</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//请求体</span></span><br><span class="line">    <span class="comment">//客户端: Client的Transport会关闭该对象</span></span><br><span class="line">    <span class="comment">//服务端: Server会关闭该对象</span></span><br><span class="line">    Body io.ReadCloser</span><br><span class="line"></span><br><span class="line">    GetBody <span class="function"><span class="keyword">func</span><span class="params">()</span> <span class="params">(io.ReadCloser, error)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    <span class="title">ContentLength</span> <span class="title">int64</span> //<span class="title">Body</span>的长度</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    <span class="title">TransferEncoding</span> []<span class="title">string</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //客户端: 是否在发送请求后关闭该连接</span></span><br><span class="line"><span class="function">    //服务端: 是否在回复请求后关闭连接</span></span><br><span class="line"><span class="function">    <span class="title">Close</span> <span class="title">bool</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //主机名</span></span><br><span class="line"><span class="function">    <span class="title">Host</span> <span class="title">string</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //通过<span class="title">ParseForm</span>来生成该对象</span></span><br><span class="line"><span class="function">    //包含<span class="title">Get</span>请求的<span class="title">Query</span>参数和<span class="title">Post</span>、<span class="title">Put</span>请求的表单数据</span></span><br><span class="line"><span class="function">    <span class="title">Form</span> <span class="title">url</span>.<span class="title">Values</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //通过<span class="title">ParseForm</span>来生成该对象</span></span><br><span class="line"><span class="function">    //包含<span class="title">Post</span>、<span class="title">Put</span>请求的表单数据</span></span><br><span class="line"><span class="function">    <span class="title">PostForm</span> <span class="title">url</span>.<span class="title">Values</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //通过<span class="title">ParseMultipartForm</span>来生成该对象</span></span><br><span class="line"><span class="function">    //包含多部件表单数据</span></span><br><span class="line"><span class="function">    <span class="title">MultipartForm</span> *<span class="title">multipart</span>.<span class="title">Form</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    <span class="title">Trailer</span> <span class="title">Header</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //"<span class="title">IP</span>:<span class="title">port</span>"</span></span><br><span class="line"><span class="function">    <span class="title">RemoteAddr</span> <span class="title">string</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //客户端发送到服务端的请求的请求行中未修改的请求<span class="title">URI</span></span></span><br><span class="line"><span class="function">    <span class="title">RequestURI</span> <span class="title">string</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //<span class="title">TLS</span>连接信息</span></span><br><span class="line"><span class="function">    <span class="title">TLS</span> *<span class="title">tls</span>.<span class="title">ConnectionState</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    //已废弃，使用<span class="title">Context</span>来实现取消或超时机制</span></span><br><span class="line"><span class="function">    <span class="title">Cancel</span> &lt;-<span class="title">chan</span> <span class="title">struct</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//重定向情况下，产生该Request对应的Response</span></span><br><span class="line">    Response *Response</span><br><span class="line"></span><br><span class="line">    ctx context.Context</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Handler<ul>
+<li>HTTP请求的处理器</li>
+<li>实现了该接口的对象可以被注册的Server的ServerMux中，为特定的URL路径提供服务</li>
+<li>FileServer()、StripPrefix()、NotFoundHandler()、RedirectHandler()、TimeoutHandler()分别提供了文件服务、去除URL前缀、NotFound、重定向和超时的处理器</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Handler <span class="keyword">interface</span> &#123;</span><br><span class="line">    ServeHTTP(ResponseWriter, *Request)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>HandlerFunc<ul>
+<li>实现将普通函数转换为Handler的适配器</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> HandlerFunc <span class="function"><span class="keyword">func</span><span class="params">(ResponseWriter, *Request)</span> //将函数定义为对象，实现普通函数与<span class="title">Handler</span>接口之间的转换</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="params">(f HandlerFunc)</span> <span class="title">ServeHTTP</span><span class="params">(w ResponseWriter, r *Request)</span></span> &#123;</span><br><span class="line">    f(w, r) <span class="comment">//在这里调用函数本身</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>ServeMux<ul>
+<li>HTTP请求的多路复用器，将URL和对应的Handler进行关联(路由)</li>
+<li>实现了Handler接口</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ServeMux <span class="keyword">struct</span> &#123;</span><br><span class="line">    mu    sync.RWMutex</span><br><span class="line">    m     <span class="keyword">map</span>[<span class="keyword">string</span>]muxEntry</span><br><span class="line">    hosts <span class="keyword">bool</span> <span class="comment">// whether any patterns contain hostnames</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Server<ul>
+<li>HTTP服务</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Server <span class="keyword">struct</span> &#123;</span><br><span class="line">    Addr    <span class="keyword">string</span>  <span class="comment">// 监听的TCP地址</span></span><br><span class="line">    Handler Handler <span class="comment">// 请求的处理器，默认使用DefaultServeMux</span></span><br><span class="line"></span><br><span class="line">    TLSConfig *tls.Config <span class="comment">//TLS配置</span></span><br><span class="line"></span><br><span class="line">    ReadTimeout time.Duration <span class="comment">//读取请求的超时时间</span></span><br><span class="line"></span><br><span class="line">    ReadHeaderTimeout time.Duration <span class="comment">//读取请求中Header的超时时间</span></span><br><span class="line"></span><br><span class="line">    WriteTimeout time.Duration <span class="comment">//写响应的超时时间</span></span><br><span class="line"></span><br><span class="line">    IdleTimeout time.Duration <span class="comment">//Keep-Alive机制下，连接的最大空闲时间</span></span><br><span class="line"></span><br><span class="line">    MaxHeaderBytes <span class="keyword">int</span> <span class="comment">//请求头域的最大长度</span></span><br><span class="line"></span><br><span class="line">    TLSNextProto <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="function"><span class="keyword">func</span><span class="params">(*Server, *tls.Conn, Handler)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    <span class="title">ConnState</span> <span class="title">func</span><span class="params">(net.Conn, ConnState)</span> //与客户端的连接状态发生改变时的回调函数</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    <span class="title">ErrorLog</span> *<span class="title">log</span>.<span class="title">Logger</span> //日志记录器</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    <span class="title">disableKeepAlives</span> <span class="title">int32</span>     // <span class="title">accessed</span> <span class="title">atomically</span>.</span></span><br><span class="line">    inShutdown        int32     // accessed atomically (non-zero means we're in Shutdown)</span><br><span class="line">    nextProtoOnce     sync.Once <span class="comment">// guards setupHTTP2_* init</span></span><br><span class="line">    nextProtoErr      error     <span class="comment">// result of http2.ConfigureServer if used</span></span><br><span class="line"></span><br><span class="line">    mu         sync.Mutex</span><br><span class="line">    listeners  <span class="keyword">map</span>[net.Listener]<span class="keyword">struct</span>&#123;&#125;</span><br><span class="line">    activeConn <span class="keyword">map</span>[*conn]<span class="keyword">struct</span>&#123;&#125;</span><br><span class="line">    doneChan   <span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line">    onShutdown []<span class="function"><span class="keyword">func</span><span class="params">()</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>ResponseWriter<ul>
+<li>HTTP响应的接口，用于在Handler中写入HTTP响应</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ResponseWriter <span class="keyword">interface</span> &#123;</span><br><span class="line">    Header() Header <span class="comment">//返回HTTP响应头域</span></span><br><span class="line"></span><br><span class="line">    Write([]<span class="keyword">byte</span>) (<span class="keyword">int</span>, error) <span class="comment">//写入HTTP响应的Body</span></span><br><span class="line"></span><br><span class="line">    WriteHeader(statusCode <span class="keyword">int</span>) <span class="comment">//写入HTTP响应的状态码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Response<ul>
+<li>HTTP响应</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Response <span class="keyword">struct</span> &#123;</span><br><span class="line">    Status     <span class="keyword">string</span> <span class="comment">// e.g. "200 OK"</span></span><br><span class="line">    StatusCode <span class="keyword">int</span>    <span class="comment">// e.g. 200</span></span><br><span class="line">    Proto      <span class="keyword">string</span> <span class="comment">// e.g. "HTTP/1.0"</span></span><br><span class="line">    ProtoMajor <span class="keyword">int</span>    <span class="comment">// e.g. 1</span></span><br><span class="line">    ProtoMinor <span class="keyword">int</span>    <span class="comment">// e.g. 0</span></span><br><span class="line"></span><br><span class="line">    Header Header <span class="comment">//响应头域</span></span><br><span class="line"></span><br><span class="line">    Body io.ReadCloser <span class="comment">//响应体</span></span><br><span class="line"></span><br><span class="line">    ContentLength <span class="keyword">int64</span> <span class="comment">//Body的长度</span></span><br><span class="line"></span><br><span class="line">    TransferEncoding []<span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">    Close <span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line">    Uncompressed <span class="keyword">bool</span> <span class="comment">//响应内容是否进行了压缩</span></span><br><span class="line"></span><br><span class="line">    Trailer Header</span><br><span class="line"></span><br><span class="line">    Request *Request <span class="comment">//响应对应的请求</span></span><br><span class="line"></span><br><span class="line">    TLS *tls.ConnectionState</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/19/Golang-channel/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1951,192 +2201,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/12/数据结构-Heap/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/12/数据结构-Heap/" itemprop="url">数据结构-Heap</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-12T18:54:42+08:00">
-                2018-11-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程技术/" itemprop="url" rel="index">
-                    <span itemprop="name">编程技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/11/12/数据结构-Heap/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/11/12/数据结构-Heap/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>优先级队列(Priority Queue)<br>普通的队列是按照元素进入队列的先后顺序来取出元素，而堆则是从堆底插入元素，从堆顶取出元素，即按照元素的优先级来取出元素</p>
-<p>最大堆: 父节点的优先级总是被子节点的优先级大<br>最小堆: 父节点的优先级总是被子节点的优先级小</p>
-<p>堆可以看作是一个n叉树的形式</p>
-<p>考虑到堆中元素的特点，可以使用更简单的一维数组来存储，这样比使用树形结构存储更省空间<br>可以使用下标快速访问堆中元素，当父元素下标为i时，子节点的下标为<code>i*n+1——i*(n+1)</code></p>
-<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><ul>
-<li><p>Push</p>
-<ul>
-<li>将待入堆的元素放到堆的末尾</li>
-<li>按照优先级，将新元素与父节点进行比较，如果新元素小于父节点，则交换两者位置</li>
-<li>不断进行第二步操作，直到不需要交换操作或到达堆顶</li>
-</ul>
-</li>
-<li><p>Pop</p>
-<ul>
-<li>删除堆顶元素，然后将堆底元素放在堆顶</li>
-<li>比较左右子节点，将优先级小的元素上调</li>
-<li>不断进行第二步，直到到达堆底或者没有子节点比父节点元素小</li>
-</ul>
-</li>
-</ul>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Item 堆中元素</span></span><br><span class="line"><span class="keyword">type</span> Item <span class="keyword">int</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Heap 最小堆</span></span><br><span class="line"><span class="keyword">type</span> Heap <span class="keyword">struct</span> &#123;</span><br><span class="line">    Data []Item</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Push 入堆</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(heap *Heap)</span> <span class="title">Push</span><span class="params">(item Item)</span></span> &#123;</span><br><span class="line">    location := <span class="built_in">len</span>(heap.Data)          <span class="comment">//location为元素在堆中的位置</span></span><br><span class="line">    heap.Data = <span class="built_in">append</span>(heap.Data, item) <span class="comment">//将元素放到堆的末尾</span></span><br><span class="line">    tmp := item                         <span class="comment">//记录新加入的元素的优先级</span></span><br><span class="line">    <span class="keyword">for</span> location &gt; <span class="number">0</span> &#123;                  <span class="comment">//将item与其父节点进行比较，直到不需要调整或到达堆顶未知</span></span><br><span class="line">        parentLocation := (location - <span class="number">1</span>) / <span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> item &gt;= heap.Data[parentLocation] &#123;</span><br><span class="line">            <span class="keyword">break</span> <span class="comment">//不需要调整，直接退出</span></span><br><span class="line">        &#125;</span><br><span class="line">        heap.Data[location] = heap.Data[parentLocation] <span class="comment">//与父节点交换</span></span><br><span class="line">        location = parentLocation</span><br><span class="line">    &#125;</span><br><span class="line">    heap.Data[location] = tmp <span class="comment">//location为item的最终下标，对其进行赋值</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Pop 出堆</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(heap *Heap)</span> <span class="title">Pop</span><span class="params">()</span> <span class="params">(Item, <span class="keyword">bool</span>)</span></span> &#123;</span><br><span class="line">    size := <span class="built_in">len</span>(heap.Data)</span><br><span class="line">    <span class="keyword">if</span> size == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>, <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    result := heap.Data[<span class="number">0</span>]</span><br><span class="line">    heap.Data[<span class="number">0</span>] = heap.Data[size<span class="number">-1</span>]</span><br><span class="line">    parentItem := heap.Data[<span class="number">0</span>]</span><br><span class="line">    parentLocation := <span class="number">0</span> <span class="comment">//将堆底元素放入堆顶，依次向下比较两者子节点的优先级，然后将优先级小的上调</span></span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        leftLocation := parentLocation*<span class="number">2</span> + <span class="number">1</span> <span class="comment">//计算得到子节点的位置</span></span><br><span class="line">        <span class="keyword">if</span> leftLocation &gt;= size &#123;</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        &#125;</span><br><span class="line">        item := heap.Data[leftLocation] <span class="comment">//从子节点中选择优先级最小的上调</span></span><br><span class="line">        itemLocation := leftLocation</span><br><span class="line">        <span class="keyword">if</span> leftLocation+<span class="number">1</span> &lt; size &amp;&amp; item &gt; heap.Data[leftLocation+<span class="number">1</span>] &#123;</span><br><span class="line">            item = heap.Data[leftLocation+<span class="number">1</span>]</span><br><span class="line">            itemLocation = leftLocation+<span class="number">1</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> item &gt;= parentItem &#123;</span><br><span class="line">            <span class="keyword">break</span> <span class="comment">//没有子节点比父节点小，则退出</span></span><br><span class="line">        &#125;</span><br><span class="line">        heap.Data[parentLocation] = item <span class="comment">//子节点上调</span></span><br><span class="line">        parentLocation = itemLocation</span><br><span class="line">    &#125;</span><br><span class="line">    heap.Data[parentLocation] = parentItem <span class="comment">//确定parentItem的最终位置</span></span><br><span class="line">    heap.Data = heap.Data[<span class="number">0</span> : size<span class="number">-1</span>]      <span class="comment">//删除Pop的原堆顶元素</span></span><br><span class="line">    <span class="keyword">return</span> result, <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
-<li>构建优先级队列，快速找到最大最小值<ul>
-<li>nsq中未被consumer确认的消息以最小堆进行存储，优先级为消息过期时间。堆顶的消息总是最近一个过期的消息，如果堆顶消息没有过期，那就说明没有过期的消息</li>
-<li>golang timer以最小堆进行存储，优先级为timer触发时间。堆顶的timer总是最近一个要被触发的timer，如果堆顶timer尚未需要被触发，那就说明没有需要被触发的timer</li>
-<li>linux内核进程调度器，多个进程以最大堆进行存储，优先级为进程的优先级。堆顶的进程总是会被优先调度。</li>
-</ul>
-</li>
-<li>进行堆排序<ul>
-<li>构建堆</li>
-<li>Pop元素</li>
-<li>重复上述循环直到堆中元素为空</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2187,7 +2251,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">82</span>
+                  <span class="site-state-item-count">83</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2209,7 +2273,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">148</span>
+                  <span class="site-state-item-count">149</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

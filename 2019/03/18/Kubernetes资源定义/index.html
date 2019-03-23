@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="在K8S中，使用.yaml配置文件对集群中的资源进行定义 核心资源类型 工作负载型 Pod: 可以被创建、调度和管理的原子单元 Pod控制器 ReplicaSet Deployment StatefulSet DaemonSet Job CronJob     服务发现和负载均衡型 Service Ingress   配置与存储型 ConfigMap Secret Volume   集群型: 前三">
+<meta name="description" content="在K8S中，使用.yaml配置文件对集群中的资源进行定义 核心资源类型 工作负载型 Pod: 可以被创建、调度和管理的原子单元 Pod控制器 ReplicaSet Deployment StatefulSet DaemonSet Job CronJob     服务发现和负载均衡型 Service Ingress   配置与存储型 ConfigMap Secret PersistentVolume">
 <meta name="keywords" content="Kubernetes,Namespace,Pod,Service,Deployment">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kubernetes资源定义">
 <meta property="og:url" content="http://yoursite.com/2019/03/18/Kubernetes资源定义/index.html">
 <meta property="og:site_name" content="Yihang&#39;s Blog">
-<meta property="og:description" content="在K8S中，使用.yaml配置文件对集群中的资源进行定义 核心资源类型 工作负载型 Pod: 可以被创建、调度和管理的原子单元 Pod控制器 ReplicaSet Deployment StatefulSet DaemonSet Job CronJob     服务发现和负载均衡型 Service Ingress   配置与存储型 ConfigMap Secret Volume   集群型: 前三">
+<meta property="og:description" content="在K8S中，使用.yaml配置文件对集群中的资源进行定义 核心资源类型 工作负载型 Pod: 可以被创建、调度和管理的原子单元 Pod控制器 ReplicaSet Deployment StatefulSet DaemonSet Job CronJob     服务发现和负载均衡型 Service Ingress   配置与存储型 ConfigMap Secret PersistentVolume">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-21T11:03:03.623Z">
+<meta property="og:updated_time" content="2019-03-23T02:08:34.939Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes资源定义">
-<meta name="twitter:description" content="在K8S中，使用.yaml配置文件对集群中的资源进行定义 核心资源类型 工作负载型 Pod: 可以被创建、调度和管理的原子单元 Pod控制器 ReplicaSet Deployment StatefulSet DaemonSet Job CronJob     服务发现和负载均衡型 Service Ingress   配置与存储型 ConfigMap Secret Volume   集群型: 前三">
+<meta name="twitter:description" content="在K8S中，使用.yaml配置文件对集群中的资源进行定义 核心资源类型 工作负载型 Pod: 可以被创建、调度和管理的原子单元 Pod控制器 ReplicaSet Deployment StatefulSet DaemonSet Job CronJob     服务发现和负载均衡型 Service Ingress   配置与存储型 ConfigMap Secret PersistentVolume">
 
 
 
@@ -375,7 +375,7 @@
 <li>配置与存储型<ul>
 <li>ConfigMap</li>
 <li>Secret</li>
-<li>Volume</li>
+<li>PersistentVolumeClaim</li>
 </ul>
 </li>
 <li>集群型: 前三者都属于某个名称空间，而集群型资源不属于任何的名称空间<ul>
@@ -547,7 +547,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">82</span>
+                  <span class="site-state-item-count">83</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -569,7 +569,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">148</span>
+                  <span class="site-state-item-count">149</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

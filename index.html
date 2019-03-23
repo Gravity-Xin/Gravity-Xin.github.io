@@ -249,6 +249,159 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/22/Golang经典库-Casbin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/22/Golang经典库-Casbin/" itemprop="url">Golang经典库-Casbin</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-22T16:50:58+08:00">
+                2019-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程技术/" itemprop="url" rel="index">
+                    <span itemprop="name">编程技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/22/Golang经典库-Casbin/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/22/Golang经典库-Casbin/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><p>权限控制模型 Model 被抽象为PERM(Policy Effect Request Matcher)<br>  Request: 定义权限请求的格式<br>    默认的权限请求格式: Subject Object Action<br>      Subject: 访问的主体，一般为用户<br>      Object: 被访问的资源<br>      Action: 对资源进行的操作<br>  <a href="https://casbin.org/editor/" target="_blank" rel="noopener">https://casbin.org/editor/</a> 来选择合适的权限控制模型<br>  目前之前的权限控制模型包括:<br>    ACL<br>    ACL with superuser<br>    ACL without users<br>    ACL without resources<br>    RBAC<br>    RBAC with resource roles<br>    RBAC with domains/tenants<br>    ABAC<br>  Policy: 定义权限控制策略的格式，可以被持久化到外部存储设备中 如mysql、mongodb等<br>    p: Policy定义<br>    g: 角色定义<br>  Matcher: 定义Request和Policy之间是如何匹配的，使用p.eft表示对于当前的Request，该Policy与其是否匹配<br>  Effect: 当某个Request对应多个Policy时，判断该请求是否能通过校验<br>  Role: 可选，当使用RBAC时，定义不同的角色组，比如用户角色组，资源角色组，用户角色+租户组等</p>
+<p>Casbin进行权限校验的流程:<img src="/images/Casbin之PERM权限控制模型.png" alt="img"></p>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/22/Kubernetes中的存储机制/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -355,7 +508,7 @@
             <p>Docker中提供了存储卷的方式来实现容器内数据持久化的功能，本质是将宿主机上的文件和容器中的文件进行绑定</p>
 <p>在K8S中，Pod是可被调度的最小单元，有可能会被调度到不同的Node节点上运行，因此Docker中提供的这种方式无法满足Pod在跨节点调度时的数据持久化功能</p>
 <p>为了给Pod提供跨Node节点的数据持久化机制，需要将传统网络存储、分布式存储或云存储挂载到Node节点上，然后将存储卷和Node节点上的挂载目录进行绑定</p>
-<p>在K8S的Pod的容器中使用存储卷的步骤</p>
+<p>在K8S的Pod的容器中使用存储卷的步骤:</p>
 <ul>
 <li>在Pod资源定义中使用<code>volumes</code>来定义Pod需要的存储卷<ul>
 <li>使用节点本地存储，只可以在Node节点本地使用<ul>
@@ -378,8 +531,20 @@
 </li>
 </ul>
 </li>
-<li><code>configMap</code>: </li>
-<li><code>secret</code>: </li>
+<li><code>configMap</code>: 使用ConfigMap来创建存储卷。主要目的不是给Pod提供存储空间，而是向Pod中提供配置信息<ul>
+<li><code>defaultMode</code>: 配置文件的默认权限</li>
+<li><code>items</code>: 指定从ConfigMap中要挂载的键列表</li>
+<li><code>name</code>: 使用的ConfigMap资源名称</li>
+<li><code>optional</code>: 设置对应的ConfigMap和其中的Key是否必须被定义</li>
+</ul>
+</li>
+<li><code>secret</code>: 使用Secret来创建存储卷。主要目的不是给Pod提供存储空间，而是向Pod中提供配置信息<ul>
+<li><code>defaultMode</code>: 配置文件的默认权限</li>
+<li><code>items</code>: 指定要提供的配置键列表</li>
+<li><code>secretName</code>: 使用的Secret资源名称</li>
+<li><code>optional</code>: 设置对应的Secret和其中的配置是否必须被定义</li>
+</ul>
+</li>
 <li><code>downwardAPI</code>: 使得一些向下API可以被Pod使用。挂载一个目录，并将请求的数据写入到纯文本文件中</li>
 </ul>
 </li>
@@ -432,11 +597,44 @@
 </ul>
 </li>
 </ul>
+<h2 id="ConfigMap"><a href="#ConfigMap" class="headerlink" title="ConfigMap"></a>ConfigMap</h2><p>ConfigMap是Namespace级别的资源，可以被同一个Namespace中的Pod使用</p>
+<p>提供了从外部向Pod提供配置信息的功能，且这些信息是明文存储的，可以将Pod和其运行时使用的配置进行分离</p>
+<p>使用方式:</p>
+<ul>
+<li>设置Pod的容器中环境变量的值，基于<code>spec.containers.env</code>字段；基于<code>spec.containers.args</code>字段来引用环境变量，还可以设置Pod的容器中的命令行参数  <strong>通过环境变量来引用ConfigMap时仅仅在容器创建时注入配置，当ConfigMap中的配置发生变化时，容器中的环境变量值不会随之动态改变</strong></li>
+<li>在Pod中使用其创建存储卷，将ConfigMap中的配置变为一个个的文件，然后被Pod中的容器挂载和使用  <strong>通过存储卷来引用ConfigMap时，当ConfigMap中的配置发生变化时，容器中的配置文件会动态改变</strong></li>
+</ul>
+<p>spec字段:</p>
+<ul>
+<li><code>binaryData</code>: 键值对，值为二进制的数据</li>
+<li><code>data</code>: 键值对，值为UTF-8编码的数据</li>
+</ul>
+<p>也可以通过<code>kubectl create configmap</code>命令从配置文件或键值对中创建</p>
+<h2 id="Secret"><a href="#Secret" class="headerlink" title="Secret"></a>Secret</h2><p>Secret是Namespace级别的资源，可以被同一个Namespace中的Pod使用</p>
+<p>提供了从外部向Pod提供配置信息的功能，且这些信息使用Base64编码存储的，可以将Pod和其运行时使用的配置进行分离</p>
+<p>使用方式: 和ConfigMap类似</p>
+<p>spec字段:</p>
+<ul>
+<li><code>data</code>: 键值对，值为任意类型，将会使用Base64进行编码</li>
+<li><code>stringData</code>在: 键值对，值为字符串类型，将会使用Base64进行编码</li>
+<li><code>type</code>: 类型</li>
+</ul>
+<p>也可以通过<code>kubectl create secret</code>命令从配置文件或键值对来创建</p>
+<ul>
+<li>docker-registry: 私有Docker Registry的访问配置</li>
+<li>generic: 通用类型，比如密码</li>
+<li>tls: TLS配置，私钥和证书</li>
+</ul>
 <h2 id="PersistentVolume-PersistentVolumeClaim"><a href="#PersistentVolume-PersistentVolumeClaim" class="headerlink" title="PersistentVolume/PersistentVolumeClaim"></a>PersistentVolume/PersistentVolumeClaim</h2><p>通过PV对集群中的各种存储系统进行封装，Pod通过PVC从PV中申请存储资源，这样便实现了Pod和存储系统的解耦</p>
+<p>底层存储系统和PV是一对多的绑定关系</p>
 <p>PV和PVC是一对一的绑定关系</p>
 <p>PVC和Pod是一对多的绑定关系</p>
+<p>PV含有两种创建方式: 静态创建和基于StorageClass动态创建。对于后者来说，PV不再直接向底层存储系统申请存储资源，而是通过StorageClass按需申请</p>
+<p>StorageClass也是集群资源，不属于任何Namespace。用于对底层存储系统进行分类，比如按照读写速度、容量大小、收费模式等</p>
+<p>StorageClass要求底层存储系统具备Restful风格的请求接口，它将使用该接口来进行底层存储系统的存储资源申请、释放等操作</p>
 <p><img src="/images/Kubernetes之PV和PVC.png" alt="img"></p>
 <p><img src="/images/Kubernetes之PV和PVC的使用.png" alt="img"></p>
+<p><img src="/images/Kubernetes之StorageClass.png" alt="img"></p>
 <h3 id="PV的spec字段"><a href="#PV的spec字段" class="headerlink" title="PV的spec字段"></a>PV的spec字段</h3><p>PV是集群级别的资源，不属于任何Namespace</p>
 <p>对集群中的各类存储系统进行管理，同时向PVC提供存储资源的访问入口</p>
 <ul>
@@ -1451,7 +1649,18 @@
 <li><code>containers</code>: Pod使用的容器列表，一个Pod中可以含有多个容器<ul>
 <li><code>args</code>: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数</li>
 <li><code>command</code>: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中</li>
-<li><code>env</code>: 容器中的环境变量</li>
+<li><code>env</code>: 容器中的环境变量，可以直接指定值，也可以从ConfigMap、Secret等指定值<ul>
+<li><code>name</code>: 环境变量名称</li>
+<li><code>value</code>: 直接指定的环境变量值</li>
+<li><code>valueFrom</code>: 从其他源指定环境变量值<ul>
+<li><code>configMapKeyRef</code>: 从ConfigMap中指定</li>
+<li><code>fieldRef</code>: 从当前Pod字段描述中指定</li>
+<li><code>resourceFieldRef</code>: 从当前容器资源描述中指定</li>
+<li><code>secretKeyRef</code>: 从Secret中指定</li>
+</ul>
+</li>
+</ul>
+</li>
 <li><code>name</code>: 容器名称</li>
 <li><code>image</code>: 容器使用的镜像</li>
 <li><code>imagePullPolicy</code>: 拉取镜像的方式，可选值为Always、Never、IfNotPresent</li>
@@ -1470,6 +1679,7 @@
 <li><code>hostIPC</code>: 设置Pod中的容器是否与共享Node节点的IPC名称空间</li>
 <li><code>hostNetwork</code>: 设置Pod中的容器是否与共享Node节点的Network名称空间，此时可以直接访问Node地址来直接访问Pod，而不再需要通过Service将Pod暴露</li>
 <li><code>hostPID</code>: 设置Pod中的容器是否与共享Node节点的PID名称空间</li>
+<li><code>imagePullSecrets</code>: 指定在拉取镜像时访问Registry的配置，和docker-registry类型的Secret资源进行绑定</li>
 <li><code>nodeName</code>: 节点名称，直接指定Pod运行的节点名称</li>
 <li><code>nodeSelector</code>: 节点选择器，被调度器使用，用于选择符合条件的Node节点</li>
 <li><code>initContainers</code>: 串行执行的初始化容器列表，一般用于给主容器初始化系统环境，在主容器启动前退出</li>
@@ -1667,7 +1877,7 @@
 <li>配置与存储型<ul>
 <li>ConfigMap</li>
 <li>Secret</li>
-<li>Volume</li>
+<li>PersistentVolumeClaim</li>
 </ul>
 </li>
 <li>集群型: 前三者都属于某个名称空间，而集群型资源不属于任何的名称空间<ul>
@@ -2287,218 +2497,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/12/Redis基础/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/12/Redis基础/" itemprop="url">Redis基础</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-12T10:57:17+08:00">
-                2019-03-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/12/Redis基础/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/12/Redis基础/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li><p>高性能的KV缓存和数据库</p>
-</li>
-<li><p>支持数据持久化，数据可以保存在内存或磁盘中</p>
-<ul>
-<li>AOF: 将所有的写操作命令以redis命令协议的方式保存到日志文件中；但是AOF文件往往比较大，且恢复数据较慢</li>
-<li>RDB: 将内存快照写入到临时文件中，并可通过该文件进行恢复；但是由于是间隔一段时间进行持久化，有可能会发生数据的丢失</li>
-</ul>
-</li>
-<li>支持的值的类型包括<code>string</code>,<code>list</code>,<code>hash</code>,<code>set</code>和<code>zset</code><ul>
-<li>string: int raw embstr<ul>
-<li>如果字符串内容可以转化为long，则转换为long类型的张数</li>
-<li>当字符串长度小于39时，使用embstr；否则使用传统的raw</li>
-</ul>
-</li>
-<li>list: ziplist linkedlist<ul>
-<li>当列表元素数量不大，元素也不大的时候使用ziplist</li>
-<li>当列表元素数量较大时，使用linkedlist</li>
-</ul>
-</li>
-<li>hash: ziplist hashtable<ul>
-<li>ziplist按照key1 value1 key2 value2进行顺序存储</li>
-<li>hashtable则是用数组实现，每一个元素为KV对</li>
-</ul>
-</li>
-<li>set: intset hashtable</li>
-<li>zset: ziplist skiplist+hashtable<ul>
-<li>ziplist: 将data和score按顺序排放</li>
-<li>skiplist保证元素有序，hashtable保证可以快速查找元素</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>单个数据操作是原子性的，同时支持通过<code>multi</code>, <code>exec</code>, <code>watch</code>, <code>unwatch</code>, <code>discard</code>等命令来实现事务</li>
-<li>支持Pipeline操作，将多个操作放在一起，减少客户端和服务端之间的通信次数，从而提高效率</li>
-<li>支持设置key的过期时间，内部通过定期删除和惰性删除的方式来进行过期key的删除<ul>
-<li>定期删除: 每隔一段时间，通过设置的算法从过期的键中删除一部分<ul>
-<li><code>volatile-lru</code>: 从过期键中选择最近最少使用的淘汰</li>
-<li><code>volatile-ttl</code>: 从过期键中选择更早过期时间的淘汰</li>
-<li><code>volatile-random</code>: 从过期键中随机进行淘汰</li>
-<li><code>allkeys-lru</code>: 从所有键中选择最近最少使用的淘汰</li>
-<li><code>allkeys-random</code>: 从所有键中随机进行淘汰</li>
-<li><code>noeviction</code>: 不进行淘汰，当操作导致内存不够用时，直接返回错误</li>
-</ul>
-</li>
-<li>惰性删除: 放任键过期不管，当读取该键时，判断键是否过期，如果过期则执行删除操作</li>
-</ul>
-</li>
-<li>支持通过<code>pub</code>和<code>sub</code>实现发布订阅</li>
-<li>内部实现为单线程机制，基于操作系统提供的多路复用IO接口，将多个事件放入到一个队列中，并在单个线程上进行执行</li>
-<li>支持master-slave模式的高可用架构，用于读写分离和容灾恢复，使用sentinel哨兵来监控redis实例是否故障，实现自动主备切换</li>
-<li>常见使用场景<ul>
-<li>mysql等关系型数据库中热点数据的存储，需要一套key命名规则 <code>表名:主键名:主键值:字段名</code></li>
-<li>使用list实现简单的消息队列</li>
-<li>发布/订阅实现观察者模式</li>
-<li>基于单线程架构实现分布式锁</li>
-<li>基于set集合操作实现共同好友列表等</li>
-<li>基于zset实现访问量排行等</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2549,7 +2547,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">82</span>
+                  <span class="site-state-item-count">83</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2571,7 +2569,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">148</span>
+                  <span class="site-state-item-count">149</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
