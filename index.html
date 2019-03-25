@@ -352,9 +352,48 @@
       
         
           
-            <h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><p>权限控制模型 Model 被抽象为PERM(Policy Effect Request Matcher)<br>  Request: 定义权限请求的格式<br>    默认的权限请求格式: Subject Object Action<br>      Subject: 访问的主体，一般为用户<br>      Object: 被访问的资源<br>      Action: 对资源进行的操作<br>  <a href="https://casbin.org/editor/" target="_blank" rel="noopener">https://casbin.org/editor/</a> 来选择合适的权限控制模型<br>  目前之前的权限控制模型包括:<br>    ACL<br>    ACL with superuser<br>    ACL without users<br>    ACL without resources<br>    RBAC<br>    RBAC with resource roles<br>    RBAC with domains/tenants<br>    ABAC<br>  Policy: 定义权限控制策略的格式，可以被持久化到外部存储设备中 如mysql、mongodb等<br>    p: Policy定义<br>    g: 角色定义<br>  Matcher: 定义Request和Policy之间是如何匹配的，使用p.eft表示对于当前的Request，该Policy与其是否匹配<br>  Effect: 当某个Request对应多个Policy时，判断该请求是否能通过校验<br>  Role: 可选，当使用RBAC时，定义不同的角色组，比如用户角色组，资源角色组，用户角色+租户组等</p>
+            <h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><ul>
+<li>Model:权限控制模型，抽象为PERM(Policy Effect Request Matcher)<ul>
+<li>Request: 权限请求的格式<ul>
+<li>默认的权限请求格式: Subject Object Action<br>Subject: 访问的主体，一般为用户<br>Object: 被访问的资源<br>Action: 对资源进行的操作</li>
+<li>选择合适的权限控制模型: <a href="https://casbin.org/editor/" target="_blank" rel="noopener">Online</a><ul>
+<li>支持的权限控制模型:<ul>
+<li>ACL</li>
+<li>ACL with superuser</li>
+<li>ACL without users</li>
+<li>ACL without resources</li>
+<li>RBAC</li>
+<li>RBAC with resource roles</li>
+<li>RBAC with domains/tenants</li>
+<li>ABAC</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Policy: 权限控制策略的格式，可以被持久化到外部存储设备中，如mysql、mongodb等<ul>
+<li>p: Policy定义</li>
+<li>g: 角色定义</li>
+</ul>
+</li>
+<li>Matcher: 定义Request和Policy之间是如何匹配的，使用p.eft表示对于当前的Request，该Policy与其是否匹配</li>
+<li>Effect: 当某个Request对应多个Policy时，判断该请求是否能通过校验</li>
+<li>Role: 可选，当使用RBAC时，定义不同的角色组，比如用户角色组，资源角色组，用户角色+租户组等</li>
+</ul>
+</li>
+</ul>
 <p>Casbin进行权限校验的流程:<img src="/images/Casbin之PERM权限控制模型.png" alt="img"></p>
-<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>Model定义:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Model represents the whole access control model.</span></span><br><span class="line"><span class="keyword">type</span> Model <span class="keyword">map</span>[<span class="keyword">string</span>]AssertionMap</span><br><span class="line"></span><br><span class="line"><span class="comment">// AssertionMap is the collection of assertions, can be "r", "p", "g", "e", "m".</span></span><br><span class="line"><span class="keyword">type</span> AssertionMap <span class="keyword">map</span>[<span class="keyword">string</span>]*Assertion</span><br><span class="line"></span><br><span class="line"><span class="comment">// Assertion represents an expression in a section of the model.</span></span><br><span class="line"><span class="comment">// For example: r = sub, obj, act</span></span><br><span class="line"><span class="keyword">type</span> Assertion <span class="keyword">struct</span> &#123;</span><br><span class="line">  Key    <span class="keyword">string</span></span><br><span class="line">  Value  <span class="keyword">string</span></span><br><span class="line">  Tokens []<span class="keyword">string</span></span><br><span class="line">  Policy [][]<span class="keyword">string</span></span><br><span class="line">  RM     rbac.RoleManager</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Effector is the interface for Casbin effectors.</span></span><br><span class="line"><span class="keyword">type</span> Effector <span class="keyword">interface</span> &#123;</span><br><span class="line">  <span class="comment">// MergeEffects merges all matching results collected by the enforcer into a single decision.</span></span><br><span class="line">  MergeEffects(expr <span class="keyword">string</span>, effects []Effect, results []<span class="keyword">float64</span>) (<span class="keyword">bool</span>, error)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Role定义:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// RoleManager provides interface to define the operations for managing roles.</span></span><br><span class="line"><span class="keyword">type</span> RoleManager <span class="keyword">interface</span> &#123;</span><br><span class="line">  <span class="comment">// Clear clears all stored data and resets the role manager to the initial state.</span></span><br><span class="line">  Clear() error</span><br><span class="line">  <span class="comment">// AddLink adds the inheritance link between two roles. role: name1 and role: name2.</span></span><br><span class="line">  <span class="comment">// domain is a prefix to the roles (can be used for other purposes).</span></span><br><span class="line">  AddLink(name1 <span class="keyword">string</span>, name2 <span class="keyword">string</span>, domain ...<span class="keyword">string</span>) error</span><br><span class="line">  <span class="comment">// DeleteLink deletes the inheritance link between two roles. role: name1 and role: name2.</span></span><br><span class="line">  <span class="comment">// domain is a prefix to the roles (can be used for other purposes).</span></span><br><span class="line">  DeleteLink(name1 <span class="keyword">string</span>, name2 <span class="keyword">string</span>, domain ...<span class="keyword">string</span>) error</span><br><span class="line">  <span class="comment">// HasLink determines whether a link exists between two roles. role: name1 inherits role: name2.</span></span><br><span class="line">  <span class="comment">// domain is a prefix to the roles (can be used for other purposes).</span></span><br><span class="line">  HasLink(name1 <span class="keyword">string</span>, name2 <span class="keyword">string</span>, domain ...<span class="keyword">string</span>) (<span class="keyword">bool</span>, error)</span><br><span class="line">  <span class="comment">// GetRoles gets the roles that a user inherits.</span></span><br><span class="line">  <span class="comment">// domain is a prefix to the roles (can be used for other purposes).</span></span><br><span class="line">  GetRoles(name <span class="keyword">string</span>, domain ...<span class="keyword">string</span>) ([]<span class="keyword">string</span>, error)</span><br><span class="line">  <span class="comment">// GetUsers gets the users that inherits a role.</span></span><br><span class="line">  <span class="comment">// domain is a prefix to the users (can be used for other purposes).</span></span><br><span class="line">  GetUsers(name <span class="keyword">string</span>, domain ...<span class="keyword">string</span>) ([]<span class="keyword">string</span>, error)</span><br><span class="line">  <span class="comment">// PrintRoles prints all the roles to log.</span></span><br><span class="line">  PrintRoles() error</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Adapter定义</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Adapter is the interface for Casbin adapters.</span></span><br><span class="line"><span class="keyword">type</span> Adapter <span class="keyword">interface</span> &#123;</span><br><span class="line">  <span class="comment">// LoadPolicy loads all policy rules from the storage.</span></span><br><span class="line">  LoadPolicy(model model.Model) error</span><br><span class="line">  <span class="comment">// SavePolicy saves all policy rules to the storage.</span></span><br><span class="line">  SavePolicy(model model.Model) error</span><br><span class="line"></span><br><span class="line">  <span class="comment">// AddPolicy adds a policy rule to the storage.</span></span><br><span class="line">  <span class="comment">// This is part of the Auto-Save feature.</span></span><br><span class="line">  AddPolicy(sec <span class="keyword">string</span>, ptype <span class="keyword">string</span>, rule []<span class="keyword">string</span>) error</span><br><span class="line">  <span class="comment">// RemovePolicy removes a policy rule from the storage.</span></span><br><span class="line">  <span class="comment">// This is part of the Auto-Save feature.</span></span><br><span class="line">  RemovePolicy(sec <span class="keyword">string</span>, ptype <span class="keyword">string</span>, rule []<span class="keyword">string</span>) error</span><br><span class="line">  <span class="comment">// RemoveFilteredPolicy removes policy rules that match the filter from the storage.</span></span><br><span class="line">  <span class="comment">// This is part of the Auto-Save feature.</span></span><br><span class="line">  RemoveFilteredPolicy(sec <span class="keyword">string</span>, ptype <span class="keyword">string</span>, fieldIndex <span class="keyword">int</span>, fieldValues ...<span class="keyword">string</span>) error</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Watcher定义:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Watcher is the interface for Casbin watchers.</span></span><br><span class="line"><span class="keyword">type</span> Watcher <span class="keyword">interface</span> &#123;</span><br><span class="line">  <span class="comment">// SetUpdateCallback sets the callback function that the watcher will call</span></span><br><span class="line">  <span class="comment">// when the policy in DB has been changed by other instances.</span></span><br><span class="line">  <span class="comment">// A classic callback is Enforcer.LoadPolicy().</span></span><br><span class="line">  SetUpdateCallback(<span class="function"><span class="keyword">func</span><span class="params">(<span class="keyword">string</span>)</span>) <span class="title">error</span></span></span><br><span class="line"><span class="function">  // <span class="title">Update</span> <span class="title">calls</span> <span class="title">the</span> <span class="title">update</span> <span class="title">callback</span> <span class="title">of</span> <span class="title">other</span> <span class="title">instances</span> <span class="title">to</span> <span class="title">synchronize</span> <span class="title">their</span> <span class="title">policy</span>.</span></span><br><span class="line"><span class="function">  // <span class="title">It</span> <span class="title">is</span> <span class="title">usually</span> <span class="title">called</span> <span class="title">after</span> <span class="title">changing</span> <span class="title">the</span> <span class="title">policy</span> <span class="title">in</span> <span class="title">DB</span>, <span class="title">like</span> <span class="title">Enforcer</span>.<span class="title">SavePolicy</span><span class="params">()</span>,</span></span><br><span class="line"><span class="function">  // <span class="title">Enforcer</span>.<span class="title">AddPolicy</span><span class="params">()</span>, <span class="title">Enforcer</span>.<span class="title">RemovePolicy</span><span class="params">()</span>, <span class="title">etc</span>.</span></span><br><span class="line"><span class="function">  <span class="title">Update</span><span class="params">()</span> <span class="title">error</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>Enforcer定义:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Enforcer is the main interface for authorization enforcement and policy management.</span></span><br><span class="line"><span class="keyword">type</span> Enforcer <span class="keyword">struct</span> &#123;</span><br><span class="line">  modelPath <span class="keyword">string</span></span><br><span class="line">  model     model.Model</span><br><span class="line">  fm        model.FunctionMap</span><br><span class="line">  eft       effect.Effector</span><br><span class="line"></span><br><span class="line">  adapter persist.Adapter</span><br><span class="line">  watcher persist.Watcher</span><br><span class="line">  rm      rbac.RoleManager</span><br><span class="line"></span><br><span class="line">  enabled            <span class="keyword">bool</span></span><br><span class="line">  autoSave           <span class="keyword">bool</span></span><br><span class="line">  autoBuildRoleLinks <span class="keyword">bool</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
           
         
       
@@ -1232,20 +1271,47 @@
           
             <p>有状态Pod的控制器: 每一个Pod会被单独进行管理</p>
 <ul>
-<li>StatefulSet<ul>
+<li><p>有状态Pod的部署方式</p>
+<ul>
+<li>使用StatefulSet控制器来管理</li>
+<li>使用Headless Service来暴露<ul>
+<li>普通的Service所管理的一组Pod是无序的，Headless Service会给所管理的每一个Pod赋予唯一标识，使得它们有序</li>
+<li>对Headless Service的名称DNS解析得到的直接是有状态Pod的IP地址列表</li>
+</ul>
+</li>
+<li>使用VolumeClaimTemplates来创建存储卷<ul>
+<li>有状态Pod中每一个Pod所使用的存储卷是不同的</li>
+<li>无法在有状态Pod中定义自己使用的存储卷，而是在StatefulSet中使用volumeClaimTemplates来定义</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>StatefulSet</p>
+<ul>
 <li>功能<ul>
-<li>对有状态服务的Pod进行控制管理，每一个Pod都会被单独管理。当Pod出现故障时，需要自定义操作进行恢复</li>
+<li>对有状态服务的Pod进行控制管理，每一个Pod都会被单独管理</li>
+<li>支持扩缩容，当replicas字段值发生变化后会自动调整所管理的Pod副本数量</li>
+<li>支持滚动更新，通过partition值设置需要被更新的Pod列表</li>
+<li>支持版本回滚，使用方式和Deployment类似</li>
+</ul>
+</li>
+<li>对Pod的要求<ul>
+<li>每一个Pod具备稳定且唯一的网络标识符</li>
+<li>每一个Pod具备稳定且持久的存储</li>
+<li>Pod支持有序、平滑地部署和扩展</li>
+<li>Pod支持有序、平滑的删除和终止</li>
+<li>Pod支持有序的滚动更新</li>
 </ul>
 </li>
 <li>spec字段<ul>
-<li><code>revisionHistoryLimit</code>: Deployment可以保留的历史ReplicaSet数量，从而支持版本回滚</li>
+<li><code>revisionHistoryLimit</code>: StatefulSet可以保留的历史版本数量，从而支持版本回滚</li>
 <li><code>podManagementPolicy</code>: Pod在初始化的启动策略，OrderedReady、Parallel</li>
-<li><code>replica</code>:</li>
-<li><code>selector</code>:</li>
-<li><code>serviceName</code>:</li>
-<li><code>template</code>:</li>
-<li><code>updateStrategy</code>:</li>
-<li><code>volumeClaimTemplates</code>:</li>
+<li><code>replica</code>: Pod的副本数</li>
+<li><code>selector</code>: Pod标签选择器，用来筛选符合条件的Pod列表</li>
+<li><code>serviceName</code>: 管理Pod的服务名称，同时自动给每一个Pod分配唯一标识符，可以被DNS解析 <strong>POD_NAME.SVC_NAME.NS_NAME.svc.cluster.local</strong></li>
+<li><code>template</code>: 创建Pod的模板</li>
+<li><code>updateStrategy</code>: Pod的更新策略。使用滚动更新机制时，可以更新编号大于等于partition的Pod；通过不断减少partition的值为0，完成所有Pod的更新</li>
+<li><code>volumeClaimTemplates</code>: 在Pod中创建PVC的模板。该机制可以保证每一个Pod始终与相同的PVC进行绑定，当Pod重新创建后数据不会丢失</li>
 </ul>
 </li>
 </ul>

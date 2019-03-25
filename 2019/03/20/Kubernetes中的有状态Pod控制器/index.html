@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="有状态Pod的控制器: 每一个Pod会被单独进行管理  StatefulSet 功能 对有状态服务的Pod进行控制管理，每一个Pod都会被单独管理。当Pod出现故障时，需要自定义操作进行恢复   spec字段 revisionHistoryLimit: Deployment可以保留的历史ReplicaSet数量，从而支持版本回滚 podManagementPolicy: Pod在初始化的启动策略，">
+<meta name="description" content="有状态Pod的控制器: 每一个Pod会被单独进行管理  有状态Pod的部署方式  使用StatefulSet控制器来管理 使用Headless Service来暴露 普通的Service所管理的一组Pod是无序的，Headless Service会给所管理的每一个Pod赋予唯一标识，使得它们有序 对Headless Service的名称DNS解析得到的直接是有状态Pod的IP地址列表   使用Vo">
 <meta name="keywords" content="StatefulSet">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kubernetes中的有状态Pod控制器">
 <meta property="og:url" content="http://yoursite.com/2019/03/20/Kubernetes中的有状态Pod控制器/index.html">
 <meta property="og:site_name" content="Yihang&#39;s Blog">
-<meta property="og:description" content="有状态Pod的控制器: 每一个Pod会被单独进行管理  StatefulSet 功能 对有状态服务的Pod进行控制管理，每一个Pod都会被单独管理。当Pod出现故障时，需要自定义操作进行恢复   spec字段 revisionHistoryLimit: Deployment可以保留的历史ReplicaSet数量，从而支持版本回滚 podManagementPolicy: Pod在初始化的启动策略，">
+<meta property="og:description" content="有状态Pod的控制器: 每一个Pod会被单独进行管理  有状态Pod的部署方式  使用StatefulSet控制器来管理 使用Headless Service来暴露 普通的Service所管理的一组Pod是无序的，Headless Service会给所管理的每一个Pod赋予唯一标识，使得它们有序 对Headless Service的名称DNS解析得到的直接是有状态Pod的IP地址列表   使用Vo">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-23T04:06:41.098Z">
+<meta property="og:updated_time" content="2019-03-25T07:30:08.102Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes中的有状态Pod控制器">
-<meta name="twitter:description" content="有状态Pod的控制器: 每一个Pod会被单独进行管理  StatefulSet 功能 对有状态服务的Pod进行控制管理，每一个Pod都会被单独管理。当Pod出现故障时，需要自定义操作进行恢复   spec字段 revisionHistoryLimit: Deployment可以保留的历史ReplicaSet数量，从而支持版本回滚 podManagementPolicy: Pod在初始化的启动策略，">
+<meta name="twitter:description" content="有状态Pod的控制器: 每一个Pod会被单独进行管理  有状态Pod的部署方式  使用StatefulSet控制器来管理 使用Headless Service来暴露 普通的Service所管理的一组Pod是无序的，Headless Service会给所管理的每一个Pod赋予唯一标识，使得它们有序 对Headless Service的名称DNS解析得到的直接是有状态Pod的IP地址列表   使用Vo">
 
 
 
@@ -354,20 +354,47 @@
       
         <p>有状态Pod的控制器: 每一个Pod会被单独进行管理</p>
 <ul>
-<li>StatefulSet<ul>
+<li><p>有状态Pod的部署方式</p>
+<ul>
+<li>使用StatefulSet控制器来管理</li>
+<li>使用Headless Service来暴露<ul>
+<li>普通的Service所管理的一组Pod是无序的，Headless Service会给所管理的每一个Pod赋予唯一标识，使得它们有序</li>
+<li>对Headless Service的名称DNS解析得到的直接是有状态Pod的IP地址列表</li>
+</ul>
+</li>
+<li>使用VolumeClaimTemplates来创建存储卷<ul>
+<li>有状态Pod中每一个Pod所使用的存储卷是不同的</li>
+<li>无法在有状态Pod中定义自己使用的存储卷，而是在StatefulSet中使用volumeClaimTemplates来定义</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>StatefulSet</p>
+<ul>
 <li>功能<ul>
-<li>对有状态服务的Pod进行控制管理，每一个Pod都会被单独管理。当Pod出现故障时，需要自定义操作进行恢复</li>
+<li>对有状态服务的Pod进行控制管理，每一个Pod都会被单独管理</li>
+<li>支持扩缩容，当replicas字段值发生变化后会自动调整所管理的Pod副本数量</li>
+<li>支持滚动更新，通过partition值设置需要被更新的Pod列表</li>
+<li>支持版本回滚，使用方式和Deployment类似</li>
+</ul>
+</li>
+<li>对Pod的要求<ul>
+<li>每一个Pod具备稳定且唯一的网络标识符</li>
+<li>每一个Pod具备稳定且持久的存储</li>
+<li>Pod支持有序、平滑地部署和扩展</li>
+<li>Pod支持有序、平滑的删除和终止</li>
+<li>Pod支持有序的滚动更新</li>
 </ul>
 </li>
 <li>spec字段<ul>
-<li><code>revisionHistoryLimit</code>: Deployment可以保留的历史ReplicaSet数量，从而支持版本回滚</li>
+<li><code>revisionHistoryLimit</code>: StatefulSet可以保留的历史版本数量，从而支持版本回滚</li>
 <li><code>podManagementPolicy</code>: Pod在初始化的启动策略，OrderedReady、Parallel</li>
-<li><code>replica</code>:</li>
-<li><code>selector</code>:</li>
-<li><code>serviceName</code>:</li>
-<li><code>template</code>:</li>
-<li><code>updateStrategy</code>:</li>
-<li><code>volumeClaimTemplates</code>:</li>
+<li><code>replica</code>: Pod的副本数</li>
+<li><code>selector</code>: Pod标签选择器，用来筛选符合条件的Pod列表</li>
+<li><code>serviceName</code>: 管理Pod的服务名称，同时自动给每一个Pod分配唯一标识符，可以被DNS解析 <strong>POD_NAME.SVC_NAME.NS_NAME.svc.cluster.local</strong></li>
+<li><code>template</code>: 创建Pod的模板</li>
+<li><code>updateStrategy</code>: Pod的更新策略。使用滚动更新机制时，可以更新编号大于等于partition的Pod；通过不断减少partition的值为0，完成所有Pod的更新</li>
+<li><code>volumeClaimTemplates</code>: 在Pod中创建PVC的模板。该机制可以保证每一个Pod始终与相同的PVC进行绑定，当Pod重新创建后数据不会丢失</li>
 </ul>
 </li>
 </ul>
