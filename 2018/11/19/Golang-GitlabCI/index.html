@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="基本概念 Pipeline  构建任务，可以包含多个流程(Stage)，比如安装依赖、编译、测试、部署等  任何提交和Merge操作都会触发Pipeline  Stage  构建阶段，即上述的流程  所有的Stage按顺序执行，某一个Stage执行失败后，不再执行后续的Stage  所有Stage执行成功之后，Pipeline才算成功  Job  Stage中的具体任务  所有的Job并行执行，某">
+<meta name="description" content="GitlabCI 基本概念 Pipeline  构建任务，可以包含多个流程(Stage)，比如安装依赖、编译、测试、部署等  任何提交和Merge操作都会触发Pipeline  Stage  构建阶段，即上述的流程  所有的Stage按顺序执行，某一个Stage执行失败后，不再执行后续的Stage  所有Stage执行成功之后，Pipeline才算成功  Job  Stage中的具体任务  所有的">
 <meta name="keywords" content="Golang,Gitlab,CI">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Golang-GitlabCI">
 <meta property="og:url" content="http://yoursite.com/2018/11/19/Golang-GitlabCI/index.html">
 <meta property="og:site_name" content="Yihang&#39;s Blog">
-<meta property="og:description" content="基本概念 Pipeline  构建任务，可以包含多个流程(Stage)，比如安装依赖、编译、测试、部署等  任何提交和Merge操作都会触发Pipeline  Stage  构建阶段，即上述的流程  所有的Stage按顺序执行，某一个Stage执行失败后，不再执行后续的Stage  所有Stage执行成功之后，Pipeline才算成功  Job  Stage中的具体任务  所有的Job并行执行，某">
+<meta property="og:description" content="GitlabCI 基本概念 Pipeline  构建任务，可以包含多个流程(Stage)，比如安装依赖、编译、测试、部署等  任何提交和Merge操作都会触发Pipeline  Stage  构建阶段，即上述的流程  所有的Stage按顺序执行，某一个Stage执行失败后，不再执行后续的Stage  所有Stage执行成功之后，Pipeline才算成功  Job  Stage中的具体任务  所有的">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-21T10:53:05.640Z">
+<meta property="og:updated_time" content="2019-03-27T02:50:55.652Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Golang-GitlabCI">
-<meta name="twitter:description" content="基本概念 Pipeline  构建任务，可以包含多个流程(Stage)，比如安装依赖、编译、测试、部署等  任何提交和Merge操作都会触发Pipeline  Stage  构建阶段，即上述的流程  所有的Stage按顺序执行，某一个Stage执行失败后，不再执行后续的Stage  所有Stage执行成功之后，Pipeline才算成功  Job  Stage中的具体任务  所有的Job并行执行，某">
+<meta name="twitter:description" content="GitlabCI 基本概念 Pipeline  构建任务，可以包含多个流程(Stage)，比如安装依赖、编译、测试、部署等  任何提交和Merge操作都会触发Pipeline  Stage  构建阶段，即上述的流程  所有的Stage按顺序执行，某一个Stage执行失败后，不再执行后续的Stage  所有Stage执行成功之后，Pipeline才算成功  Job  Stage中的具体任务  所有的">
 
 
 
@@ -352,7 +352,7 @@
       
 
       
-        <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
+        <h2 id="GitlabCI-基本概念"><a href="#GitlabCI-基本概念" class="headerlink" title="GitlabCI 基本概念"></a>GitlabCI 基本概念</h2><ul>
 <li><p>Pipeline<br>  构建任务，可以包含多个流程(Stage)，比如安装依赖、编译、测试、部署等<br>  任何提交和Merge操作都会触发Pipeline</p>
 </li>
 <li><p>Stage<br>  构建阶段，即上述的流程<br>  所有的Stage<strong>按顺序执行</strong>，某一个Stage执行失败后，不再执行后续的Stage<br>  所有Stage执行成功之后，Pipeline才算成功</p>
@@ -403,31 +403,8 @@
 </li>
 </ul>
 </li>
-<li><p>Glide-Golang包管理</p>
-<ul>
-<li><p>安装: go get -u -v github.com/Masterminds/glide</p>
-</li>
-<li><p>初始化: glide init<br>  glide会对代码中依赖的golang包做静态扫描，并生成<code>glide.yaml</code>文件</p>
-</li>
-<li><p>下载包: glide install<br>  glide会将依赖的包下载到vendor目录中</p>
-</li>
-<li><p>镜像和下载subpackage: 如果需要下载的包国内无法访问或者需要下载某个subpackage，可以在<code>glide.yaml</code>中添加如下配置</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- package: golang.org/x/image</span><br><span class="line">repo: https://github.com/golang/image //指明镜像仓库地址</span><br><span class="line">vcs: git</span><br><span class="line">subpackages: //指明要下载的子包</span><br><span class="line">- bmp</span><br><span class="line">- draw</span><br><span class="line">- font</span><br><span class="line">- math/f64</span><br><span class="line">- math/fixed</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>私有仓库配置: 如果代码依赖私有仓库中的项目，则可以通过git submodules功能来配置依赖</p>
-<ul>
-<li><code>git submodule add git@somewhere:folder/mysubmodule.git</code>: 添加submodule</li>
-<li>修改.gitmodules文件，将url改为相对路径</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[submodule "mysubmodule"]</span><br><span class="line">path = mysubmodule</span><br><span class="line">url = ../../group/mysubmodule.git</span><br></pre></td></tr></table></figure>
-<ul>
-<li>在gitlab-ci.yml中配置获取submodule</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">variables:</span><br><span class="line">GIT_SUBMODULE_STRATEGY: recursive</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-</li>
-</ul>
+<h2 id="Golang代码静态分析工具"><a href="#Golang代码静态分析工具" class="headerlink" title="Golang代码静态分析工具"></a>Golang代码静态分析工具</h2><p><a href="https://github.com/golangci/golangci-lint" target="_blank" rel="noopener">golangci-lint</a></p>
 
       
     </div>
@@ -557,7 +534,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">83</span>
+                  <span class="site-state-item-count">84</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -579,7 +556,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">149</span>
+                  <span class="site-state-item-count">151</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -612,7 +589,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GitlabCI-基本概念"><span class="nav-number">1.</span> <span class="nav-text">GitlabCI 基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Golang代码静态分析工具"><span class="nav-number">2.</span> <span class="nav-text">Golang代码静态分析工具</span></a></li></ol></div>
             
 
           </div>

@@ -249,6 +249,226 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/25/CSAPP-Chapter-2-Representing-and-Manipulating-Information/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/25/CSAPP-Chapter-2-Representing-and-Manipulating-Information/" itemprop="url">CSAPP-Chapter 2-Representing and Manipulating Information</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-25T14:08:34+08:00">
+                2018-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/阅读分享/" itemprop="url" rel="index">
+                    <span itemprop="name">阅读分享</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/25/CSAPP-Chapter-2-Representing-and-Manipulating-Information/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/12/25/CSAPP-Chapter-2-Representing-and-Manipulating-Information/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>three most important encoding of numbers:</p>
+<ul>
+<li>unsigned integers</li>
+<li>signed integers</li>
+<li>float-point number</li>
+</ul>
+<p>we need to focus on:</p>
+<ul>
+<li>the ranges of values that can be represented<ul>
+<li>overflow</li>
+<li>roundoff</li>
+</ul>
+</li>
+<li>the properties of different arithmetic operations<ul>
+<li>integer arithmetic satisfy commutative and associative</li>
+<li>float-point arithmetic is commutative, but not associative</li>
+</ul>
+</li>
+</ul>
+<h2 id="Information-Storage"><a href="#Information-Storage" class="headerlink" title="Information Storage"></a>Information Storage</h2><p>virtual memory -&gt; larger bytes array -&gt; bytes -&gt; block of eight bits<br>virtual address space -&gt; each memory bytes has a unique number</p>
+<p>in C, pointer’s value is the virtual address of the object’s first bytes<br>compiler use the pointer’s type to generate machine code to access object’s value</p>
+<h3 id="Hexadecimal-Notation"><a href="#Hexadecimal-Notation" class="headerlink" title="Hexadecimal Notation"></a>Hexadecimal Notation</h3><p>binary, decimal and hexadecimal</p>
+<p>write bit pattern as base-16 or hexadecimal number</p>
+<h3 id="Words"><a href="#Words" class="headerlink" title="Words"></a>Words</h3><p>word size of a computer indicates the noraml size of integer and pointer data<br>virtual address is encoded by a word, the word size is the maximum size of the virtual address space<br>n word size -&gt; [0, 2^n] virtual address space</p>
+<h3 id="Data-Sizes"><a href="#Data-Sizes" class="headerlink" title="Data Sizes"></a>Data Sizes</h3><p>different data type may have different size depend on the machine and compiler</p>
+<h3 id="Addressing-and-Byte-Ordering"><a href="#Addressing-and-Byte-Ordering" class="headerlink" title="Addressing and Byte Ordering"></a>Addressing and Byte Ordering</h3><p>object that span multiple bytes, we must establish two conventions:</p>
+<ul>
+<li>what will be the address of the object: smallest address of the bytes used</li>
+<li>how will we order the bytes in memory: big endian and little endian</li>
+</ul>
+<p><img src="/images/CSAPP_2.1.png" alt="big endian vs little endian"></p>
+<p>when byte ordering becomes a issue:</p>
+<ul>
+<li>binary data is communicated over a network between different machines</li>
+<li>programs are written that circumvent the normal types system</li>
+</ul>
+<h3 id="Representing-String"><a href="#Representing-String" class="headerlink" title="Representing String"></a>Representing String</h3><p>in C, string is an array of characters terminated by the null character</p>
+<h3 id="Representing-Code"><a href="#Representing-Code" class="headerlink" title="Representing Code"></a>Representing Code</h3><p>different machine use different and incompatible instructions and encodings<br>binary code is seldom portable across different combinations of machine and operating sytem</p>
+<h3 id="Boolean-Algebras-and-Rings"><a href="#Boolean-Algebras-and-Rings" class="headerlink" title="Boolean Algebras and Rings"></a>Boolean Algebras and Rings</h3><p>boolean operations: ~ not, &amp; and, | or, ^ exclusive or<br>extend the boolean operations to also operate on bit vectors</p>
+<h3 id="Bit-Level-Operations-in-C"><a href="#Bit-Level-Operations-in-C" class="headerlink" title="Bit-Level Operations in C"></a>Bit-Level Operations in C</h3><p>C support bit-wise boolean operations, ~ &amp; | ^<br>can be applied to any “integral” data type</p>
+<h3 id="Logical-Operations-in-C"><a href="#Logical-Operations-in-C" class="headerlink" title="Logical Operations in C"></a>Logical Operations in C</h3><p>C provide a set of logical operators, &amp;&amp; || !</p>
+<h3 id="Shift-Operations-in-C"><a href="#Shift-Operations-in-C" class="headerlink" title="Shift Operations in C"></a>Shift Operations in C</h3><p>C provide a set of shift operations for shifting bit patterns, &lt;&lt; &gt;&gt;</p>
+<p>two forms of right shift:logical and arithmetic</p>
+<h2 id="Integer-Representations"><a href="#Integer-Representations" class="headerlink" title="Integer Representations"></a>Integer Representations</h2><p>unsigned for negative, zero and positive numbers<br>signed for nongative numbers</p>
+<h3 id="Integral-Data-Types"><a href="#Integral-Data-Types" class="headerlink" title="Integral Data Types"></a>Integral Data Types</h3><p>C support a variety of integral data types, with an indication of unsigned</p>
+<h3 id="Unsigned-and-Two’s-Complement-Encodings"><a href="#Unsigned-and-Two’s-Complement-Encodings" class="headerlink" title="Unsigned and Two’s Complement Encodings"></a>Unsigned and Two’s Complement Encodings</h3><p>use two’s complement form to represent signed numbers</p>
+<h3 id="Conversions-Between-Signed-and-Unsigned"><a href="#Conversions-Between-Signed-and-Unsigned" class="headerlink" title="Conversions Between Signed and Unsigned"></a>Conversions Between Signed and Unsigned</h3><p><img src="/images/CSAPP_2.11.png" alt="signed to unsigned"></p>
+<p><img src="/images/CSAPP_2.12.png" alt="unsigned to signed"></p>
+<h3 id="Signed-vs-Unsigned-in-C"><a href="#Signed-vs-Unsigned-in-C" class="headerlink" title="Signed vs Unsigned in C"></a>Signed vs Unsigned in C</h3><p>C support both signed(default) and unsigned arithmetic of integer data</p>
+<p>C allow conversion between unsigned and signed, explicit and implicit conversion</p>
+<h3 id="Expanding-the-Bit-Representation-of-a-Number"><a href="#Expanding-the-Bit-Representation-of-a-Number" class="headerlink" title="Expanding the Bit Representation of a Number"></a>Expanding the Bit Representation of a Number</h3><p>zero extension for unsigned number<br>sign extension for signed number</p>
+<h3 id="Truncating-Numbers"><a href="#Truncating-Numbers" class="headerlink" title="Truncating Numbers"></a>Truncating Numbers</h3><p>drop the high-order bits</p>
+<h3 id="Advice-on-Signed-vs-Unsigned"><a href="#Advice-on-Signed-vs-Unsigned" class="headerlink" title="Advice on Signed vs Unsigned"></a>Advice on Signed vs Unsigned</h3><p>conversion between signed and unsigned leads to some nointuitive behavior</p>
+<ul>
+<li>never use unsigned numbers</li>
+</ul>
+<h2 id="Integer-Arithmetic"><a href="#Integer-Arithmetic" class="headerlink" title="Integer Arithmetic"></a>Integer Arithmetic</h2><h3 id="Unsigned-Addition"><a href="#Unsigned-Addition" class="headerlink" title="Unsigned Addition"></a>Unsigned Addition</h3><p>may overflow, drop the higher order bit</p>
+<p><img src="/images/CSAPP_2.15.png" alt="overflow"></p>
+<h3 id="Signed-Addition"><a href="#Signed-Addition" class="headerlink" title="Signed Addition"></a>Signed Addition</h3><p>may negative or positive overflow, drop the higher order bit</p>
+<p><img src="/images/CSAPP_2.17.png" alt="overflow"></p>
+<h3 id="Signed-Negation"><a href="#Signed-Negation" class="headerlink" title="Signed Negation"></a>Signed Negation</h3><h3 id="Unsigned-Multiplication"><a href="#Unsigned-Multiplication" class="headerlink" title="Unsigned Multiplication"></a>Unsigned Multiplication</h3><p>may overflow, drop the higher order bit</p>
+<h3 id="Signed-Multiplication"><a href="#Signed-Multiplication" class="headerlink" title="Signed Multiplication"></a>Signed Multiplication</h3><p>may overflow, drop the higher order bit</p>
+<h3 id="Multiplying-by-Powers-of-Two"><a href="#Multiplying-by-Powers-of-Two" class="headerlink" title="Multiplying by Powers of Two"></a>Multiplying by Powers of Two</h3><p>use shift operation, shift to the left, drop the higher order bit</p>
+<h3 id="Dividing-by-Powers-of-Two"><a href="#Dividing-by-Powers-of-Two" class="headerlink" title="Dividing by Powers of Two"></a>Dividing by Powers of Two</h3><p>use shift operation, shift to the right</p>
+<h2 id="Floating-Point"><a href="#Floating-Point" class="headerlink" title="Floating Point"></a>Floating Point</h2><h3 id="Fractional-Binary-Numbers"><a href="#Fractional-Binary-Numbers" class="headerlink" title="Fractional Binary Numbers"></a>Fractional Binary Numbers</h3><p>positional notation, like decimal</p>
+<h3 id="IEEE-Floating-Point-Representation"><a href="#IEEE-Floating-Point-Representation" class="headerlink" title="IEEE Floating-Point Representation"></a>IEEE Floating-Point Representation</h3><p>V = (-1)^S × M × 2^E</p>
+<p>S: 符号位<br>M: 有效数字，大于<br>E: 指数位</p>
+<p><img src="/images/CSAPP_32_Floating_Point.png" alt="32_bit"></p>
+<p><img src="/images/CSAPP_64_Floating_Point.png" alt="64_bit"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/25/GDB-LLDB-Debugger/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1884,158 +2104,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/10/数据结构-lru/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/10/数据结构-lru/" itemprop="url">数据结构-lru</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-10T17:59:04+08:00">
-                2018-12-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程技术/" itemprop="url" rel="index">
-                    <span itemprop="name">编程技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/12/10/数据结构-lru/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/12/10/数据结构-lru/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="LRU简介"><a href="#LRU简介" class="headerlink" title="LRU简介"></a>LRU简介</h2><p>LRU(Least Recent Used): 最近最少使用，一种缓存置换算法<br>基于的原理: 最近被使用的缓存，后续被使用的可能性更大<br>实现方式:<br>    对于使用的缓存按照访问时间进行排序，对数据的读写都会更新其访问时间<br>    当缓存已满时，驱逐出访问时间最早的数据，然后将数据写入<br>    以上可以保证缓存中的数据为热点数据，提高缓存命中率</p>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// MemCache 缓存对象</span></span><br><span class="line"><span class="keyword">type</span> MemCache <span class="keyword">struct</span> &#123;</span><br><span class="line">    mtx        sync.RWMutex</span><br><span class="line">    capacity   <span class="keyword">int</span>                           <span class="comment">//固定缓存大小</span></span><br><span class="line">    data       <span class="keyword">map</span>[<span class="keyword">interface</span>&#123;&#125;]*list.Element <span class="comment">//缓存数据</span></span><br><span class="line">    lru        *list.List                    <span class="comment">//按照最近访问时间排序的LRU列表</span></span><br><span class="line">    hits, gets <span class="keyword">int32</span>                         <span class="comment">//记录缓存的访问和命中次数</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MemCacheStatus 缓存状态</span></span><br><span class="line"><span class="keyword">type</span> MemCacheStatus <span class="keyword">struct</span> &#123;</span><br><span class="line">    capacity <span class="keyword">int</span></span><br><span class="line">    size     <span class="keyword">int</span></span><br><span class="line">    gets     <span class="keyword">int32</span></span><br><span class="line">    hits     <span class="keyword">int32</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 存储的KV对象</span></span><br><span class="line"><span class="keyword">type</span> entry <span class="keyword">struct</span> &#123;</span><br><span class="line">    key   <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">    value <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//NewMemCache 创建缓存对象</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewMemCache</span><span class="params">(capacity <span class="keyword">int</span>)</span> *<span class="title">MemCache</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;MemCache&#123;</span><br><span class="line">        capacity: capacity,</span><br><span class="line">        data:     <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">interface</span>&#123;&#125;]*list.Element),</span><br><span class="line">        lru:      list.New(),</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Set 更新缓存</span></span><br><span class="line"><span class="comment">//首先查询Key是否存在，如果存在则直接替换并在lru中将Key移动到队头</span></span><br><span class="line"><span class="comment">//如果Key不存在，则判断缓存是否已满，如果未满，则直接写入，并在lru的队头创建key</span></span><br><span class="line"><span class="comment">//如果缓存已满，则将lru队尾位置的key移除，然后再写入，并在lru队头创建key</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *MemCache)</span> <span class="title">Set</span><span class="params">(key, value <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    m.mtx.Lock()</span><br><span class="line">    <span class="keyword">defer</span> m.mtx.Unlock()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ele, ok := m.data[key]; ok &#123;</span><br><span class="line">        m.lru.MoveToFront(ele)</span><br><span class="line">        ele.Value.(*entry).value = value</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(m.data) == m.capacity &#123;</span><br><span class="line">        backEle := m.lru.Back()</span><br><span class="line">        m.lru.Remove(backEle)</span><br><span class="line">        <span class="built_in">delete</span>(m.data, backEle.Value.(*entry).key)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    newEle := m.lru.PushFront(&amp;entry&#123;key: key, value: value&#125;)</span><br><span class="line">    m.data[key] = newEle</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Get 获取缓存</span></span><br><span class="line"><span class="comment">//如果缓存存在，则将key移动到队头</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *MemCache)</span> <span class="title">Get</span><span class="params">(key <span class="keyword">interface</span>&#123;&#125;)</span> <span class="params">(value <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    m.mtx.RLock()</span><br><span class="line">    <span class="keyword">defer</span> m.mtx.RUnlock()</span><br><span class="line">    atomic.AddInt32(&amp;m.gets, <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">if</span> ele, ok := m.data[key]; ok &#123;</span><br><span class="line">        m.lru.MoveToFront(ele)</span><br><span class="line">        value = ele.Value.(*entry).value</span><br><span class="line">        atomic.AddInt32(&amp;m.hits, <span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Status 获取缓存状态</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *MemCache)</span> <span class="title">Status</span><span class="params">()</span> <span class="title">MemCacheStatus</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> MemCacheStatus&#123;</span><br><span class="line">        capacity: m.capacity,</span><br><span class="line">        size:     <span class="built_in">len</span>(m.data),</span><br><span class="line">        gets:     m.gets,</span><br><span class="line">        hits:     m.hits,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2086,7 +2154,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">83</span>
+                  <span class="site-state-item-count">84</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2108,7 +2176,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">149</span>
+                  <span class="site-state-item-count">151</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

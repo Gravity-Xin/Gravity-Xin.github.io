@@ -249,6 +249,193 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/02/Kubernetes中的认证和授权/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/02/Kubernetes中的认证和授权/" itemprop="url">Kubernetes中的RBAC和ServiceAccount</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-02T19:20:07+08:00">
+                2019-04-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/02/Kubernetes中的认证和授权/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/04/02/Kubernetes中的认证和授权/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>API Server是集群资源操作的入口</p>
+<ul>
+<li>集群外部的用户可以通过kubectl、http或https接口向其发送操作资源的请求 <strong>kubectl本质上也是发起http请求</strong></li>
+<li>集群内部的Pod，如DNS、Dashboard等，也会访问API Server实现资源的操作。此时API Server使用Service进行暴露，从而能够被集群中的Pod访问</li>
+</ul>
+<p>API Server对外部请求的校验包含三个部分:</p>
+<ul>
+<li><code>认证</code>: 确保为合法用户，可以是UserAccount或ServiceAccount，具体实现包括基于Token的令牌认证、基于证书的SSL认证等</li>
+<li><code>权限检查</code>: 确保用户对资源的操作可以被执行，具体实现包括ABAC、RBAC、WebHook等</li>
+<li><code>准入控制</code>: 确保后续的相关安全检查可以通过</li>
+</ul>
+<p>这三个组件都是模块化设计的，在集群中可以有多个插件来实现。当系统中的认证、权限检查或准入控制分别存在多个插件时，用户只需要通过任意一种插件的校验即可</p>
+<h2 id="账号认证"><a href="#账号认证" class="headerlink" title="账号认证"></a>账号认证</h2><h3 id="User-Account（用户账号）"><a href="#User-Account（用户账号）" class="headerlink" title="User Account（用户账号）"></a>User Account（用户账号）</h3><p>外部用户可以通过HTTP请求的URL格式来确定操作的资源对象</p>
+<p><code>apis/apps/v1/namespaces/default/deployments/myapp-deploy/</code></p>
+<ul>
+<li><code>apps/v1</code>: 资源的API群组</li>
+<li><code>namespaces/default</code>: 名称空间名称</li>
+<li><code>deployment/myapp-deploy</code>: 资源类型和名称，子资源类型和名称</li>
+</ul>
+<p>通过HTTP方法来确定对资源的操作类型</p>
+<ul>
+<li><code>GET</code>: 查看单个或列出多个资源信息，监视单个或多个资源状态变化</li>
+<li><code>POST</code>: 创建或更新资源信息</li>
+<li><code>PUT</code>: 更新资源信息</li>
+<li><code>DELETE</code>: 删除单个或多个资源</li>
+</ul>
+<p>可以通过<code>kubectl proxy</code>在本地为API Serve提供代理，然后通过curl命令操作集群资源</p>
+<h3 id="Service-Account（服务账号）"><a href="#Service-Account（服务账号）" class="headerlink" title="Service Account（服务账号）"></a>Service Account（服务账号）</h3><p>该资源属于Namespace，可以看做是一个用token表示、用于访问APIServer的服务账号。它用来保证集群中的Pod对API Server的访问</p>
+<p>在Pod<code>spec.serviceAccountName</code>中指定使用的ServiceAccount资源名称</p>
+<p>ServiceAccount的token信息使用Secret存储卷来存储。当Pod启动时，其使用的ServiceAccount资源对应的Secret存储卷会被挂载到Pod中</p>
+<p>创建ServiceAccount资源：</p>
+<ul>
+<li>通过<code>secrets</code>定义关联的Secret存储卷</li>
+<li>通过<code>imagePullSecrets</code>定义拉取镜像的私有Registry认证配置</li>
+</ul>
+<h2 id="授权"><a href="#授权" class="headerlink" title="授权"></a>授权</h2><p>基于RBAC</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/22/Golang经典库-Casbin/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -385,7 +572,7 @@
 </ul>
 <p>Casbin进行权限校验的流程:<img src="/images/Casbin之PERM权限控制模型.png" alt="img"></p>
 <h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>Model定义:</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Model represents the whole access control model.</span></span><br><span class="line"><span class="keyword">type</span> Model <span class="keyword">map</span>[<span class="keyword">string</span>]AssertionMap</span><br><span class="line"></span><br><span class="line"><span class="comment">// AssertionMap is the collection of assertions, can be "r", "p", "g", "e", "m".</span></span><br><span class="line"><span class="keyword">type</span> AssertionMap <span class="keyword">map</span>[<span class="keyword">string</span>]*Assertion</span><br><span class="line"></span><br><span class="line"><span class="comment">// Assertion represents an expression in a section of the model.</span></span><br><span class="line"><span class="comment">// For example: r = sub, obj, act</span></span><br><span class="line"><span class="keyword">type</span> Assertion <span class="keyword">struct</span> &#123;</span><br><span class="line">  Key    <span class="keyword">string</span></span><br><span class="line">  Value  <span class="keyword">string</span></span><br><span class="line">  Tokens []<span class="keyword">string</span></span><br><span class="line">  Policy [][]<span class="keyword">string</span></span><br><span class="line">  RM     rbac.RoleManager</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Effector is the interface for Casbin effectors.</span></span><br><span class="line"><span class="keyword">type</span> Effector <span class="keyword">interface</span> &#123;</span><br><span class="line">  <span class="comment">// MergeEffects merges all matching results collected by the enforcer into a single decision.</span></span><br><span class="line">  MergeEffects(expr <span class="keyword">string</span>, effects []Effect, results []<span class="keyword">float64</span>) (<span class="keyword">bool</span>, error)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Model represents the whole access control model.</span></span><br><span class="line"><span class="keyword">type</span> Model <span class="keyword">map</span>[<span class="keyword">string</span>]AssertionMap</span><br><span class="line"></span><br><span class="line"><span class="comment">// AssertionMap is the collection of assertions, can be "r", "p", "g", "e", "m".</span></span><br><span class="line"><span class="keyword">type</span> AssertionMap <span class="keyword">map</span>[<span class="keyword">string</span>]*Assertion</span><br><span class="line"></span><br><span class="line"><span class="comment">// Assertion represents an expression in a section of the model.</span></span><br><span class="line"><span class="comment">// For example: r = sub, obj, act</span></span><br><span class="line"><span class="keyword">type</span> Assertion <span class="keyword">struct</span> &#123;</span><br><span class="line">  Key    <span class="keyword">string</span></span><br><span class="line">  Value  <span class="keyword">string</span></span><br><span class="line">  Tokens []<span class="keyword">string</span></span><br><span class="line">  Policy [][]<span class="keyword">string</span></span><br><span class="line">  RM     rbac.RoleManager</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Effector is the interface for Casbin effectors.</span></span><br><span class="line"><span class="keyword">type</span> Effector <span class="keyword">interface</span> &#123;</span><br><span class="line">  <span class="comment">// MergeEffects merges all matching results collected by the enforcer into a single decision.</span></span><br><span class="line">  MergeEffects(expr <span class="keyword">string</span>, effects []Effect, results []<span class="keyword">float64</span>) (<span class="keyword">bool</span>, error)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>Role定义:</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// RoleManager provides interface to define the operations for managing roles.</span></span><br><span class="line"><span class="keyword">type</span> RoleManager <span class="keyword">interface</span> &#123;</span><br><span class="line">  <span class="comment">// Clear clears all stored data and resets the role manager to the initial state.</span></span><br><span class="line">  Clear() error</span><br><span class="line">  <span class="comment">// AddLink adds the inheritance link between two roles. role: name1 and role: name2.</span></span><br><span class="line">  <span class="comment">// domain is a prefix to the roles (can be used for other purposes).</span></span><br><span class="line">  AddLink(name1 <span class="keyword">string</span>, name2 <span class="keyword">string</span>, domain ...<span class="keyword">string</span>) error</span><br><span class="line">  <span class="comment">// DeleteLink deletes the inheritance link between two roles. role: name1 and role: name2.</span></span><br><span class="line">  <span class="comment">// domain is a prefix to the roles (can be used for other purposes).</span></span><br><span class="line">  DeleteLink(name1 <span class="keyword">string</span>, name2 <span class="keyword">string</span>, domain ...<span class="keyword">string</span>) error</span><br><span class="line">  <span class="comment">// HasLink determines whether a link exists between two roles. role: name1 inherits role: name2.</span></span><br><span class="line">  <span class="comment">// domain is a prefix to the roles (can be used for other purposes).</span></span><br><span class="line">  HasLink(name1 <span class="keyword">string</span>, name2 <span class="keyword">string</span>, domain ...<span class="keyword">string</span>) (<span class="keyword">bool</span>, error)</span><br><span class="line">  <span class="comment">// GetRoles gets the roles that a user inherits.</span></span><br><span class="line">  <span class="comment">// domain is a prefix to the roles (can be used for other purposes).</span></span><br><span class="line">  GetRoles(name <span class="keyword">string</span>, domain ...<span class="keyword">string</span>) ([]<span class="keyword">string</span>, error)</span><br><span class="line">  <span class="comment">// GetUsers gets the users that inherits a role.</span></span><br><span class="line">  <span class="comment">// domain is a prefix to the users (can be used for other purposes).</span></span><br><span class="line">  GetUsers(name <span class="keyword">string</span>, domain ...<span class="keyword">string</span>) ([]<span class="keyword">string</span>, error)</span><br><span class="line">  <span class="comment">// PrintRoles prints all the roles to log.</span></span><br><span class="line">  PrintRoles() error</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>Adapter定义</p>
@@ -2388,181 +2575,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/12/Mysql常用SQL/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/12/Mysql常用SQL/" itemprop="url">Mysql常用SQL</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-12T11:35:02+08:00">
-                2019-03-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/12/Mysql常用SQL/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/12/Mysql常用SQL/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li>查看mysql配置</li>
-</ul>
-<p>show variables like ‘%version%’<br>show variables like ‘%isolation%’</p>
-<ul>
-<li>查看mysql状态</li>
-</ul>
-<p>show status like ‘%thread%’<br>show status like ‘%connection%’</p>
-<ul>
-<li>查看mysql客户端连接信息</li>
-</ul>
-<p>show full processlist</p>
-<ul>
-<li>查看mysql表的详细信息</li>
-</ul>
-<p>show table status like ‘%table_name%’</p>
-<ul>
-<li>查看mysql表使用的索引</li>
-</ul>
-<p>show index from table_name</p>
-<ul>
-<li>增加或删除mysql表的索引</li>
-</ul>
-<p>alter table table_name add index index_title(row1, row2…)<br>alter table table_name drop index index_title</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2613,7 +2625,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">83</span>
+                  <span class="site-state-item-count">84</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2635,7 +2647,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">149</span>
+                  <span class="site-state-item-count">151</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

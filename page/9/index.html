@@ -249,6 +249,193 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/13/Golang-goroutine泄露/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/13/Golang-goroutine泄露/" itemprop="url">Golang-goroutine泄露</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-13T16:59:31+08:00">
+                2018-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程技术/" itemprop="url" rel="index">
+                    <span itemprop="name">编程技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/13/Golang-goroutine泄露/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/11/13/Golang-goroutine泄露/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>本文参考<a href="https://medium.com/golangspec/goroutine-leak-400063aef468" target="_blank" rel="noopener">Goroutine leak</a></p>
+<h2 id="何为Goroutine泄露"><a href="#何为Goroutine泄露" class="headerlink" title="何为Goroutine泄露"></a>何为Goroutine泄露</h2><p>Go的并发是通过goroutine和channel实现的。由于goroutine的存在会消耗内存等资源，如果goroutine随着程序的运行不断的增长，最终会耗尽内存，导致程序崩溃。</p>
+<h2 id="产生泄露的情况"><a href="#产生泄露的情况" class="headerlink" title="产生泄露的情况"></a>产生泄露的情况</h2><ul>
+<li>向没有receiver的channel发送消息</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模拟查询请求</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">query</span><span class="params">()</span> <span class="title">int</span></span> &#123;  </span><br><span class="line">    n := rand.Intn(<span class="number">100</span>)  </span><br><span class="line">    time.Sleep(time.Duration(n) * time.Millisecond)  </span><br><span class="line">    <span class="keyword">return</span> n  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发起多个请求，然后获取最先得到的结果</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">queryAll</span><span class="params">()</span> <span class="title">int</span></span> &#123;  </span><br><span class="line">    ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)  </span><br><span class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; ch &lt;- query() &#125;()  </span><br><span class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; ch &lt;- query() &#125;()  </span><br><span class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; ch &lt;- query() &#125;()  </span><br><span class="line">    <span class="keyword">return</span> &lt;-ch  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;  </span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">4</span>; i++ &#123;  </span><br><span class="line">        queryAll()  </span><br><span class="line">        fmt.Printf(<span class="string">"#goroutines: %d\n"</span>, runtime.NumGoroutine())  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>goroutines: 3  </span><br><span class="line"><span class="meta">#</span>goroutines: 5  </span><br><span class="line"><span class="meta">#</span>goroutines: 7  </span><br><span class="line"><span class="meta">#</span>goroutines: 9</span><br></pre></td></tr></table></figure>
+<p>同时发起多个请求，然后获取最先得到结果的响应，此时较慢的goroutine将会出现向没有接收者的channel发送消息的情况</p>
+<p>可能的解决方法是，如果知道请求数量，则可以使用带缓冲的channel，否则可以在匿名方法中使用context的超时机制</p>
+<ul>
+<li>从没有sender的channel获取消息</li>
+</ul>
+<p>原理同第一种情况</p>
+<ul>
+<li>使用了值为nil的channel</li>
+</ul>
+<p>对值为nil的channel进行读写会永远阻塞</p>
+<ul>
+<li>程序陷入了循环</li>
+</ul>
+<p>goroutine陷入了死循环，导致永远不会结束</p>
+<h2 id="检查方法"><a href="#检查方法" class="headerlink" title="检查方法"></a>检查方法</h2><ul>
+<li><p>使用runtime.NumGoroutine()来观察</p>
+</li>
+<li><p>对于Web应用，使用net/http/pprof，通过/debug/pprof/goroutine?debug=1来观察</p>
+</li>
+<li><p>使用runtime/pprof将现有的goroutine的堆栈打印</p>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pprof.Lookup(<span class="string">"goroutine"</span>).WriteTo(os.Stdout, <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>使用<a href="github.com/google/gops">gops</a></p>
+</li>
+<li><p>使用<a href="https://github.com/fortytw2/leaktest" target="_blank" rel="noopener">leaktest</a></p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/12/数据结构-Heap/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1038,7 +1225,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">83</span>
+                  <span class="site-state-item-count">84</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1060,7 +1247,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">149</span>
+                  <span class="site-state-item-count">151</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

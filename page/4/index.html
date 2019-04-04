@@ -249,6 +249,190 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/12/Elasticsearch-Query查询/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/12/Elasticsearch-Query查询/" itemprop="url">Elasticsearch-Query查询</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-12T13:47:19+08:00">
+                2019-02-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/12/Elasticsearch-Query查询/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/12/Elasticsearch-Query查询/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ul>
+<li>简单的Query查询</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search?q=name:zhangsan  //单字段匹配</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search?q=name:zhangsan&amp;_source=name,age  // 单字段匹配，指定需要返回的字段</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search?q=interests:changge&amp;sort=age:desc  // 单字段匹配，指定返回的多个文档的排序规则，默认按照相似度的score值进行降序返回</span><br></pre></td></tr></table></figure>
+<ul>
+<li>term和terms查询</li>
+</ul>
+<p>向倒排索引中寻找确切的term，不对查询字段进行分词，该查询适合字符串、数值型和日期型等数据类型<br>适合<code>精确查找</code><br>term查询: 查询某个字段中包含某个关键词的文档<br>terms查询: 查询某个字段中包含多个关键词的查询</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query": &#123;"term": &#123;"interests": "changge"&#125;&#125;&#125;   // 单一关键词查询</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query": &#123;"terms": &#123;"interests": ["changge", "tiaowu"]&#125;&#125;&#125;   // 多个关键词查询，满足一个即可</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query": &#123;"terms": &#123;"interests": ["changge", "tiaowu"]&#125;&#125;, "from": 0, "size": 2&#125;   // 规定返回文档的偏移量和数量</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"version": true, "query": &#123;"term": &#123;"interests": "changge"&#125;&#125;&#125;   // 返回文档的版本号</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query": &#123;"term": &#123;"interests": "changge"&#125;&#125;, "sort": [&#123;"age": &#123;"order": "desc"&#125;&#125;]&#125;   // 规定返回文档的排序方式</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"_source": ["address", "name"], "query": &#123;"term": &#123;"interests": "changge"&#125;&#125;&#125;   // 规定返回文档中的字段</span><br></pre></td></tr></table></figure>
+<ul>
+<li>match查询</li>
+</ul>
+<p>match查询会对输入的查询字段先进行分词操作，然后再查询</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"match":&#123;"interests": "changge tiaowu"&#125;&#125;&#125;  // 先分词，再分别对分词的每一个结果进行查询</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"match":&#123;"age": 23&#125;&#125;&#125;</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"match_all":&#123;&#125;&#125;&#125;   // 使用match_all来查询所有文档</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"multi_match":&#123;"query":"changge","fields":["interests","name"]&#125;&#125;&#125; // 使用multi_match来查询多个字段</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"match_phrase":&#123;"interests":"chang ge tiao wu"&#125;&#125;&#125; // 使用match_phrase来进行短语匹配查询，意味着必须匹配所有分词结果，且各个分词的相对位置不变</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query": &#123;"match_phrase_prefix": &#123;"interests": "changg"&#125;&#125;&#125;  // 使用match_phrase_prefix来进行前缀匹配查询，只需要分词的前缀匹配即可</span><br></pre></td></tr></table></figure>
+<ul>
+<li>range查询</li>
+</ul>
+<p>查询某字段值在某个范围的文档，适合数值型和日期型字段</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"range":&#123;"age":&#123;"gt":20,"lte":30&#125;&#125;&#125;&#125;</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"range":&#123;"birthday":&#123;"gte":"1970-10-12","lt":"1987-05-05"&#125;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>wildcard查询</li>
+</ul>
+<p>使用通配符<code>*</code>和<code>?</code>进行查询，<code>*</code>代表0个或多个字符，<code>?</code>代表一个字符</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"wildcard":&#123;"name": "zh?o*"&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>fuzzy查询</li>
+</ul>
+<p>当对搜索的字符的精确值不清楚时，可以使用fuzzy进行模糊查询</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"fuzzy":&#123;"name": "lii"&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>exist查询</li>
+</ul>
+<p>判断文档中的某个字段的字段值是否为空<br>类似于SQL中的<code>IS NOT NULL</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"exists":&#123;"field":"age"&#125;&#125;&#125;  // 获取age字段不为空的所有文档</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/11/Elasticsearch-文档版本控制/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2015,180 +2199,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/18/Kubernetes安装部署/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/18/Kubernetes安装部署/" itemprop="url">Kubernetes安装部署</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-18T17:15:06+08:00">
-                2019-01-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/01/18/Kubernetes安装部署/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/18/Kubernetes安装部署/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>K8S的安装方式:</p>
-<ul>
-<li>使用<code>Minikube</code>安装K8S单机环境</li>
-<li>使用二进制安装<ul>
-<li>将Master节点上的组件(<code>API Server</code>、<code>Controller Manager</code>、<code>Scheduler</code>、<code>ETCD</code>等)直接以二进制的形式安装在主机上</li>
-<li>Node节点上的组件(<code>Kubelet</code>、<code>Docker</code>、<code>Kube-Proxy</code>等)直接以二进制的形式安装在主机上</li>
-<li>这是一种传统方式，所有K8S组件都是系统级别的守护进</li>
-<li>该方式比较麻烦，因为需要手动去安装和配置各个组件，比如配置节点间安全通信的证书</li>
-<li>在该方式下，如果某些K8S组件出现故障，需要手动去进行管理和维护，因此不推荐该方式<br><a href="https://github.com/opsnull/follow-me-install-kubernetes-cluster" target="_blank" rel="noopener">参考</a></li>
-</ul>
-</li>
-<li>使用<code>Kubeadm</code>自动化工具安装<ul>
-<li>内部调用<code>Kubectl</code>等命令</li>
-<li>在所有主机上安装<code>Docker</code>、<code>Kubelet</code>和<code>Kubeadm</code>组件，提供主机上运行容器和Pod的基础环境</li>
-<li>将某台主机使用<code>Kubeadm init</code>初始化为Master节点</li>
-<li>在其他主机上使用<code>Kubeadm join</code>来进入到K8S集群中，作为Node节点</li>
-<li>在Master节点上以Pod的形式在容器中运行组件(<code>API Server</code>、<code>Controller Manager</code>、<code>Scheduler</code>、<code>ETCD</code>等)</li>
-<li>在Node节点上以Pod的形式在容器中运行组件(<code>Kube-Proxy</code>等)</li>
-<li>K8S所有组件以Pod的方式来运行，这些Pod为静态Pod，由<code>Kubelet</code>进行管理，仅存于特定Node上，不能通过API Server进行管理</li>
-<li>在所有主机上以Pod的方式来运行<code>Flannel</code>，为Pod提供IP地址分配的功能，该Pod由K8S来进行管理<br><a href="https://github.com/kubernetes/kubeadm/blob/master/docs/design/design_v1.10.md" target="_blank" rel="noopener">参考</a></li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2239,7 +2249,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">83</span>
+                  <span class="site-state-item-count">84</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2261,7 +2271,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">149</span>
+                  <span class="site-state-item-count">151</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
