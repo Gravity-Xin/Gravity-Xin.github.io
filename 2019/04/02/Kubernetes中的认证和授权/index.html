@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Yihang&#39;s Blog">
 <meta property="og:description" content="API Server是集群资源操作的入口  集群外部的用户可以通过kubectl、http或https接口向其发送操作资源的请求 kubectl本质上也是发起http请求 集群内部的Pod，如DNS、Dashboard等，也会访问API Server实现资源的操作。此时API Server使用Service进行暴露，从而能够被集群中的Pod访问  API Server对外部请求的校验包含三个部分:">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-04-04T08:03:09.396Z">
+<meta property="og:updated_time" content="2019-04-12T10:05:15.750Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes中的RBAC和ServiceAccount">
 <meta name="twitter:description" content="API Server是集群资源操作的入口  集群外部的用户可以通过kubectl、http或https接口向其发送操作资源的请求 kubectl本质上也是发起http请求 集群内部的Pod，如DNS、Dashboard等，也会访问API Server实现资源的操作。此时API Server使用Service进行暴露，从而能够被集群中的Pod访问  API Server对外部请求的校验包含三个部分:">
@@ -361,13 +361,20 @@
 <ul>
 <li><code>认证</code>: 确保为合法用户，可以是UserAccount或ServiceAccount，具体实现包括基于Token的令牌认证、基于证书的SSL认证等</li>
 <li><code>权限检查</code>: 确保用户对资源的操作可以被执行，具体实现包括ABAC、RBAC、WebHook等</li>
-<li><code>准入控制</code>: 确保后续的相关安全检查可以通过</li>
+<li><code>准入控制</code>: 确保该操作对应的后续相关安全检查可以通过</li>
 </ul>
 <p>这三个组件都是模块化设计的，在集群中可以有多个插件来实现。当系统中的认证、权限检查或准入控制分别存在多个插件时，用户只需要通过任意一种插件的校验即可</p>
-<h2 id="账号认证"><a href="#账号认证" class="headerlink" title="账号认证"></a>账号认证</h2><h3 id="User-Account（用户账号）"><a href="#User-Account（用户账号）" class="headerlink" title="User Account（用户账号）"></a>User Account（用户账号）</h3><p>外部用户可以通过HTTP请求的URL格式来确定操作的资源对象</p>
+<h2 id="账号认证"><a href="#账号认证" class="headerlink" title="账号认证"></a>账号认证</h2><h3 id="User-Account（用户账号）"><a href="#User-Account（用户账号）" class="headerlink" title="User Account（用户账号）"></a>User Account（用户账号）</h3><p>当使用<code>kubectl</code>时，会使用kubeconfig文件提供的用户账号信息来访问多个集群的API Server，其文件内容为</p>
+<ul>
+<li><code>clusters</code>: 集群信息</li>
+<li><code>users</code>: 用户账号信息</li>
+<li><code>contexts</code>: 用户账号和集群的对应关系信息</li>
+</ul>
+<p>可以使用<code>kubectl config</code>命令来查看和修改kubeconfig文件</p>
+<p>外部用户可以通过HTTP请求的URL格式来确定操作的资源对象</p>
 <p><code>apis/apps/v1/namespaces/default/deployments/myapp-deploy/</code></p>
 <ul>
-<li><code>apps/v1</code>: 资源的API群组</li>
+<li><code>apps/v1</code>: 资源的API群组和版本，通过<code>kubectl api-versions</code>来查看系统支持的API群组</li>
 <li><code>namespaces/default</code>: 名称空间名称</li>
 <li><code>deployment/myapp-deploy</code>: 资源类型和名称，子资源类型和名称</li>
 </ul>
@@ -380,14 +387,43 @@
 </ul>
 <p>可以通过<code>kubectl proxy</code>在本地为API Serve提供代理，然后通过curl命令操作集群资源</p>
 <h3 id="Service-Account（服务账号）"><a href="#Service-Account（服务账号）" class="headerlink" title="Service Account（服务账号）"></a>Service Account（服务账号）</h3><p>该资源属于Namespace，可以看做是一个用token表示、用于访问APIServer的服务账号。它用来保证集群中的Pod对API Server的访问</p>
-<p>在Pod<code>spec.serviceAccountName</code>中指定使用的ServiceAccount资源名称</p>
+<p>在Pod<code>spec.serviceAccountName</code>中指定使用的ServiceAccount资源名称。如果不指定，每一个Pod默认使用名称为<code>default</code>的ServiceAccount，该账号只具备通过API Server访问自身信息的权限</p>
 <p>ServiceAccount的token信息使用Secret存储卷来存储。当Pod启动时，其使用的ServiceAccount资源对应的Secret存储卷会被挂载到Pod中</p>
 <p>创建ServiceAccount资源：</p>
 <ul>
 <li>通过<code>secrets</code>定义关联的Secret存储卷</li>
 <li>通过<code>imagePullSecrets</code>定义拉取镜像的私有Registry认证配置</li>
 </ul>
-<h2 id="授权"><a href="#授权" class="headerlink" title="授权"></a>授权</h2><p>基于RBAC</p>
+<h2 id="权限检查"><a href="#权限检查" class="headerlink" title="权限检查"></a>权限检查</h2><p>使用RBAC来对用户的资源操作进行权限检查，所谓的权限就是指<strong>对某种资源是否具备某种操作的资格</strong></p>
+<h3 id="Role和ClusterRole-角色定义"><a href="#Role和ClusterRole-角色定义" class="headerlink" title="Role和ClusterRole(角色定义)"></a>Role和ClusterRole(角色定义)</h3><p>Role: 属于某个Namespace，表示某一Namespace中的角色。其中包含的权限对应的是该Namespace中的资源<br>ClusterRole: 不属于某个Namespace，而是属于集群。其中包含的资源可以为集群范围内的资源</p>
+<p>Role和ClusterRole都是K8S资源对象，可以通过<code>rules</code>字段来定义角色的权限</p>
+<ul>
+<li><code>apiGroups</code>: 规定资源所属的API群组和版本</li>
+<li><code>nonResourceURLs</code>: 规定对非资源对象的URL请求</li>
+<li><code>resourceNames</code>: 规定具体的资源名称</li>
+<li><code>resources</code>: 规定资源类型列表</li>
+<li><code>verbs</code>: 规定对资源的操作，如”get”, “list”, “watch”, “create”, “update”, “patch”, “delete”</li>
+</ul>
+<h3 id="RoleBinding和ClusterRoleBinding-角色绑定"><a href="#RoleBinding和ClusterRoleBinding-角色绑定" class="headerlink" title="RoleBinding和ClusterRoleBinding(角色绑定)"></a>RoleBinding和ClusterRoleBinding(角色绑定)</h3><p>一般是使用RoleBinding将Role和用户进行绑定，使用ClusterRoleBinding将ClusterRole和用户进行绑定</p>
+<p>使用RoleBinding将ClusterRole和用户进行绑定时，资源访问权限仍然局限在RoleBinding所在的Namespace中 <strong>在不同的命名空间中复用通用角色</strong></p>
+<p>无法使用ClusterRoleBinding将Role和用户进行绑定</p>
+<p>RoleBinding和ClusterRoleBinding都是K8S资源对象，可以通过<code>roleRef</code>和<code>subjects</code>来定义</p>
+<ul>
+<li><code>roleRef</code>: 规定使用的角色<ul>
+<li><code>apiGroup</code>: 该角色所属于的API群组</li>
+<li><code>kind</code>: 该角色的类型 Role或ClusterRole</li>
+<li><code>name</code>: 角色的名称</li>
+</ul>
+</li>
+<li><code>subjects</code>: 规定被绑定的用户<ul>
+<li><code>apiGroup</code>: 该用户所属于的API群组</li>
+<li><code>kind</code>: 该用户的类型 User、Group或ServiceAccount</li>
+<li><code>name</code>: 用户的名称</li>
+<li><code>namespace</code>: 当用户为ServiceAccount类型时，ServiceAccount所在的Namespace</li>
+</ul>
+</li>
+</ul>
+<p>K8S中默认有名称为<code>admin</code>的ClusterRole，可以看做是管理员权限，可以通过RoleBinding将其与用户绑定，从而让用户具备某个Namespace下的管理员权限<br>K8S中默认有名称为<code>cluster-admin</code>的ClusterRole，该权限为对任意资源可进行任意操作，权限最大 <strong>Role、ClusterRole、RoleBinding和ClusterRoleBinding都是集群资源，可以通过kubectl来操作这些资源也是因为kubeconfig中的用户具备这样的权限</strong><br>K8S中默认有名称为<code>cluster-admin</code>的ClusterRoleb，将<code>cluster-admin</code>的ClusterRole绑定到了名称为<code>system:masters</code>的Group</p>
 
       
     </div>
@@ -566,7 +602,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#账号认证"><span class="nav-number">1.</span> <span class="nav-text">账号认证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#User-Account（用户账号）"><span class="nav-number">1.1.</span> <span class="nav-text">User Account（用户账号）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Service-Account（服务账号）"><span class="nav-number">1.2.</span> <span class="nav-text">Service Account（服务账号）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#授权"><span class="nav-number">2.</span> <span class="nav-text">授权</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#账号认证"><span class="nav-number">1.</span> <span class="nav-text">账号认证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#User-Account（用户账号）"><span class="nav-number">1.1.</span> <span class="nav-text">User Account（用户账号）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Service-Account（服务账号）"><span class="nav-number">1.2.</span> <span class="nav-text">Service Account（服务账号）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#权限检查"><span class="nav-number">2.</span> <span class="nav-text">权限检查</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Role和ClusterRole-角色定义"><span class="nav-number">2.1.</span> <span class="nav-text">Role和ClusterRole(角色定义)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RoleBinding和ClusterRoleBinding-角色绑定"><span class="nav-number">2.2.</span> <span class="nav-text">RoleBinding和ClusterRoleBinding(角色绑定)</span></a></li></ol></li></ol></div>
             
 
           </div>
