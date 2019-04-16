@@ -249,6 +249,393 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/15/Hadoop入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/15/Hadoop入门/" itemprop="url">Hadoop入门</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-15T15:03:45+08:00">
+                2019-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/15/Hadoop入门/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/04/15/Hadoop入门/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Hadoop具有高容错、高可靠性和高扩展性的特点，特别适合一次写入、多次读取的场景</p>
+<h2 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h2><ul>
+<li>HDFS: 分布式文件存储</li>
+<li>YARN: 分布式资源管理</li>
+<li>MapReduce: 分布式计算</li>
+<li>Others: 利用YARN的资源管理功能实现其它的数据处理</li>
+</ul>
+<p>每一个组件内部都采用Master-Worker架构</p>
+<p><img src="/images/Hadoop之整体结构.png" alt="img"></p>
+<h2 id="HDFS"><a href="#HDFS" class="headerlink" title="HDFS"></a>HDFS</h2><p>Hadoop Distributed File System，分布式文件系统</p>
+<h3 id="基本组件"><a href="#基本组件" class="headerlink" title="基本组件"></a>基本组件</h3><ul>
+<li>Block<ul>
+<li>读写操作的基本单位，类似于磁盘中的页。一般为64/128MB</li>
+<li>一般磁盘传输速率比寻道时间要快，使用较大的存储块可以减少寻道时间</li>
+<li>使用较大的存储块可以减少管理块的开销，因为每一个块都需要在NameNode上有对应的记录</li>
+<li>每一个大文件会被拆分为一个一个的Block，然后存储到不同的机器中。如果文件大小小于单个Block，那么实际占用空间为该文件大小</li>
+<li>每一个Block都会被复制到多台机器中，默认是复制3份</li>
+</ul>
+</li>
+<li>NameNode<ul>
+<li>存储文件的元数据信息metadata。运行时将元数据都保存在内存中，因此HDFS可存储的文件数受限于NameNode节点的内存大小</li>
+<li>一个Block在NameNode中对应一条记录(约150Byte)，如果有大量的小文件时，会消耗大量内存；MapReduce任务在处理大量小文件时会产生大量任务，导致线程管理开销过大。因此Hadoop建议存储大文件</li>
+<li>NameNode中不对Block的元数据信息进行持久化，而是由DataNode在注册时进行上报和运行时维护；NameNode在重启后重建DataNode中的Block信息</li>
+<li>NameNode失效则整体HDFS失效，所以要保证NameNode的高可用</li>
+</ul>
+</li>
+<li>Secondary NameNode<ul>
+<li>定时与NameNode进行数据同步，当NameNode失效时需要手动将其NameNode地址设置为Secondary NameNode</li>
+</ul>
+</li>
+<li>DataNode<ul>
+<li>保存具体的Block数据</li>
+<li>负责数据的读写、复制等操作</li>
+<li>在启动时向NameNode报告当前存储的Block信息，Block变更后定时报告变更信息</li>
+<li>在DataNode之间进行Block的复制，保证数据的冗余和安全</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Hadoop之HDFS结构.png" alt="img"></p>
+<h3 id="写入操作"><a href="#写入操作" class="headerlink" title="写入操作"></a>写入操作</h3><ul>
+<li>Step1: 客户端将文件写入本地磁盘的临时文件中</li>
+<li>Step2: 当临时文件大小达到Block大小时，HDFS Client通知NameNode，申请写入文件</li>
+<li>Step3: NameNode在HDFS的文件系统中创建Block元数据，并将BlockID和要写入的DataNode列表返回给HDFS Client</li>
+<li>Step4/5: HDFS收到该信息后，将临时文件写入DataNodes<ul>
+<li>HDFS Client将文件写入到第一个DataNode中(一般以4KB为单位进行传输)</li>
+<li>第一个DataNode接收完成后，将数据写入本地磁盘同时也传输给第二个DataNode</li>
+<li>以此类推，以Pipeline的方式在DataNode间进行数据复制</li>
+<li>每一个DataNode在接收完成后，给前一个DataNode发送确认信号；最终由第一个DataNode向HDFS Client发送确认信号</li>
+<li>每一个Block都会有一个检验码(CheckSum)，在读文件的时候保证数据完整性</li>
+</ul>
+</li>
+<li>Step6: HDFS Client收到确认信号后，向NameNode发送确认信息，此时文件成功写入HDFS<ul>
+<li>如果某个DataNode写入失败，数据会继续写入到其他DataNode。最终NameNode会重新选择一个DataNode进行数据复制</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Hadoop之HDFS写入.png" alt="img"></p>
+<h3 id="读取操作"><a href="#读取操作" class="headerlink" title="读取操作"></a>读取操作</h3><ul>
+<li>Step1: 客户端向NameNode发送读取请求</li>
+<li>Step2: NameNode向HDFS Client返回文件的所有Block和Block所在的DataNode(包括复制DataNode)信息</li>
+<li>Step3: HDFS Client从这些DataNode中读取数据，如果读取失败，则从复制节点中读取</li>
+</ul>
+<p><img src="/images/Hadoop之HDFS读取.png" alt="img"></p>
+<h3 id="可靠性"><a href="#可靠性" class="headerlink" title="可靠性"></a>可靠性</h3><ul>
+<li>DataNode可以失效: DataNode和NameNode之间通过定时心跳进行通信。如果一段时间内NameNode没有收到DataNode心跳信息，则认为其失效，此时NameNode将该DataNode中的Block数据复制到其他的DataNode中</li>
+<li>Block可以失效: 当写入或者硬盘出现问题导致Block数据失效时，可以通过从其他的DataNode进行读取并复制</li>
+<li>NameNode不可以失效: 当NameNode失效时，整个HDFS失效</li>
+</ul>
+<h2 id="YARN"><a href="#YARN" class="headerlink" title="YARN"></a>YARN</h2><p>是一种新的MapReduce框架</p>
+<h3 id="原有的MapReduce结构"><a href="#原有的MapReduce结构" class="headerlink" title="原有的MapReduce结构"></a>原有的MapReduce结构</h3><ul>
+<li>JobTracker: 负责资源管理，跟踪资源消耗情况和资源可用性。作业生命周期管理，包括作业任务调度，任务进度跟踪，任务容错机制等</li>
+<li><p>TaskTracker: 加载和关闭具体的任务，定时报告任务的状态</p>
+</li>
+<li><p>存在问题: 单点性能瓶颈和资源利用率底下</p>
+<ul>
+<li>JobTracker是MapReduce任务的集中处理节点，存在单点故障问题</li>
+<li>JobTracker负担过重，造成过多资源消耗。当MapReduce的Job非常多时，会造成很大的内存开销，成为系统性能瓶颈</li>
+<li>TaskTracker以MapReduce Task的数目作为资源表示太过简单，没有考虑到CPU/内存等占用情况，使得TaskTracker中容易出现OOM</li>
+<li>TaskTracker将资源强制划分为Map Task Slot和Reduce Task Slot，当系统中只有一种Task时会造成资源的浪费</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Hadoop之旧MapReduce结构.jpg" alt="img"></p>
+<h3 id="YARN结构"><a href="#YARN结构" class="headerlink" title="YARN结构"></a>YARN结构</h3><p>将JobTracker资源管理和任务调度与监控的职责拆分为两个独立的进程: 全局资源管理和单个Job的管理</p>
+<ul>
+<li>ResourceManager: 全局资源管理与任务调度</li>
+<li>NodeManager: 单个节点的资源管理与监控</li>
+<li>ApplicationMaster: 单个Job的资源管理和任务监控</li>
+<li>Container: 资源申请的单位和任务运行的容器</li>
+</ul>
+<p><img src="/images/Hadoop之YARN结构.png" alt="img"></p>
+<p><img src="/images/Hadoop之YARN物理结构.png" alt="img"></p>
+<h3 id="新旧结构对比"><a href="#新旧结构对比" class="headerlink" title="新旧结构对比"></a>新旧结构对比</h3><p>在YARN结构下形成了一个通用的资源管理平台和一个通用的应用计算平台，避免了旧结构下的单点问题和资源利用率低下的问题，同时也让其上运行的应用不再局限于MapReduce形式</p>
+<p><img src="/images/Hadoop之结构对比.png" alt="img"></p>
+<h3 id="YARN运行流程"><a href="#YARN运行流程" class="headerlink" title="YARN运行流程"></a>YARN运行流程</h3><ul>
+<li><p>Step1: 提交Job</p>
+<ul>
+<li>从ResourceManager中获取一个Application ID</li>
+<li>检查Job输出配置，计算Job输入Block</li>
+<li>将Job资源(Jar包、配置文件、Block信息等)上传到HDFS</li>
+</ul>
+</li>
+<li><p>Step2: 初始化Job</p>
+<ul>
+<li>ResourceManager将Job递交给Scheduler</li>
+<li>Scheduler根据调度算法将为Job分配一个Container，同时ResourceManager创建一个ApplicationMaster并交给NodeManager管理</li>
+<li>ApplicationMaster获取Job的Block信息，为每一个Block创建一个MapTask和ReduceTask，同时创建一系列监控进程来跟踪Job的进度和状态</li>
+</ul>
+</li>
+<li><p>Step3: 指派Task</p>
+<ul>
+<li>ApplicationMaster向ResourceManager申请分配Container资源，ResourceManager一般根据数据本地化原理来进行资源分配</li>
+</ul>
+</li>
+<li><p>Step4: 执行Task</p>
+<ul>
+<li>ApplicationMaster根据ResourceManager的资源分配情况在对应的NodeManager中启动Container来运行Task</li>
+<li>在Container中，从HDFS上获取Task运行所需要的资源(Jar包，配置文件等)，然后运行该Task</li>
+</ul>
+</li>
+<li><p>Step5: 上报Task状态和进度</p>
+<ul>
+<li>在Container中，定时将Task的进度和状态上报给ApplicationMaster</li>
+<li>Client定时向ApplicationMaster获取整个Job的进度和状态</li>
+</ul>
+</li>
+<li><p>Step: 完成Job</p>
+<ul>
+<li>Client定时检查整个Job是否完成</li>
+<li>在作业完成后进行资源的清理操作</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Hadoop之YARN运行流程1.png" alt="img"></p>
+<p><img src="/images/Hadoop之YARN运行流程2.png" alt="img"></p>
+<h3 id="ResourceManager"><a href="#ResourceManager" class="headerlink" title="ResourceManager"></a>ResourceManager</h3><p>全局资源管理与任务调度，将整个集群看做计算资源池，只关注资源分配，不负责应用的运行和容错</p>
+<ul>
+<li><p>资源管理</p>
+<ul>
+<li>在旧结构中，每一个Node分为一个个的MapSlot和ReduceSlot；在YARN中是一个个Container，每个Container可以根据需要运行ApplicationMaster、Map、Reduce或者任意其他的程序</li>
+<li>在旧结构中，计算资源是静态分配的；在YARN中，Container是动态分配的，资源利用率更高</li>
+<li>Container是计算资源申请和分配的单位，申请格式 <code>resource-name, priority, resource-requirement, number-of-containers</code><ul>
+<li>resource-name: 主机名、机架名或*（代表任意机器）</li>
+<li>resource-requirement: 目前只支持CPU和内存</li>
+</ul>
+</li>
+<li>当Client提交Job到ResourceManager时，首先ResourceManager在某个NodeManager上分配一个Container来运行ApplicationMaster，ApplicationMaster再根据Job实际需要向ResourceManager申请运行Task的Container</li>
+</ul>
+</li>
+<li><p>任务调度</p>
+<ul>
+<li>Scheduler根据集群资源的使用情况和资源申请的需求来合理分配计算资源</li>
+<li>Scheduler在分配计算资源时，会通过考虑数据本地化减少数据移动，提高Job的运行效率</li>
+<li>Scheduler支持在特定的机器上申请特定的资源</li>
+</ul>
+</li>
+<li><p>具体模块</p>
+<ul>
+<li>Client Service: Application提交、终止、输出信息（应用、队列、集群等的状态信息）</li>
+<li>Administration Service: 队列、节点、Client权限管理</li>
+<li>ApplicationMasterService: 注册、终止ApplicationMaster, 获取ApplicationMaster的资源申请或取消的请求，并将其异步地传给Scheduler, 单线程处理</li>
+<li>ApplicationMaster Liveliness Monitor: 接收ApplicationMaster的心跳消息，如果某个ApplicationMaster在一定时间内没有发送心跳，则被任务失效，其资源将会被回收，然后ResourceManager会重新分配一个ApplicationMaster运行该Application（默认尝试2次）</li>
+<li>Resource Tracker Service: 注册节点, 接收各注册节点的心跳消息</li>
+<li>NodeManagers Liveliness Monitor: 监控每个节点的心跳消息，如果长时间没有收到心跳消息，则认为该节点无效, 同时所有在该节点上的Container都标记成无效，也不会调度任务到该节点运行</li>
+<li>ApplicationManager: 管理Application，记录和管理已完成Application</li>
+<li>ApplicationMaster Launcher: 一个Application提交后，负责与NodeManager交互，分配Container并加载ApplicationMaster，也负责终止或销毁</li>
+<li>YarnScheduler: 资源调度分配， 有FIFO(with Priority)，Fair，Capacity方式</li>
+<li>ContainerAllocationExpirer: 管理已分配但没有启用的Container，超过一定时间则将其回收</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Hadoop之YARN-ResourceManager.png" alt="img"></p>
+<h3 id="NodeManager"><a href="#NodeManager" class="headerlink" title="NodeManager"></a>NodeManager</h3><ul>
+<li><p>Node中的Container管理和监控</p>
+<ul>
+<li>启动时向ResourceManager注册并定时发送心跳</li>
+<li>监视Container的运行和资源使用情况，维护Container的生命周期</li>
+<li>启动和停止Container，管理Task运行时的依赖(从HDFS中将Jar包、配置文件等拷贝到本地)</li>
+</ul>
+</li>
+<li><p>具体模块</p>
+<ul>
+<li>NodeStatusUpdater: 启动时向ResourceManager注册，报告该节点的可用资源情况，通信的端口和后续状态的维护</li>
+<li>ContainerManager: 接收RPC请求(启动停止Container)，资源本地化(下载应用需要的资源到本地，根据需要共享这些资源）<ul>
+<li>PUBLIC: /filecache</li>
+<li>PRIVATE: /usercache//filecache</li>
+<li>APPLICATION: /usercache//appcache//（在程序完成后会被删除）</li>
+</ul>
+</li>
+<li>ContainersLauncher: 加载或终止Container</li>
+<li>ContainerMonitor: 监控Container的运行和资源使用情况</li>
+<li>ContainerExecutor: 和底层操作系统交互，加载要运行的程序</li>
+</ul>
+</li>
+</ul>
+<p><img src="/image/Hadoop之YARN-NodeManager.png" alt="img"></p>
+<h3 id="ApplicationMaster"><a href="#ApplicationMaster" class="headerlink" title="ApplicationMaster"></a>ApplicationMaster</h3><ul>
+<li>单个Job的资源管理和任务监控<ul>
+<li>计算Application的计算资源需求，可以静态或动态计算<ul>
+<li>静态: Client在提交Job时指定</li>
+<li>动态: ApplicationMaster根据Job输入Block数量来决定MapTask和ReduceTask的数量，一个Task占用一个Container</li>
+</ul>
+</li>
+<li>根据数据本地化向ResourceManager申请对应位置的Node资源</li>
+<li>与NodeManager交互实现Task的运行和Task状态与进度的监控</li>
+<li>向ResourceManager包括Job的状态和进度</li>
+<li>负责Job运行时的容错</li>
+</ul>
+</li>
+</ul>
+<h3 id="Container"><a href="#Container" class="headerlink" title="Container"></a>Container</h3><ul>
+<li>集群中基本的资源申请和分配单位</li>
+<li>可以运行任意程序，不局限为Jar包</li>
+<li>一个Node中可以包含多个Container</li>
+<li>ApplicationMaster根据Job的实际需要，动态申请和释放Container资源</li>
+</ul>
+<h2 id="MapReduce"><a href="#MapReduce" class="headerlink" title="MapReduce"></a>MapReduce</h2><p>一种分布式的计算方式</p>
+<p>基本流程: <img src="/images/Hadoop之MapReduce基本流程.png" alt="img"></p>
+<p>详细流程: <img src="/images/Hadoop之MapReduce详细流程.png" alt="img"></p>
+<p>跨节点流程: <img src="/images/Hadoop之MapReduce跨节点流程.png" alt="img"></p>
+<p>具体过程:</p>
+<ul>
+<li><p>读数据: 通过InputFormat决定读取的数据类型，然后拆分为一个个的InputSplit，每一个InputSplit被RecordReader读取并传递给Map进行处理</p>
+<ul>
+<li>InputFormat: 决定读取数据的格式，可以为文件或数据库</li>
+<li>InputSplit: 代表数据的逻辑分片，内部包含数据的Location信息，方便利用数据本地化来申请Container资源 <strong>通常一个InputSplit就是一个Block</strong></li>
+<li>RecordReader: 读取InputSplit，并交给一个Map来处理</li>
+</ul>
+</li>
+<li><p>Map: 读取InputSplit中的每一个KV对并进行处理</p>
+</li>
+<li><p>Shuffle: 对Map的结果进行压缩、按Key进行分区、排序等操作，然后传递给Reduce</p>
+</li>
+<li><p>Reduce: 对Shuffle的结果进行处理，最终将Reduce的结果写入HDFS中</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/02/Kubernetes中的认证和授权/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2240,377 +2627,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/13/算法-Sort/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/13/算法-Sort/" itemprop="url">算法-Sort</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-13T10:00:20+08:00">
-                2019-03-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程技术/" itemprop="url" rel="index">
-                    <span itemprop="name">编程技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/13/算法-Sort/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/13/算法-Sort/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="算法概述"><a href="#算法概述" class="headerlink" title="算法概述"></a>算法概述</h2><p>可以分为两大类</p>
-<ul>
-<li>比较类: 通过比较来决定元素间的相对次序，时间复杂度不能突破O(nlogn)，也称为非线性时间排序<ul>
-<li>交换<ul>
-<li>冒泡排序</li>
-<li>快速排序</li>
-</ul>
-</li>
-<li>插入<ul>
-<li>插入排序</li>
-<li>希尔排序</li>
-</ul>
-</li>
-<li>选择<ul>
-<li>选择排序</li>
-<li>堆排序</li>
-</ul>
-</li>
-<li>归并<ul>
-<li>二路归并排序</li>
-<li>多路归并排序</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>非比较类: 不通过比较来决定元素间的相对次数，时间复杂度可以突破O(nlogn)，以线性时间运行，也称为线性时间排序<ul>
-<li>计数排序</li>
-<li>桶排序</li>
-<li>基数排序</li>
-</ul>
-</li>
-</ul>
-<p>时间复杂度</p>
-<table>
-<thead>
-<tr>
-<th>排序方法</th>
-<th>平均时间复杂度</th>
-<th>最坏时间复杂度</th>
-<th>最好时间复杂度</th>
-<th>空间复杂度</th>
-<th>稳定性</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>冒泡排序</td>
-<td>O(n^2)</td>
-<td>O(n^2)</td>
-<td>O(n)</td>
-<td>O(1)</td>
-<td>稳定</td>
-</tr>
-<tr>
-<td>快速排序</td>
-<td>O(nlogn)</td>
-<td>O(n^2)</td>
-<td>O(nlogn)</td>
-<td>O(nlogn)</td>
-<td>不稳定</td>
-</tr>
-<tr>
-<td>插入排序</td>
-<td>O(n^2)</td>
-<td>O(n^2)</td>
-<td>O(n)</td>
-<td>O(1)</td>
-<td>稳定</td>
-</tr>
-<tr>
-<td>希尔排序</td>
-<td>O(n^1.3)</td>
-<td>O(n^2)</td>
-<td>O(n)</td>
-<td>O(1)</td>
-<td>不稳定</td>
-</tr>
-<tr>
-<td>选择排序</td>
-<td>O(n^2)</td>
-<td>O(n^2)</td>
-<td>O(n^2)</td>
-<td>O(1)</td>
-<td>不稳定</td>
-</tr>
-<tr>
-<td>堆排序</td>
-<td>O(nlogn)</td>
-<td>O(nlogn)</td>
-<td>O(nlogn)</td>
-<td>O(1)</td>
-<td>不稳定</td>
-</tr>
-<tr>
-<td>归并排序</td>
-<td>O(nlogn)</td>
-<td>O(nlogn)</td>
-<td>O(nlogn)</td>
-<td>O(n)</td>
-<td>稳定</td>
-</tr>
-<tr>
-<td>计数排序</td>
-<td>O(n+k)</td>
-<td>O(n+k)</td>
-<td>O(n+k)</td>
-<td>O(n+k)</td>
-<td>稳定</td>
-</tr>
-<tr>
-<td>桶排序</td>
-<td>O(n+k)</td>
-<td>O(n^2)</td>
-<td>O(n)</td>
-<td>O(n+k)</td>
-<td>稳定</td>
-</tr>
-<tr>
-<td>基数排序</td>
-<td>O(n*k)</td>
-<td>O(n*k)</td>
-<td>O(n*k)</td>
-<td>O(n+k)</td>
-<td>稳定</td>
-</tr>
-</tbody>
-</table>
-<h2 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h2><p>n: 待排序的序列长度</p>
-<ul>
-<li>冒泡排序(Bubble Sort)<ul>
-<li>遍历一遍序列，依次比较相邻的两个元素，如果它们次序错误则将其进行交换，这样末尾的元素为最大</li>
-<li>除了最后一个元素之外，重复进行上述步骤</li>
-<li>当一次遍历中未发生交换操作或者遍历了n次后，整个序列有序</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之冒泡排序.gif" alt="img"></p>
-<ul>
-<li>快速排序(Quick Sort): <code>递归分治法的思想</code><ul>
-<li>选择序列中的第一个元素作为基准</li>
-<li>进行分区操作，即遍历一遍序列，将所有元素小于该基准的放在基准前面，大于该基准的放在基准后面，此时该基准元素位于序列中正确的排序位置</li>
-<li>分别对基准元素前面和后面的子序列进行同样的操作，直到整个序列有序</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之快速排序.gif" alt="img"></p>
-<ul>
-<li>插入排序(Insertion Sort)<ul>
-<li>将序列上的第一个元素看做已经有序</li>
-<li>取出序列中的第二个元素作为待加入元素，在已有序的子序列中从后向前遍历</li>
-<li>如果子序列中的元素较大，则将其向后移位，直到待加入元素已经插入到正确位置，形成一个有序的子序列</li>
-<li>重复上述操作，直到整个序列有序</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之插入排序.gif" alt="img"></p>
-<ul>
-<li>希尔排序(Shell Sort): <code>对插入排序的改进，通过设置不同的增量依次进行插入排序，也叫缩小增量排序</code><ul>
-<li>选择一个增量序列t1,t2,……,tk，其中ti&gt;ti+1, tk=1</li>
-<li>对于每一个增量ti，将序列分割为ti个子序列，对各个子序列分别进行插入排序</li>
-<li>当增量为1时，其实是将整个序列作为一个子序列进行插入排序</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之希尔排序.gif" alt="img"></p>
-<ul>
-<li>选择排序(Selection Sort)<ul>
-<li>遍历一次序列，从中选择最小的元素，然后将其和序列中第一个元素进行交换</li>
-<li>此时序列中第一个元素有序，然后对剩下的元素再次进行上述操作，直到整个序列有序</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之选择排序.gif" alt="img"></p>
-<ul>
-<li>堆排序(Heap Sort): <code>依赖堆数据结构</code> <a href="https://gravity-xin.github.io/2018/11/12/Heap/" target="_blank" rel="noopener">Heap</a><ul>
-<li>构造堆</li>
-<li>从堆中Pop堆顶元素，然后调整生成新的堆</li>
-<li>重复上述操作，直到排序完成</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之堆排序.gif" alt="img"></p>
-<ul>
-<li>归并排序(Merge Sort): <code>递归分治法的思想，分为拆分子序列和合并子序列两个过程</code><ul>
-<li>将序列拆分为长度为n/2的子序列</li>
-<li>对每个子序列继续进行拆分，直到无法拆分为止</li>
-<li>对两个子序列进行合并，得到最终有序的序列</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之归并排序.gif" alt="img"></p>
-<ul>
-<li>计数排序(Counting Sort): <code>要求序列中的元素为有确定范围的整数，将序列中的元素作为下标存储到额外开辟的数组空间中</code><ul>
-<li>确定输入序列中的最小元素和最大元素，构建额外的数组C，数组元素初始化为0</li>
-<li>对序列中的每一个值为i的元素，数组C的第i项的数组元素值加1</li>
-<li>遍历数组C，对于每一个数组元素i，每反向填充到序列一次就减1，直到为0</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之计数排序.gif" alt="img"></p>
-<ul>
-<li>桶排序(Bucket Sort): <code>利用某个函数将序列中的元素映射到有限数量的桶中，然后对每一个分别进行排序，最后将元素进行拼接</code><ul>
-<li>设置确定数量的桶</li>
-<li>遍历序列，将其中的每一个元素分别映射到对应的桶中</li>
-<li>对于每一个桶使用某方法进行排序，比如快排</li>
-<li>将不为空的桶中的元素进行拼接</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之桶排序.png" alt="img"></p>
-<ul>
-<li>基数排序(Radix Sort): <code>对序列中的元素先按照低位进行排序，然后再按照高位进行排序</code><ul>
-<li>获取序列中的最大元素，并获取其位数为n</li>
-<li>从最低位开始，取得序列中每个元素在该位的值，构建radix数组</li>
-<li>对radix数组进行计数排序</li>
-<li>重复上述步骤n次，最终得到有序序列</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之基数排序.gif" alt="img"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2661,7 +2677,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">84</span>
+                  <span class="site-state-item-count">85</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2683,7 +2699,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">151</span>
+                  <span class="site-state-item-count">155</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

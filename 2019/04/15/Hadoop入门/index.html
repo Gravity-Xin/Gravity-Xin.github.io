@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hadoop,HDFS,YARN,MapReduce,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Hadoop具有高容错、高可靠性和高扩展性的特点，特别适合一次写入、多次读取的场景 整体结构 HDFS: 分布式文件存储 YARN: 分布式资源管理 MapReduce: 分布式计算 Others: 利用YARN的资源管理功能实现其它的数据处理  每一个组件内部都采用Master-Worker架构  HDFSHadoop Distributed File System，分布式文件系统 基本组件 B">
+<meta name="keywords" content="Hadoop,HDFS,YARN,MapReduce">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hadoop入门">
+<meta property="og:url" content="http://yoursite.com/2019/04/15/Hadoop入门/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="Hadoop具有高容错、高可靠性和高扩展性的特点，特别适合一次写入、多次读取的场景 整体结构 HDFS: 分布式文件存储 YARN: 分布式资源管理 MapReduce: 分布式计算 Others: 利用YARN的资源管理功能实现其它的数据处理  每一个组件内部都采用Master-Worker架构  HDFSHadoop Distributed File System，分布式文件系统 基本组件 B">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/Hadoop之整体结构.png">
+<meta property="og:image" content="http://yoursite.com/images/Hadoop之HDFS结构.png">
+<meta property="og:image" content="http://yoursite.com/images/Hadoop之HDFS写入.png">
+<meta property="og:image" content="http://yoursite.com/images/Hadoop之HDFS读取.png">
+<meta property="og:image" content="http://yoursite.com/images/Hadoop之旧MapReduce结构.jpg">
+<meta property="og:image" content="http://yoursite.com/images/Hadoop之YARN结构.png">
+<meta property="og:image" content="http://yoursite.com/images/Hadoop之YARN物理结构.png">
+<meta property="og:image" content="http://yoursite.com/images/Hadoop之结构对比.png">
+<meta property="og:image" content="http://yoursite.com/images/Hadoop之YARN运行流程1.png">
+<meta property="og:image" content="http://yoursite.com/images/Hadoop之YARN运行流程2.png">
+<meta property="og:image" content="http://yoursite.com/images/Hadoop之YARN-ResourceManager.png">
+<meta property="og:image" content="http://yoursite.com/image/Hadoop之YARN-NodeManager.png">
+<meta property="og:image" content="http://yoursite.com/images/Hadoop之MapReduce基本流程.png">
+<meta property="og:image" content="http://yoursite.com/images/Hadoop之MapReduce详细流程.png">
+<meta property="og:image" content="http://yoursite.com/images/Hadoop之MapReduce跨节点流程.png">
+<meta property="og:updated_time" content="2019-04-16T05:35:11.161Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hadoop入门">
+<meta name="twitter:description" content="Hadoop具有高容错、高可靠性和高扩展性的特点，特别适合一次写入、多次读取的场景 整体结构 HDFS: 分布式文件存储 YARN: 分布式资源管理 MapReduce: 分布式计算 Others: 利用YARN的资源管理功能实现其它的数据处理  每一个组件内部都采用Master-Worker架构  HDFSHadoop Distributed File System，分布式文件系统 基本组件 B">
+<meta name="twitter:image" content="http://yoursite.com/images/Hadoop之整体结构.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/04/15/Hadoop入门/">
+
+
+
+
+
+  <title>Hadoop入门 | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/15/Hadoop入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Hadoop入门</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-15T15:03:45+08:00">
+                2019-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/15/Hadoop入门/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/04/15/Hadoop入门/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Hadoop具有高容错、高可靠性和高扩展性的特点，特别适合一次写入、多次读取的场景</p>
+<h2 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h2><ul>
+<li>HDFS: 分布式文件存储</li>
+<li>YARN: 分布式资源管理</li>
+<li>MapReduce: 分布式计算</li>
+<li>Others: 利用YARN的资源管理功能实现其它的数据处理</li>
+</ul>
+<p>每一个组件内部都采用Master-Worker架构</p>
+<p><img src="/images/Hadoop之整体结构.png" alt="img"></p>
+<h2 id="HDFS"><a href="#HDFS" class="headerlink" title="HDFS"></a>HDFS</h2><p>Hadoop Distributed File System，分布式文件系统</p>
+<h3 id="基本组件"><a href="#基本组件" class="headerlink" title="基本组件"></a>基本组件</h3><ul>
+<li>Block<ul>
+<li>读写操作的基本单位，类似于磁盘中的页。一般为64/128MB</li>
+<li>一般磁盘传输速率比寻道时间要快，使用较大的存储块可以减少寻道时间</li>
+<li>使用较大的存储块可以减少管理块的开销，因为每一个块都需要在NameNode上有对应的记录</li>
+<li>每一个大文件会被拆分为一个一个的Block，然后存储到不同的机器中。如果文件大小小于单个Block，那么实际占用空间为该文件大小</li>
+<li>每一个Block都会被复制到多台机器中，默认是复制3份</li>
+</ul>
+</li>
+<li>NameNode<ul>
+<li>存储文件的元数据信息metadata。运行时将元数据都保存在内存中，因此HDFS可存储的文件数受限于NameNode节点的内存大小</li>
+<li>一个Block在NameNode中对应一条记录(约150Byte)，如果有大量的小文件时，会消耗大量内存；MapReduce任务在处理大量小文件时会产生大量任务，导致线程管理开销过大。因此Hadoop建议存储大文件</li>
+<li>NameNode中不对Block的元数据信息进行持久化，而是由DataNode在注册时进行上报和运行时维护；NameNode在重启后重建DataNode中的Block信息</li>
+<li>NameNode失效则整体HDFS失效，所以要保证NameNode的高可用</li>
+</ul>
+</li>
+<li>Secondary NameNode<ul>
+<li>定时与NameNode进行数据同步，当NameNode失效时需要手动将其NameNode地址设置为Secondary NameNode</li>
+</ul>
+</li>
+<li>DataNode<ul>
+<li>保存具体的Block数据</li>
+<li>负责数据的读写、复制等操作</li>
+<li>在启动时向NameNode报告当前存储的Block信息，Block变更后定时报告变更信息</li>
+<li>在DataNode之间进行Block的复制，保证数据的冗余和安全</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Hadoop之HDFS结构.png" alt="img"></p>
+<h3 id="写入操作"><a href="#写入操作" class="headerlink" title="写入操作"></a>写入操作</h3><ul>
+<li>Step1: 客户端将文件写入本地磁盘的临时文件中</li>
+<li>Step2: 当临时文件大小达到Block大小时，HDFS Client通知NameNode，申请写入文件</li>
+<li>Step3: NameNode在HDFS的文件系统中创建Block元数据，并将BlockID和要写入的DataNode列表返回给HDFS Client</li>
+<li>Step4/5: HDFS收到该信息后，将临时文件写入DataNodes<ul>
+<li>HDFS Client将文件写入到第一个DataNode中(一般以4KB为单位进行传输)</li>
+<li>第一个DataNode接收完成后，将数据写入本地磁盘同时也传输给第二个DataNode</li>
+<li>以此类推，以Pipeline的方式在DataNode间进行数据复制</li>
+<li>每一个DataNode在接收完成后，给前一个DataNode发送确认信号；最终由第一个DataNode向HDFS Client发送确认信号</li>
+<li>每一个Block都会有一个检验码(CheckSum)，在读文件的时候保证数据完整性</li>
+</ul>
+</li>
+<li>Step6: HDFS Client收到确认信号后，向NameNode发送确认信息，此时文件成功写入HDFS<ul>
+<li>如果某个DataNode写入失败，数据会继续写入到其他DataNode。最终NameNode会重新选择一个DataNode进行数据复制</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Hadoop之HDFS写入.png" alt="img"></p>
+<h3 id="读取操作"><a href="#读取操作" class="headerlink" title="读取操作"></a>读取操作</h3><ul>
+<li>Step1: 客户端向NameNode发送读取请求</li>
+<li>Step2: NameNode向HDFS Client返回文件的所有Block和Block所在的DataNode(包括复制DataNode)信息</li>
+<li>Step3: HDFS Client从这些DataNode中读取数据，如果读取失败，则从复制节点中读取</li>
+</ul>
+<p><img src="/images/Hadoop之HDFS读取.png" alt="img"></p>
+<h3 id="可靠性"><a href="#可靠性" class="headerlink" title="可靠性"></a>可靠性</h3><ul>
+<li>DataNode可以失效: DataNode和NameNode之间通过定时心跳进行通信。如果一段时间内NameNode没有收到DataNode心跳信息，则认为其失效，此时NameNode将该DataNode中的Block数据复制到其他的DataNode中</li>
+<li>Block可以失效: 当写入或者硬盘出现问题导致Block数据失效时，可以通过从其他的DataNode进行读取并复制</li>
+<li>NameNode不可以失效: 当NameNode失效时，整个HDFS失效</li>
+</ul>
+<h2 id="YARN"><a href="#YARN" class="headerlink" title="YARN"></a>YARN</h2><p>是一种新的MapReduce框架</p>
+<h3 id="原有的MapReduce结构"><a href="#原有的MapReduce结构" class="headerlink" title="原有的MapReduce结构"></a>原有的MapReduce结构</h3><ul>
+<li>JobTracker: 负责资源管理，跟踪资源消耗情况和资源可用性。作业生命周期管理，包括作业任务调度，任务进度跟踪，任务容错机制等</li>
+<li><p>TaskTracker: 加载和关闭具体的任务，定时报告任务的状态</p>
+</li>
+<li><p>存在问题: 单点性能瓶颈和资源利用率底下</p>
+<ul>
+<li>JobTracker是MapReduce任务的集中处理节点，存在单点故障问题</li>
+<li>JobTracker负担过重，造成过多资源消耗。当MapReduce的Job非常多时，会造成很大的内存开销，成为系统性能瓶颈</li>
+<li>TaskTracker以MapReduce Task的数目作为资源表示太过简单，没有考虑到CPU/内存等占用情况，使得TaskTracker中容易出现OOM</li>
+<li>TaskTracker将资源强制划分为Map Task Slot和Reduce Task Slot，当系统中只有一种Task时会造成资源的浪费</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Hadoop之旧MapReduce结构.jpg" alt="img"></p>
+<h3 id="YARN结构"><a href="#YARN结构" class="headerlink" title="YARN结构"></a>YARN结构</h3><p>将JobTracker资源管理和任务调度与监控的职责拆分为两个独立的进程: 全局资源管理和单个Job的管理</p>
+<ul>
+<li>ResourceManager: 全局资源管理与任务调度</li>
+<li>NodeManager: 单个节点的资源管理与监控</li>
+<li>ApplicationMaster: 单个Job的资源管理和任务监控</li>
+<li>Container: 资源申请的单位和任务运行的容器</li>
+</ul>
+<p><img src="/images/Hadoop之YARN结构.png" alt="img"></p>
+<p><img src="/images/Hadoop之YARN物理结构.png" alt="img"></p>
+<h3 id="新旧结构对比"><a href="#新旧结构对比" class="headerlink" title="新旧结构对比"></a>新旧结构对比</h3><p>在YARN结构下形成了一个通用的资源管理平台和一个通用的应用计算平台，避免了旧结构下的单点问题和资源利用率低下的问题，同时也让其上运行的应用不再局限于MapReduce形式</p>
+<p><img src="/images/Hadoop之结构对比.png" alt="img"></p>
+<h3 id="YARN运行流程"><a href="#YARN运行流程" class="headerlink" title="YARN运行流程"></a>YARN运行流程</h3><ul>
+<li><p>Step1: 提交Job</p>
+<ul>
+<li>从ResourceManager中获取一个Application ID</li>
+<li>检查Job输出配置，计算Job输入Block</li>
+<li>将Job资源(Jar包、配置文件、Block信息等)上传到HDFS</li>
+</ul>
+</li>
+<li><p>Step2: 初始化Job</p>
+<ul>
+<li>ResourceManager将Job递交给Scheduler</li>
+<li>Scheduler根据调度算法将为Job分配一个Container，同时ResourceManager创建一个ApplicationMaster并交给NodeManager管理</li>
+<li>ApplicationMaster获取Job的Block信息，为每一个Block创建一个MapTask和ReduceTask，同时创建一系列监控进程来跟踪Job的进度和状态</li>
+</ul>
+</li>
+<li><p>Step3: 指派Task</p>
+<ul>
+<li>ApplicationMaster向ResourceManager申请分配Container资源，ResourceManager一般根据数据本地化原理来进行资源分配</li>
+</ul>
+</li>
+<li><p>Step4: 执行Task</p>
+<ul>
+<li>ApplicationMaster根据ResourceManager的资源分配情况在对应的NodeManager中启动Container来运行Task</li>
+<li>在Container中，从HDFS上获取Task运行所需要的资源(Jar包，配置文件等)，然后运行该Task</li>
+</ul>
+</li>
+<li><p>Step5: 上报Task状态和进度</p>
+<ul>
+<li>在Container中，定时将Task的进度和状态上报给ApplicationMaster</li>
+<li>Client定时向ApplicationMaster获取整个Job的进度和状态</li>
+</ul>
+</li>
+<li><p>Step: 完成Job</p>
+<ul>
+<li>Client定时检查整个Job是否完成</li>
+<li>在作业完成后进行资源的清理操作</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Hadoop之YARN运行流程1.png" alt="img"></p>
+<p><img src="/images/Hadoop之YARN运行流程2.png" alt="img"></p>
+<h3 id="ResourceManager"><a href="#ResourceManager" class="headerlink" title="ResourceManager"></a>ResourceManager</h3><p>全局资源管理与任务调度，将整个集群看做计算资源池，只关注资源分配，不负责应用的运行和容错</p>
+<ul>
+<li><p>资源管理</p>
+<ul>
+<li>在旧结构中，每一个Node分为一个个的MapSlot和ReduceSlot；在YARN中是一个个Container，每个Container可以根据需要运行ApplicationMaster、Map、Reduce或者任意其他的程序</li>
+<li>在旧结构中，计算资源是静态分配的；在YARN中，Container是动态分配的，资源利用率更高</li>
+<li>Container是计算资源申请和分配的单位，申请格式 <code>resource-name, priority, resource-requirement, number-of-containers</code><ul>
+<li>resource-name: 主机名、机架名或*（代表任意机器）</li>
+<li>resource-requirement: 目前只支持CPU和内存</li>
+</ul>
+</li>
+<li>当Client提交Job到ResourceManager时，首先ResourceManager在某个NodeManager上分配一个Container来运行ApplicationMaster，ApplicationMaster再根据Job实际需要向ResourceManager申请运行Task的Container</li>
+</ul>
+</li>
+<li><p>任务调度</p>
+<ul>
+<li>Scheduler根据集群资源的使用情况和资源申请的需求来合理分配计算资源</li>
+<li>Scheduler在分配计算资源时，会通过考虑数据本地化减少数据移动，提高Job的运行效率</li>
+<li>Scheduler支持在特定的机器上申请特定的资源</li>
+</ul>
+</li>
+<li><p>具体模块</p>
+<ul>
+<li>Client Service: Application提交、终止、输出信息（应用、队列、集群等的状态信息）</li>
+<li>Administration Service: 队列、节点、Client权限管理</li>
+<li>ApplicationMasterService: 注册、终止ApplicationMaster, 获取ApplicationMaster的资源申请或取消的请求，并将其异步地传给Scheduler, 单线程处理</li>
+<li>ApplicationMaster Liveliness Monitor: 接收ApplicationMaster的心跳消息，如果某个ApplicationMaster在一定时间内没有发送心跳，则被任务失效，其资源将会被回收，然后ResourceManager会重新分配一个ApplicationMaster运行该Application（默认尝试2次）</li>
+<li>Resource Tracker Service: 注册节点, 接收各注册节点的心跳消息</li>
+<li>NodeManagers Liveliness Monitor: 监控每个节点的心跳消息，如果长时间没有收到心跳消息，则认为该节点无效, 同时所有在该节点上的Container都标记成无效，也不会调度任务到该节点运行</li>
+<li>ApplicationManager: 管理Application，记录和管理已完成Application</li>
+<li>ApplicationMaster Launcher: 一个Application提交后，负责与NodeManager交互，分配Container并加载ApplicationMaster，也负责终止或销毁</li>
+<li>YarnScheduler: 资源调度分配， 有FIFO(with Priority)，Fair，Capacity方式</li>
+<li>ContainerAllocationExpirer: 管理已分配但没有启用的Container，超过一定时间则将其回收</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Hadoop之YARN-ResourceManager.png" alt="img"></p>
+<h3 id="NodeManager"><a href="#NodeManager" class="headerlink" title="NodeManager"></a>NodeManager</h3><ul>
+<li><p>Node中的Container管理和监控</p>
+<ul>
+<li>启动时向ResourceManager注册并定时发送心跳</li>
+<li>监视Container的运行和资源使用情况，维护Container的生命周期</li>
+<li>启动和停止Container，管理Task运行时的依赖(从HDFS中将Jar包、配置文件等拷贝到本地)</li>
+</ul>
+</li>
+<li><p>具体模块</p>
+<ul>
+<li>NodeStatusUpdater: 启动时向ResourceManager注册，报告该节点的可用资源情况，通信的端口和后续状态的维护</li>
+<li>ContainerManager: 接收RPC请求(启动停止Container)，资源本地化(下载应用需要的资源到本地，根据需要共享这些资源）<ul>
+<li>PUBLIC: /filecache</li>
+<li>PRIVATE: /usercache//filecache</li>
+<li>APPLICATION: /usercache//appcache//（在程序完成后会被删除）</li>
+</ul>
+</li>
+<li>ContainersLauncher: 加载或终止Container</li>
+<li>ContainerMonitor: 监控Container的运行和资源使用情况</li>
+<li>ContainerExecutor: 和底层操作系统交互，加载要运行的程序</li>
+</ul>
+</li>
+</ul>
+<p><img src="/image/Hadoop之YARN-NodeManager.png" alt="img"></p>
+<h3 id="ApplicationMaster"><a href="#ApplicationMaster" class="headerlink" title="ApplicationMaster"></a>ApplicationMaster</h3><ul>
+<li>单个Job的资源管理和任务监控<ul>
+<li>计算Application的计算资源需求，可以静态或动态计算<ul>
+<li>静态: Client在提交Job时指定</li>
+<li>动态: ApplicationMaster根据Job输入Block数量来决定MapTask和ReduceTask的数量，一个Task占用一个Container</li>
+</ul>
+</li>
+<li>根据数据本地化向ResourceManager申请对应位置的Node资源</li>
+<li>与NodeManager交互实现Task的运行和Task状态与进度的监控</li>
+<li>向ResourceManager包括Job的状态和进度</li>
+<li>负责Job运行时的容错</li>
+</ul>
+</li>
+</ul>
+<h3 id="Container"><a href="#Container" class="headerlink" title="Container"></a>Container</h3><ul>
+<li>集群中基本的资源申请和分配单位</li>
+<li>可以运行任意程序，不局限为Jar包</li>
+<li>一个Node中可以包含多个Container</li>
+<li>ApplicationMaster根据Job的实际需要，动态申请和释放Container资源</li>
+</ul>
+<h2 id="MapReduce"><a href="#MapReduce" class="headerlink" title="MapReduce"></a>MapReduce</h2><p>一种分布式的计算方式</p>
+<p>基本流程: <img src="/images/Hadoop之MapReduce基本流程.png" alt="img"></p>
+<p>详细流程: <img src="/images/Hadoop之MapReduce详细流程.png" alt="img"></p>
+<p>跨节点流程: <img src="/images/Hadoop之MapReduce跨节点流程.png" alt="img"></p>
+<p>具体过程:</p>
+<ul>
+<li><p>读数据: 通过InputFormat决定读取的数据类型，然后拆分为一个个的InputSplit，每一个InputSplit被RecordReader读取并传递给Map进行处理</p>
+<ul>
+<li>InputFormat: 决定读取数据的格式，可以为文件或数据库</li>
+<li>InputSplit: 代表数据的逻辑分片，内部包含数据的Location信息，方便利用数据本地化来申请Container资源 <strong>通常一个InputSplit就是一个Block</strong></li>
+<li>RecordReader: 读取InputSplit，并交给一个Map来处理</li>
+</ul>
+</li>
+<li><p>Map: 读取InputSplit中的每一个KV对并进行处理</p>
+</li>
+<li><p>Shuffle: 对Map的结果进行压缩、按Key进行分区、排序等操作，然后传递给Reduce</p>
+</li>
+<li><p>Reduce: 对Shuffle的结果进行处理，最终将Reduce的结果写入HDFS中</p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+          
+            <a href="/tags/HDFS/" rel="tag"># HDFS</a>
+          
+            <a href="/tags/YARN/" rel="tag"># YARN</a>
+          
+            <a href="/tags/MapReduce/" rel="tag"># MapReduce</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/02/Kubernetes中的认证和授权/" rel="next" title="Kubernetes中的RBAC和ServiceAccount">
+                <i class="fa fa-chevron-left"></i> Kubernetes中的RBAC和ServiceAccount
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2019/04/15/Hadoop入门/" data-title="Hadoop入门" data-url="http://yoursite.com/2019/04/15/Hadoop入门/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">85</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">155</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#整体结构"><span class="nav-number">1.</span> <span class="nav-text">整体结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS"><span class="nav-number">2.</span> <span class="nav-text">HDFS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本组件"><span class="nav-number">2.1.</span> <span class="nav-text">基本组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写入操作"><span class="nav-number">2.2.</span> <span class="nav-text">写入操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读取操作"><span class="nav-number">2.3.</span> <span class="nav-text">读取操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可靠性"><span class="nav-number">2.4.</span> <span class="nav-text">可靠性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YARN"><span class="nav-number">3.</span> <span class="nav-text">YARN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原有的MapReduce结构"><span class="nav-number">3.1.</span> <span class="nav-text">原有的MapReduce结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YARN结构"><span class="nav-number">3.2.</span> <span class="nav-text">YARN结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新旧结构对比"><span class="nav-number">3.3.</span> <span class="nav-text">新旧结构对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YARN运行流程"><span class="nav-number">3.4.</span> <span class="nav-text">YARN运行流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ResourceManager"><span class="nav-number">3.5.</span> <span class="nav-text">ResourceManager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NodeManager"><span class="nav-number">3.6.</span> <span class="nav-text">NodeManager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ApplicationMaster"><span class="nav-number">3.7.</span> <span class="nav-text">ApplicationMaster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Container"><span class="nav-number">3.8.</span> <span class="nav-text">Container</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MapReduce"><span class="nav-number">4.</span> <span class="nav-text">MapReduce</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
