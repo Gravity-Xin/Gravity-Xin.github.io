@@ -249,6 +249,219 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/18/Kubernetes资源定义/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/18/Kubernetes资源定义/" itemprop="url">Kubernetes资源定义</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-18T13:44:40+08:00">
+                2019-03-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/18/Kubernetes资源定义/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/18/Kubernetes资源定义/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在K8S中，使用<code>.yaml</code>配置文件对集群中的资源进行定义</p>
+<h2 id="核心资源类型"><a href="#核心资源类型" class="headerlink" title="核心资源类型"></a>核心资源类型</h2><ul>
+<li>工作负载型<ul>
+<li>Pod: 可以被创建、调度和管理的原子单元</li>
+<li>Pod控制器<ul>
+<li>ReplicaSet</li>
+<li>Deployment</li>
+<li>StatefulSet</li>
+<li>DaemonSet</li>
+<li>Job</li>
+<li>CronJob</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>服务发现和负载均衡型<ul>
+<li>Service</li>
+<li>Ingress</li>
+</ul>
+</li>
+<li>配置与存储型<ul>
+<li>ConfigMap</li>
+<li>Secret</li>
+<li>PersistentVolumeClaim</li>
+</ul>
+</li>
+<li>集群型: 前三者都属于某个名称空间，而集群型资源不属于任何的名称空间<ul>
+<li>Namespace</li>
+<li>Node</li>
+<li>Role</li>
+<li>RoleBinding</li>
+<li>ClusterRole</li>
+<li>ClusterRoleBinding</li>
+<li>PersistentVolume</li>
+</ul>
+</li>
+<li>元数据型资源<ul>
+<li>HorizontalPodAutoscaler: HPA</li>
+<li>PodTemplate</li>
+<li>LimitRange</li>
+</ul>
+</li>
+</ul>
+<h2 id="资源定义方式"><a href="#资源定义方式" class="headerlink" title="资源定义方式"></a>资源定义方式</h2><p>使用<code>kubectl get --output yaml</code>来查看集群资源的描述</p>
+<p>集群中的资源描述文件包含下列字段:</p>
+<ul>
+<li><code>apiVersion</code>: 资源所属的K8S API的群组</li>
+<li><code>kind</code>: 对象资源类型</li>
+<li><code>metadata</code>: 对象的元数据<ul>
+<li><code>name</code>: 对象名称</li>
+<li><code>namespace</code>: 对象所属的集群名称空间</li>
+<li><code>uid</code>: 对象唯一标识</li>
+<li><code>labels</code>: 对象的标签</li>
+<li><code>annotations</code>: 对象的注解</li>
+</ul>
+</li>
+<li><code>spec</code>: 对象应该满足的要求。不同类型的资源，该字段中包含的下级字段是有区别的 <strong>K8S的核心就是通过控制器保证资源对象总是在期望的状态</strong></li>
+<li><code>status</code>: 对象实际的运行状态，该字段由集群进行维护，而不是用户自己定义</li>
+</ul>
+<p>使用<code>kubectl explain</code>来查看集群资源的定义方式，如<code>kubectl explain pod</code>, <code>kubectl explain pod.spec</code>等</p>
+<p>使用<code>kubectl apply -f FILENAME</code>将资源定义文件提交到集群中，可以是创建资源或者更新资源</p>
+<p>使用<code>kubectl delete -f FILENAME</code>来删除该资源</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/13/算法-Sort/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2474,170 +2687,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/04/优秀博客收藏/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/04/优秀博客收藏/" itemprop="url">优秀博客收藏</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-04T10:26:27+08:00">
-                2019-03-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/阅读分享/" itemprop="url" rel="index">
-                    <span itemprop="name">阅读分享</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/04/优秀博客收藏/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/04/优秀博客收藏/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li>Go语言中的协程调度</li>
-</ul>
-<p><a href="https://www.ardanlabs.com/blog/2018/08/scheduling-in-go-part1.html" target="_blank" rel="noopener">OS Scheduler</a></p>
-<p><a href="https://www.ardanlabs.com/blog/2018/08/scheduling-in-go-part2.html" target="_blank" rel="noopener">Go Scheduler</a></p>
-<p><a href="https://www.ardanlabs.com/blog/2018/12/scheduling-in-go-part3.html" target="_blank" rel="noopener">Concurrency</a></p>
-<ul>
-<li><p>Mysql中InnoDB和MyISAM的索引设计和实现<br><a href="http://blog.codinglabs.org/articles/theory-of-mysql-index.html" target="_blank" rel="noopener">Mysql Index</a></p>
-</li>
-<li><p>Docker For Mac宿主机直连容器的方法</p>
-</li>
-</ul>
-<p><a href="https://pjw.io/articles/2018/04/25/access-to-the-container-network-of-docker-for-mac/" target="_blank" rel="noopener">Docker For Mac</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2688,7 +2737,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">85</span>
+                  <span class="site-state-item-count">86</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2710,7 +2759,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">155</span>
+                  <span class="site-state-item-count">156</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

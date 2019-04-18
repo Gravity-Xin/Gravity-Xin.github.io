@@ -249,6 +249,160 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/14/Golang-资源池/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/14/Golang-资源池/" itemprop="url">Golang-资源池</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-14T11:44:48+08:00">
+                2018-11-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程技术/" itemprop="url" rel="index">
+                    <span itemprop="name">编程技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/14/Golang-资源池/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/11/14/Golang-资源池/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>可以使用一个有缓冲的channel来实现一个资源池，用于在goroutine之间共享资源，比如数据库连接池、网络连接池等。<br>资源池提供初始化、申请资源、放回资源和关闭的接口。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ErrPoolClosed 资源池已关闭的错误</span></span><br><span class="line"><span class="keyword">var</span> ErrPoolClosed = errors.New(<span class="string">"Pool has closed"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Pool 多协程下安全的资源池</span></span><br><span class="line"><span class="keyword">type</span> Pool <span class="keyword">struct</span> &#123;</span><br><span class="line">    m       sync.Mutex</span><br><span class="line">    res     <span class="keyword">chan</span> io.Closer            <span class="comment">//假设资源实现了Closer接口</span></span><br><span class="line">    factory <span class="function"><span class="keyword">func</span><span class="params">()</span> <span class="params">(io.Closer, error)</span> //新建资源的工厂方法</span></span><br><span class="line"><span class="function">    <span class="title">closed</span>  <span class="title">bool</span>                      //资源池是否被关闭</span></span><br><span class="line"><span class="function">&#125;</span></span><br><span class="line"><span class="function">// <span class="title">New</span> 初始化资源池</span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="title">New</span><span class="params">(fn <span class="keyword">func</span>()</span> <span class="params">(io.Closer, error)</span>, <span class="title">size</span> <span class="title">uint</span>) <span class="params">(*Pool, error)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> fn == <span class="literal">nil</span> || size &lt;= <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, errors.New(<span class="string">"fn should not be nil or size to small"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> &amp;Pool&#123;</span><br><span class="line">        factory: fn,</span><br><span class="line">        res: <span class="built_in">make</span>(<span class="keyword">chan</span> io.Closer, size)</span><br><span class="line">    &#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Close 关闭资源池</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Close</span><span class="params">(p *Pool)</span></span>&#123;</span><br><span class="line">    p.m.Lock()</span><br><span class="line">    <span class="keyword">defer</span> p.m.Unlock()</span><br><span class="line">    <span class="keyword">if</span> p.closed&#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    p.closed = <span class="literal">true</span></span><br><span class="line">    <span class="built_in">close</span>(p.res) <span class="comment">//关闭chan</span></span><br><span class="line">    <span class="keyword">for</span> r := <span class="keyword">range</span> p.res&#123; <span class="comment">//关闭后的chan仍然可读但不可写</span></span><br><span class="line">        r.Close()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Acquire 获取资源</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *Pool)</span><span class="title">Acquire</span><span class="params">()</span><span class="params">(io.Closer, error)</span></span>&#123;</span><br><span class="line">    <span class="keyword">select</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> r, ok := &lt;-p.res: <span class="comment">//首先从资源池中获取资源</span></span><br><span class="line">        <span class="keyword">if</span> !ok&#123; <span class="comment">//判断资源池是否已经关闭</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">nil</span>, ErrPoolClosed</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> r, <span class="literal">nil</span></span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="keyword">return</span> p.factory(), <span class="literal">nil</span> <span class="comment">//如果没有从资源池获取到，则新生成资源</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Release 释放资源</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *Pool)</span><span class="title">Release</span><span class="params">()</span></span>&#123;</span><br><span class="line">    p.m.Lock()</span><br><span class="line">    <span class="keyword">defer</span> p.m.Unlock()</span><br><span class="line">    <span class="keyword">if</span> p.closed&#123;</span><br><span class="line">        r.Close()</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">select</span>&#123;</span><br><span class="line">    <span class="keyword">case</span> p.res &lt;- r: <span class="comment">//尝试将资源放回池中</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        r.Close() <span class="comment">//如果池已满，则关闭资源</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Golang自带的<code>sync.Pool</code>对象提供了资源池的功能</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/14/Golang-runtime/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1464,7 +1618,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">85</span>
+                  <span class="site-state-item-count">86</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1486,7 +1640,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">155</span>
+                  <span class="site-state-item-count">156</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

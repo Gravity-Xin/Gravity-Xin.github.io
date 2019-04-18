@@ -249,6 +249,183 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/12/Elasticsearch-聚合和复合查询/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/12/Elasticsearch-聚合和复合查询/" itemprop="url">Elasticsearch-聚合和复合查询</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-12T16:49:09+08:00">
+                2019-02-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/12/Elasticsearch-聚合和复合查询/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/12/Elasticsearch-聚合和复合查询/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="聚合查询"><a href="#聚合查询" class="headerlink" title="聚合查询"></a>聚合查询</h2><ul>
+<li>sum: 求和</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"size":0, "aggs":&#123;"sum of age":&#123;"sum":&#123;"field":"age"&#125;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>min: 求最小值</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"size":0, "aggs":&#123;"min of age":&#123;"min":&#123;"field":"age"&#125;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>max: 求最大值</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"size":0, "aggs":&#123;"max of age":&#123;"max":&#123;"field":"age"&#125;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>avg: 求平均值</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"size":0, "aggs":&#123;"avg of age":&#123;"avg":&#123;"field":"age"&#125;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>cardinality: 求基数(互不相同的字段值的个数)</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"size":0, "aggs":&#123;"avg of cardinality":&#123;"avg":&#123;"field":"age"&#125;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>terms: 分组，类似于SQL中的<code>GROUP BY</code></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"size":0, "aggs":&#123;"group by birthday":&#123;"terms":&#123;"field":"birthday"&#125;&#125;&#125;&#125;</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"size":0, "query":&#123;"match":&#123;"interests":"changge"&#125;&#125;,"aggs":&#123;"sum of age":&#123;"terms":&#123;"field":"birthday"&#125;&#125;&#125;&#125;  // 对interests包含changge的文档按照birthday进行分组</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"size":0,"query":&#123;"match":&#123;"interests":"chang ge"&#125;&#125;,"aggs":&#123;"group by birthday":&#123;"terms":&#123;"field":"birthday"&#125;,"aggs":&#123;"avg age":&#123;"avg":&#123;"field":"age"&#125;&#125;&#125;&#125;&#125;&#125;  // 对interests包含changge的文档按照birthday进行分组，并且获取每一个组中文档的平均年龄</span><br></pre></td></tr></table></figure>
+<h2 id="复合查询"><a href="#复合查询" class="headerlink" title="复合查询"></a>复合查询</h2><p>使用bool将多个基本的查询条件进行组合，得到一个复杂的查询条件</p>
+<p>查询条件本身可以嵌套</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/12/Elasticsearch-Filter查询/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1942,189 +2119,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/22/Golang-slice/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/22/Golang-slice/" itemprop="url">Golang-slice</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-22T17:25:33+08:00">
-                2019-01-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程技术/" itemprop="url" rel="index">
-                    <span itemprop="name">编程技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/01/22/Golang-slice/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/22/Golang-slice/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>golang中的slice(切片)是基于array(数组)上的内置类型，可以看做是能够自动扩容的动态数组<br>与内置的map, chan一样，都是引用类型</p>
-<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><ul>
-<li>array<ul>
-<li>需要指定数组元素类型和数组长度</li>
-<li>底层为连续的内存空间，使用下标作为索引来进行存取</li>
-<li>声明后，数组元素为零值</li>
-<li>数组长度也是数组类型的一部分，因此<code>[3]int</code>和<code>[4]int</code>不是同一个类型</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    nums := [<span class="number">3</span>]<span class="keyword">int</span>&#123;&#125;</span><br><span class="line">    nums[<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line">    n := nums[<span class="number">0</span>]</span><br><span class="line">    n = <span class="number">2</span></span><br><span class="line">    fmt.Printf(<span class="string">"nums: %v\n"</span>, nums)</span><br><span class="line">    fmt.Printf(<span class="string">"n: %d\n"</span>, n)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>slice<ul>
-<li>底层为数组</li>
-<li>不需要指定切片的长度</li>
-<li>使用<code>var []T</code>, <code>[]T{}</code>或 <code>make([]T, len, cap)</code>来创建</li>
-<li>使用<code>append</code>来增加元素，可以自动扩容</li>
-<li>使用<code>copy</code>来进行切片的拷贝，返回被复制的元素数</li>
-<li>使用<code>[start:end]</code>来进行切片的resize操作</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    nums := [<span class="number">3</span>]<span class="keyword">int</span>&#123;&#125;</span><br><span class="line">    nums[<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line">    dnums := nums[:]</span><br><span class="line">    fmt.Printf(<span class="string">"dnums: %v"</span>, dnums)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h2><p><img src="/images/Golang-slice的实现.png" alt="slice"></p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> slice <span class="keyword">struct</span> &#123;</span><br><span class="line">    array unsafe.Pointer <span class="comment">//所引用的底层数据的指针</span></span><br><span class="line">    <span class="built_in">len</span>   <span class="keyword">int</span>  <span class="comment">// 当前切片的元素个数</span></span><br><span class="line">    <span class="built_in">cap</span>   <span class="keyword">int</span>  <span class="comment">// 当前切片的容量(底层数组的长度)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>扩容带来的问题</p>
-<ul>
-<li>未扩容时，对slice的修改会直接影响到底层的array</li>
-<li>发送扩容时，slice不再引用底层数据，对slice的修改不再影响到底层的array</li>
-</ul>
-<p>empty slice和nil slice</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">emptyNums := []<span class="keyword">int</span>&#123;&#125; <span class="comment">// 切片中的array指向一个空的数组</span></span><br><span class="line"><span class="keyword">var</span> nilNums []<span class="keyword">int</span> <span class="comment">// 切片中的array为nil，不指向任何数组</span></span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2175,7 +2169,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">85</span>
+                  <span class="site-state-item-count">86</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2197,7 +2191,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">155</span>
+                  <span class="site-state-item-count">156</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
