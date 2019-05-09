@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="MongoDB,Document,NoSQL,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="BSON结构的、面向文档的NoSQL数据库 特点 高性能 丰富的查询形式 基于ReplicaSet的高可用 基于Sharding的水平扩展 支持多个存储引擎  概念 DataBase: 数据库，包含很多Collection  Collection: 数据集合，包含很多Document  Document: BSON格式的文档，是可以操作的最小单位  包含多个字段，且可以嵌套 _id字段作为Docu">
+<meta name="keywords" content="MongoDB,Document,NoSQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MongoDB入门">
+<meta property="og:url" content="http://yoursite.com/2019/04/18/MongoDB入门/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="BSON结构的、面向文档的NoSQL数据库 特点 高性能 丰富的查询形式 基于ReplicaSet的高可用 基于Sharding的水平扩展 支持多个存储引擎  概念 DataBase: 数据库，包含很多Collection  Collection: 数据集合，包含很多Document  Document: BSON格式的文档，是可以操作的最小单位  包含多个字段，且可以嵌套 _id字段作为Docu">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-04-19T05:56:34.799Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MongoDB入门">
+<meta name="twitter:description" content="BSON结构的、面向文档的NoSQL数据库 特点 高性能 丰富的查询形式 基于ReplicaSet的高可用 基于Sharding的水平扩展 支持多个存储引擎  概念 DataBase: 数据库，包含很多Collection  Collection: 数据集合，包含很多Document  Document: BSON格式的文档，是可以操作的最小单位  包含多个字段，且可以嵌套 _id字段作为Docu">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/04/18/MongoDB入门/">
+
+
+
+
+
+  <title>MongoDB入门 | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/18/MongoDB入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MongoDB入门</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-18T17:53:36+08:00">
+                2019-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/18/MongoDB入门/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/04/18/MongoDB入门/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>BSON结构的、面向文档的NoSQL数据库</p>
+<h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ul>
+<li>高性能</li>
+<li>丰富的查询形式</li>
+<li>基于ReplicaSet的高可用</li>
+<li>基于Sharding的水平扩展</li>
+<li>支持多个存储引擎</li>
+</ul>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
+<li><p>DataBase: 数据库，包含很多Collection</p>
+</li>
+<li><p>Collection: 数据集合，包含很多Document</p>
+</li>
+<li><p>Document: BSON格式的文档，是可以操作的最小单位</p>
+<ul>
+<li>包含多个字段，且可以嵌套</li>
+<li><code>_id</code>字段作为Document的默认主键，并为其添加唯一索引</li>
+<li>使用<code>field1.field2</code>来获取嵌套字段值</li>
+<li>使用<code>field1.index</code>来获取数组字段的某个元素值</li>
+</ul>
+</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><ul>
+<li><p>启动参数</p>
+<ul>
+<li><code>--config</code>或<code>-f</code>: 配置文件路径</li>
+<li><code>--logpath</code>: 日志文件路径</li>
+<li><code>--dbpath</code>: 数据存储路径</li>
+<li><code>--auth</code>: 启动用户认证</li>
+<li><code>--port</code>: 监听的端口号</li>
+</ul>
+</li>
+<li><p>Docker</p>
+<ul>
+<li><code>docker container run -d -p 27017:27017 -v mongo_data:/data/db --name MyMongo mongo</code></li>
+</ul>
+</li>
+<li><p>Kubernetes: <a href="https://docs.mongodb.com/kubernetes-operator/stable/tutorial/install-k8s-operator/" target="_blank" rel="noopener">MongoDB</a></p>
+</li>
+</ul>
+<h2 id="Shell使用"><a href="#Shell使用" class="headerlink" title="Shell使用"></a>Shell使用</h2><ul>
+<li>使用<code>mongo --username --password --authenticationDatabase --host --port</code>连接MongoDB数据库并进入Shell</li>
+<li>常用命令<ul>
+<li>help: 查看帮助</li>
+<li>show dbs: 查看系统中的Database</li>
+<li>use dbName: 使用某一个Database</li>
+<li>db: 查看当前使用的Database</li>
+<li>db.colName.xxx: 对某个Database的某个Collection进行CURD等操作</li>
+</ul>
+</li>
+</ul>
+<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><ul>
+<li>插入: 如果插入的Document没有<code>_id</code>字段，系统会自动创建该字段<ul>
+<li><code>insertOne</code></li>
+<li><code>insertMany</code></li>
+</ul>
+</li>
+<li>读取<ul>
+<li><code>find</code><ul>
+<li>如果没有提供查询条件，默认列出所有Document</li>
+<li><code>find({&quot;field1&quot;: &quot;value1&quot;})</code>，列出字段field1值为value1的Document</li>
+<li><code>find({&quot;field1&quot;: {&quot;$in&quot;: [&quot;value1&quot;, &quot;value2&quot;]}})</code>，列出字段field1值为value1或value2的Document</li>
+<li><code>find({&quot;field1&quot;: &quot;value1&quot;}, {&quot;field2&quot;: &quot;value2&quot;})</code>，列出同时满足多个条件Document</li>
+<li><code>find({&quot;$or&quot;:[{&quot;field1&quot;: &quot;value1&quot;}, {&quot;field2&quot;: &quot;value2&quot;}]})</code>，列出至少满足一个条件Document</li>
+<li><code>find({&quot;field1&quot;: &quot;value1&quot;}, {&quot;$or&quot;:[{&quot;field2&quot;: &quot;value2&quot;}, {&quot;field3&quot;: &quot;value3&quot;}]})</code>，列出满足多个条件的Document</li>
+<li><code>find({&quot;field1&quot;: {&quot;$regex&quot;: &quot;value1&quot;}})</code>，列出满足正则表达式条件的Document</li>
+<li><code>find({&quot;field1.field2&quot;: &quot;value1&quot;})</code>，列出嵌套字段满足条件的Document</li>
+<li><code>find({&quot;arrayField&quot;: {&quot;$all&quot;: [&quot;item1&quot;, &quot;item2&quot;]}})</code>，列出满足数组字段条件的Document</li>
+<li><code>find({&quot;arrayField&quot;: &quot;item1&quot;)</code>，列出数组字段元素中至少包含等于该字段值的Document</li>
+<li><code>find({&quot;arrayField&quot;: {&quot;$gt&quot;: &quot;item1&quot;})</code>，列出数组字段元素中至少包含一个满足条件的Document</li>
+<li><code>find({&quot;arrayField.0&quot;: {&quot;$gt&quot;: &quot;item1&quot;})</code>，列出数组字段中第一个元素中满足条件的Document</li>
+<li><code>find({&quot;arrayField&quot;: {&quot;$size&quot;: 3})</code>，列出数组字段长度为3的Document</li>
+<li>其它常用的操作符包括: <code>$eq</code>,<code>$ne</code>,<code>$nin</code>,<code>$lt</code>,<code>$gt</code>,<code>$lte</code>,<code>$gte</code> <a href="https://docs.mongodb.com/manual/reference/operator/query/" target="_blank" rel="noopener">“Query Operators”</a></li>
+<li><code>find({&quot;field1&quot;: &quot;value1&quot;}, {&quot;field1&quot;: 1, &quot;field2&quot;: 1, &quot;field3.field4&quot;: 1})</code>: 设置查询返回的Document字段列表，默认返回所有字段</li>
+<li><code>find({&quot;field1&quot;: &quot;value1&quot;}, {&quot;field1&quot;: 0, &quot;field2&quot;: 0})</code>: 设置查询不返回的Document字段列表</li>
+<li><code>find({&quot;field1&quot;: {&quot;$type&quot;: 10})</code>: 列出字段类型满足条件的Document <a href="https://docs.mongodb.com/manual/reference/bson-types/" target="_blank" rel="noopener">“BSON Types”</a></li>
+<li><code>find({&quot;field1&quot;: {&quot;$exists&quot;: false})</code>: 列出该字段不存在的Document</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>更新: 更新参数格式为<code>&lt;filter&gt;, &lt;update&gt;, &lt;options&gt;</code>，通过filter提供查询条件，对满足条件的Document进行更新<ul>
+<li><code>updateOne</code></li>
+<li><code>updateMany</code></li>
+<li><code>replaceOne</code></li>
+<li>更新常用的操作符包括<code>$set</code> <a href="https://docs.mongodb.com/manual/reference/operator/update/" target="_blank" rel="noopener">“Update Operators”</a></li>
+</ul>
+</li>
+<li>删除: 与读取操作类似，需要提供查询条件，然后删除满足条件的Document<ul>
+<li><code>deleteOne</code></li>
+<li><code>deleteMany</code></li>
+</ul>
+</li>
+<li>BulkWrite操作: 提供了对单个文档的批量操作功能</li>
+<li>MongoDB VS SQL: <a href="https://docs.mongodb.com/manual/reference/sql-comparison/" target="_blank" rel="noopener">“Comparison”</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MongoDB/" rel="tag"># MongoDB</a>
+          
+            <a href="/tags/Document/" rel="tag"># Document</a>
+          
+            <a href="/tags/NoSQL/" rel="tag"># NoSQL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/16/Kubernetes中的Dashboard/" rel="next" title="Kubernetes中的Dashboard">
+                <i class="fa fa-chevron-left"></i> Kubernetes中的Dashboard
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/19/MongoDB之索引/" rel="prev" title="MongoDB之索引">
+                MongoDB之索引 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2019/04/18/MongoDB入门/" data-title="MongoDB入门" data-url="http://yoursite.com/2019/04/18/MongoDB入门/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">89</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">162</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#特点"><span class="nav-number">1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">2.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">3.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Shell使用"><span class="nav-number">4.</span> <span class="nav-text">Shell使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本操作"><span class="nav-number">5.</span> <span class="nav-text">基本操作</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

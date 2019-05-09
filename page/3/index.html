@@ -249,6 +249,784 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/07/Docker容器的资源管理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/07/Docker容器的资源管理/" itemprop="url">Docker容器的资源管理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-07T17:49:55+08:00">
+                2019-03-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/07/Docker容器的资源管理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/07/Docker容器的资源管理/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>默认情况下，Docker对容器使用的资源是没有限制的，容器可以随意使用宿主机上的内存、CPU、IO等系统资源</p>
+<p>在使用<code>docker container run</code>来运行容器时，可以通过一些选项来显式对容器使用的资源进行限制</p>
+<ul>
+<li><p>内存资源限制</p>
+<ul>
+<li><code>--memory</code>: 容器占用的内存限制值<code>M</code>，最小为4m</li>
+<li><code>--memory-reservation</code>: 设置容器预留的内存大小</li>
+<li><code>--memory-swap</code>: 容器占用的交换空间大小<code>S</code>，即可使用的swap大小等于<code>M-S</code>，只有当<code>M</code>设置后该选项才可以设置。设置为-1表示不限制交换空间大小。</li>
+<li><code>--memory-swappiness</code>: 设置交换空间的倾向性</li>
+<li><code>--kernel-memory</code>: 设置容器中的内核占用的内存限制</li>
+<li><code>--oom-kill-disable</code>: 设置容器禁止被OOM-KILL</li>
+</ul>
+</li>
+<li><p>CPU资源限制</p>
+<ul>
+<li><code>--cpus</code>: 设置容器可以使用的CPU数量，此时并不是一直占用某些个CPU，而是占用的CPU的比例之和为该值</li>
+<li><code>--cpu-period</code>和<code>--cpu-quota</code>: 两者配合使用，前者指定CPU运行周期，后者指定容器占用的CPU周期；可以理解为<code>quota/period</code>等于第一个选项值</li>
+<li><code>--cpuset-cpus</code>: 设置容器始终在某些个CPU上运行</li>
+<li><code>--cpu-shares</code>: 设置容器占用的CPU权重，只有当CPU资源不充足时，该选项才起作用</li>
+</ul>
+</li>
+</ul>
+<p>可以使用<code>docker-stress</code>镜像对上述参数进行测试，使用<code>docker container stats</code>来查看容器内的资源使用情况</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/05/数据结构-Tree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/05/数据结构-Tree/" itemprop="url">数据结构-Tree</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-05T15:19:27+08:00">
+                2019-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程技术/" itemprop="url" rel="index">
+                    <span itemprop="name">编程技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/05/数据结构-Tree/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/05/数据结构-Tree/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><ul>
+<li><p>定义:每一个节点至多有两颗子树，子树有左右之分</p>
+</li>
+<li><p>特点</p>
+<ul>
+<li>第i层最多含有2^(i-1)个节点</li>
+<li>深度为k的二叉树，最多还有2^k-1个节点</li>
+<li>如果叶子节点数为n0，度为2的节点数为n2，则n0=n2+1</li>
+</ul>
+</li>
+<li><p>满二叉树: 除了最后一层节点无子节点外，其他所有节点都有两个子节点</p>
+</li>
+<li><p>完全二叉树: 除最后一层外，其他层的所有节点数都达到最大数量，且最后一层的所有节点都连续集中在最左边</p>
+</li>
+</ul>
+<p><img src="/images/Tree数据结构之满-完全二叉树.png" alt="img"></p>
+<ul>
+<li><p>遍历</p>
+<ul>
+<li>先序遍历: 根 左子树 右子树</li>
+<li>中序遍历: 左子树 根 右子树</li>
+<li>后序遍历: 左子树 右子树 根</li>
+</ul>
+</li>
+<li><p>存储方式</p>
+<ul>
+<li>顺序存储: 利用数组来存储，仅仅适用于完全二叉树，如堆数据结构，此时父子节点的编号存在对应关系<br><img src="/images/Tree数据结构之顺序存储.png" alt="img"></li>
+<li>链式存储: 最常见的存储方式，由于子节点可能为空，所以该方式比较浪费存储空间<br><img src="/images/Tree数据结构之链式存储.png" alt="img"></li>
+</ul>
+</li>
+</ul>
+<h2 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h2><ul>
+<li><p>定义</p>
+<ul>
+<li>如果左子树不为空，则左子树上所有节点的值都小于根节点的值</li>
+<li>如果右子树不为空，则右子树上所有节点的值都大于根节点的值</li>
+<li>左右子树本身也是一颗二叉查找树</li>
+</ul>
+</li>
+<li><p>特点</p>
+<ul>
+<li>对其进行中序遍历，则得到一个有序的序列</li>
+<li>插入/查找操作的时间复杂度为O(logn)，最坏情况下为O(n) <strong>原因在于在插入和删除元素时，没有保持树的平衡</strong></li>
+<li>二叉查找树的高度决定了二叉查找树的效率</li>
+</ul>
+</li>
+<li><p>查找过程</p>
+<ul>
+<li>如果根节点为空，则返回查找失败</li>
+<li>如果根节点的值等于查找值，返回成功</li>
+<li>如果查找的元素小于根节点，则到左子树中查找</li>
+<li>如果查找的元素大于根节点，则到右子树中查找</li>
+</ul>
+</li>
+<li><p>插入过程</p>
+<ul>
+<li>如果根节点为空，则插入的元素为根节点</li>
+<li>如果根节点的值等于查找值，返回失败</li>
+<li>如果插入的元素小于根节点，则插入到左子树中</li>
+<li>如果插入的元素大于根节点，则插入到右子树中</li>
+</ul>
+</li>
+<li><p>删除过程</p>
+<ul>
+<li>使用查找过程找到对应的节点P</li>
+<li>如果P节点的左右子树都为空，直接删除该节点并修改其父节点的指针值<br><img src="/images/Tree数据结构之二叉查找树的删除1.png" alt="img"></li>
+<li>如果P节点的左子树或右子树为空，则让P节点的子节点与父节点相连，然后删除P节点即可<br><img src="/images/Tree数据结构之二叉查找树的删除2.png" alt="img"></li>
+<li>如果P节点左右子树均不为空，则找到P右子树中最小的元素或者找到左子树中最大的元素，然后将其放到P节点位置即可<br><img src="/images/Tree数据结构之二叉查找树的删除3.png" alt="img"></li>
+</ul>
+</li>
+</ul>
+<h2 id="平衡二叉树"><a href="#平衡二叉树" class="headerlink" title="平衡二叉树"></a>平衡二叉树</h2><ul>
+<li>定义<ul>
+<li>是对二叉查找树的改进，通过<strong>在插入和删除过程中进行自平衡的操作，保证二叉树的高度为logn，从而提高查找效率</strong></li>
+<li>任意节点的左右两个子树的高度差的绝对值不超过1</li>
+<li>左右子树本身也是平衡二叉树</li>
+</ul>
+</li>
+</ul>
+<h3 id="AVL树"><a href="#AVL树" class="headerlink" title="AVL树"></a>AVL树</h3><p>平衡二叉树的一种</p>
+<ul>
+<li>特点<ul>
+<li>插入/删除/查找的时间复杂度O(logn)</li>
+<li>在进行插入和删除时，需要通过一次或多次旋转操作来保持平衡，该树结构是高度平衡的</li>
+</ul>
+</li>
+</ul>
+<h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>平衡二叉树的一种</p>
+<ul>
+<li>特点<ul>
+<li>插入/删除/查找的时间复杂度O(logn)，需要通过自平衡操作来保证平衡</li>
+<li>每一个节点带有颜色属性，红色或黑色</li>
+<li>根节点和所有叶子节点都是黑色</li>
+<li>每一个红色节点必须含有两个黑色的子节点 <strong>即从根节点要叶子节点之间的所有路径中不可以有两个连续的红色节点，即红节点的孩子不能是红节点</strong></li>
+<li><strong>从任一节点到其每一个叶子节点的所有路径中都包含相同数目的黑色节点</strong></li>
+<li><strong>从根节点到叶子节点的最长路径不多于最短路径的两倍</strong>，该树结构是大致平衡的</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Tree数据结构之红黑树.png" alt="img"></p>
+<h2 id="B树"><a href="#B树" class="headerlink" title="B树"></a>B树</h2><ul>
+<li>定义<ul>
+<li>中间节点最多只有M个子节点，M&gt;2</li>
+<li>根节点的子节点数为[2, M]</li>
+<li>中间节点的子节点数为[M/2, M]</li>
+<li>每一个节点上存放至少M/2-1(向上取整)和至多M-1个关键字</li>
+<li>中间节点的关键字数量=指向子节点的指针数量-1</li>
+<li>中间节点的关键字为K[1], K[2], … ,k[M-1]，且K[i]&lt;K[i+1]</li>
+<li>中间节点指向子节点的指针为P[1], P[2], … , P[M]，其中P[1]指向关键字小于K[1]的子树，P[M]指向关键字大于K[M-1]的子树，其他P[i]指向关键字属于(K[i-1], K[i])的子树</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Tree数据结构之B树.png" alt="img"></p>
+<ul>
+<li><p>特点</p>
+<ul>
+<li>是一种用于查找的平衡树，但不是二叉树。节点的子节点数量可以超过2个，是一个更为一般的二叉查找树</li>
+<li>用于对排序后的数据进行存储，插入/删除/查找的时间复杂度为O(logn)</li>
+<li><strong>平衡二叉树是通过在插入/删除过程中进行自平衡的操作保持树的平衡，从而提高查找效率；而B树是通过增加子节点的数量，减少树的高度来提高查找效率</strong></li>
+</ul>
+</li>
+<li><p>查找过程</p>
+<ul>
+<li>如果根节点为空，则返回查找失败</li>
+<li>如果根节点的值等于查找值，返回成功</li>
+<li>由于根节点的子节点是有序的，因此在根节点的子节点中进行顺序或者二分查找，如果找到查找值，返回成功；否则确定查找值位于Ki与Ki+1之间，此时Pi为根节点的第i个子节点</li>
+<li>取Pi作为根节点，重复上述查找过程</li>
+</ul>
+</li>
+</ul>
+<h2 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h2><ul>
+<li>定义<ul>
+<li>是B树的变体，也是用于查找的平衡树，定义除了以下几点，其他与B树基本相同</li>
+<li>中间节点的指针数和关键字相同</li>
+<li>中间节点的子树指针P[i], 指向关键字属于[K[i], K[i+1])的子树</li>
+<li>所有叶子节点增加一个链指针</li>
+<li>所有关键字都出现在叶子节点</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Tree数据结构之B+树.png" alt="img"></p>
+<ul>
+<li><p>特点</p>
+<ul>
+<li>所有关键字都出现在叶子节点，因此在进行查找时必须到达叶子节点才能命中，而B树可以在非叶子节点命中</li>
+<li>所有叶子节点之间形成一个链表，且链表中的关键字是有序的</li>
+<li>中间节点可以看做是叶子节点的索引层，叶子节点可以看做是存储关键字(数据)的数据层</li>
+<li><strong>由于根节点和中间节点不存储数据，因此占用空间较小，更适合进行外部存储，比如磁盘，因为一次磁盘IO可以读取更多的节点数。同时，由于所有数据都在叶子节点上，可以方便进行范围查找，并且可以通过磁盘预读的方式和局部性原理减少磁盘IO的次数，提高查找效率</strong></li>
+</ul>
+</li>
+<li><p>查找过程</p>
+<ul>
+<li>和B树相同，只不过只有在叶子节点上才会命中</li>
+</ul>
+</li>
+</ul>
+<h2 id="单词查找树"><a href="#单词查找树" class="headerlink" title="单词查找树"></a>单词查找树</h2><ul>
+<li>定义<ul>
+<li>又叫Trie树，主要用于统计、排序和存储大量的字符串，常被搜索引擎用于文本词频统计</li>
+<li><strong>使用字符串的公共前缀来减少查询时间</strong>，最大限度减少无谓的字符串比较</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Tree数据结构之单次查找树.png" alt="img"></p>
+<ul>
+<li>特点<ul>
+<li>根节点不包含字符，其他节点只包含一个字符，即每一个节点最多有26个子节点</li>
+<li>从根节点到某一个节点，路径上经过的字符连接起来即为该节点对应的字符串</li>
+<li>每一个节点的所有子节点包含的字符都不相同</li>
+</ul>
+</li>
+</ul>
+<h2 id="霍夫曼树"><a href="#霍夫曼树" class="headerlink" title="霍夫曼树"></a>霍夫曼树</h2><ul>
+<li><p>定义</p>
+<ul>
+<li>构造所有节点的带权路径之和最小的二叉树</li>
+<li>可用于进行霍夫曼编码</li>
+</ul>
+</li>
+<li><p>构造过程</p>
+</li>
+</ul>
+<p><img src="/images/Tree数据结构之霍夫曼树.png" alt="img"></p>
+<ul>
+<li>霍夫曼编码</li>
+</ul>
+<p><img src="/images/Tree数据结构之霍夫曼编码.png" alt="img"></p>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><ul>
+<li>AVL、红黑树和B树、B+树的区别</li>
+</ul>
+<p>都是用于查找的树结构，<strong>AVL和红黑树是平衡二叉树，通过自平衡操作来实现树的平衡，提高查找效率；而B树、B+树是多叉树，通过降低树的高度来提交查找效率</strong></p>
+<p>当数据量较小时，AVL和红黑树的性能很好；但是当数据量很大时，如数据库中的数据，性能则不够理想</p>
+<p>原因在于当数据里很大时，此时内存不够用，需要将大部分的数据存储到磁盘之中，此时磁盘的IO就成为了性能瓶颈。AVL和红黑树的数据结构无法迎合磁盘IO中的预读机制，导致<strong>在查询过程中需要h次磁盘IO，h为树的高度</strong>。同时AVL和红黑树在插入和删除过程中需要进行自平衡的操作，如果此时部分数据在内存、部分数据在磁盘中时<strong>无法完成自平衡操作</strong></p>
+<p>而B树和B+树的设计迎合的磁盘IO的预读机制。通过在节点上添加多个子节点，<strong>降低了树的高度，需要的磁盘IO次数变小</strong>；同时在新建节点时，可以将<strong>多个节点的大小等于磁盘上的一页，这样便可以通过磁盘预读机制，一次性读取多个节点，减少磁盘IO次数</strong></p>
+<ul>
+<li>B树和B+树的区别</li>
+</ul>
+<p>B+树只在叶子节点上存放数据，因此查找时间复杂度固定为O(logn)，而B树查询的时间复杂度不定，与关键字在树中的位置有关，最好为O(1)</p>
+<p>B+树叶子节点使用链表来组织，可以充分利用磁盘预读的空间局部性原理，减少磁盘IO数，同时可方便的进行<strong>范围查询</strong>；而B-树不方便进行范围查询</p>
+<p>B+树的中间节点不存放数据，<strong>节点占用空间更小，因此单次磁盘IO可以读取的节点数更大</strong>，因此查找效率更高</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/04/计算机中的存储模型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/04/计算机中的存储模型/" itemprop="url">计算机中的存储模型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-04T16:33:22+08:00">
+                2019-03-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/04/计算机中的存储模型/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/04/计算机中的存储模型/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>计算机存储体系图</p>
+<p><img src="/images/计算机中的存储模型.png" alt="img"></p>
+<h2 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h2><ul>
+<li><p>物理内存: 计算机实际的内存大小</p>
+<ul>
+<li>管理结构: 程序需要加载到内存中才可以执行。当多个进程进入内存之后，需要给其划分内存大小。一种方式是将内存进行等长度的划分，然后选择一部分分给进程；另一种方式是进程需要多少就给其划分多少，为不等长划分。因此需要使用某种数据结构来跟踪内存的使用情况<ul>
+<li>等长: 使用<code>位图</code>来管理，将内存划分为大小相同的内存块，使用位图中的每一位来标记每一块的使用情况，从而形成一个位图<br><img src="/images/计算机中的存储模型之位图.png" alt="img"></li>
+<li>不等长: 使用<code>空闲区表/空闲区链表</code>来管理，通过链式结构将内存的使用情况组织起来<br><img src="/images/计算机中的内存模型之空闲区表.png" alt="img"></li>
+</ul>
+</li>
+<li>分配算法 <strong>以空闲区链表为例</strong><ul>
+<li>首次适配: 在空闲区链表中从头开始查找符合申请内存大小的块，直到找到满足条件的为止。由于该算法不断从头开始申请内存，导致大部分使用的都是低地址空间的内存，从而留下了高地址空间来满足大内存的申请要求。缺点是较低的地址空间中频繁的申请和释放导致低地址空间存在较多内存碎片，同时每次都从头开始查找，查找效率较低</li>
+<li>下次适配: 是对首次适配算法的改进，即每次都上次适配的地址开始向下查找，而不是从头开始。该算法使得内存使用均匀，但是可能会导致不存在大的内存块来满足内存分配</li>
+<li>最佳适配: 首先按照空闲区大小从小到大进行排序，然后每次都从头开始匹配，这样保证每次分配的结果都是最优的。但是实际由于空闲区不一定与申请的内存大小完全相同，会导致产生很多较小的内存碎片，同时每次分配后都需要重新排序，开销较大</li>
+<li>最差适配: 首先按照空闲区大小从大到小进行排序，然后每次将最大空闲区内存块进行分配，然后如果空闲区过大，可以进行对空闲区进行二次分配。这样如果不能分配，则所有空闲区都不能分配</li>
+</ul>
+</li>
+<li>回收算法 <strong>一般来说，回收算法和分配算法是相关联的</strong><ul>
+<li>四种情况: 从左往右从上往下分别为上相邻，下相邻，上下相邻和上下不相邻<br><img src="/images/计算机中的内存模型之内存回收.png" alt="img"></li>
+</ul>
+</li>
+<li>内存碎片问题: 指的是内存中占据一定大小的空间却无法被使用的内存，分为内碎片和外碎片<ul>
+<li>内碎片: 比如按照页式等长分配，如果某进程需要5页多内存，那么只能给其分配6页内存，此时多余分配的不到1页的内存无法被其他进程使用，称为内碎片</li>
+<li>外碎片: 尚未被分配的且因为内存太小而无法被再次分配的内存块称为外碎片</li>
+<li>紧缩技术: 对内存碎片进行合并的方法。原理是将暂时不运行的进程安全的移动位置，独立出内存，从而将多个内存碎片进行组装得到一个较大的内存块</li>
+</ul>
+</li>
+<li>伙伴算法: Linux系统内存分配和回收算法的实现。基本思想是将内存大小看做2的n次方，如果一个进程申请的内存块大小m满足<code>2^n-1 &lt; m &lt; 2^n</code>，则将此时的内存块进行分配。如下图，当进程需要200K空间时，1M等于1024K，如果m小于1M的一半，那么继续分离m，当分离到256时，刚好能满足200K的需求，所以进行分配。内存回收时，根据左右相邻的占用情况进行合并<br><img src="/images/计算机中的内存模型之伙伴算法.png" alt="img"></li>
+</ul>
+</li>
+<li><p>虚拟内存: 进程运行于内存之中，每一个进程都有独立的内存地址空间。进程的内存地址空间是抽象出来的，属于虚拟内存</p>
+<ul>
+<li>特点<ul>
+<li>将物理内存看做是磁盘的高速缓存，在物理内存中只保留活跃的数据并根据需要在物理内存和磁盘中进行数据交换，使得物理内存的使用更加高效</li>
+<li>为每一个进程抽象出一致的内存空间，使得多进程可以更加简单的运行；同时保证每一个进程的地址空间不会被其他进程破坏</li>
+</ul>
+</li>
+<li>运行过程<ul>
+<li>进程1在访问物理内存的数据时，首先获得的是虚拟内存地址空间的地址</li>
+<li>通过<code>MMU</code>将虚拟地址进行转换得到物理内存地址，从而获取数据</li>
+<li>由于物理内存空间有限，只需要将每一个进程常用的数据加载到内存之中，其他的数据先暂存到磁盘(Swap分区)上</li>
+<li>当进程在访问物理内存时，如果物理内存中的数据不存在，则发生中断，然后将磁盘上对应的数据加载到内存之中<br><img src="/images/计算机中的内存模型之虚拟内存.png" alt="img"></li>
+</ul>
+</li>
+<li>页式管理: 将物理内存、虚拟内存和磁盘上的交换分区都划分为固定大小的内存块，一般为4K。 <strong>等长划分</strong><ul>
+<li>页表: 对划分的内存块进行管理<br><img src="/images/计算机中的内存模型之页表.png" alt="img"><ul>
+<li>页表项: 页表中的每一项，包括地址转换和标记位。比如以x86架构的32位机器，地址总线为32位，寻址能力为2^32，页大小为4K，即2^12。因此我们需要(32-12)=20位来表示物理内存的页框号，即物理内存能够被分为2^20个页。标记位主要包括有效位，即该页面在物理内存中还是在磁盘上；访问位，即该页近期是否被访问过；修改位，即该页近期是否被修改过；保护位，即该页面是否属于操作系统，如果是则普通进程没有权限访问它<br><img src="/images/计算机中的内存模型之页表项.png" alt="img"><br><img src="/images/计算机中的内存模型之页框号.png" alt="img"></li>
+<li>单一页表: 页表必须连续存放，并且需要常驻内存，当地址空间很大时，页表会占用很大空间</li>
+<li>多级页表: 根据使用过的页面来建立页表，一级索引二级，二级索引内存<br><img src="/images/计算机中的内存模型之多级页表.png" alt="img"></li>
+</ul>
+</li>
+<li>MMU: Memory Management Unit，是CPU管理虚拟存储器和物理存储器的控制线路，同时负责将虚拟地址转换为物理地址，以及提供硬件机制的内存访问授权</li>
+<li>快表TLB: 页表项的缓存，提高页面查询速度</li>
+<li>页错误/缺页异常: 当访问的页面在页表中没有记录或者页表项的有效位为0时，此时产生缺页异常，需要操作系统将磁盘上的数据交换到内存中</li>
+<li>页面置换算法: 针对内存和磁盘上数据的交换，目的是尽量减少页面交换和减少缺页异常，因为磁盘访问比较耗时<ul>
+<li>OPT: 理想页面置换算法，将未来不使用或很久以后才使用的页面置换出内存 <strong>该算法并不能实现，仅仅是页面置换算法的一个衡量标准</strong></li>
+<li>FIFO: 先进先出算法，将最早到来的页面置换出去，简单但不高效</li>
+<li>第二次机会: FIFO的一种改进，即当页面要被置换出去时，如果页表项中的访问位为1，则不置换，而是将访问我设置为0，同时将其放到队列末尾</li>
+<li>时钟算法: 对第二次机会算法的改进，将链式结构改为环形结构，这样就不需要出现将队头放入到队尾的这种比较耗时的操作</li>
+<li>LRU: 最少使用算法，将近期使用次数最少的页置换出去</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>段式管理: 将进程划分为若干个段进行存储，每一个段都是一个逻辑实体，比如程序段、数据段等。通过段表来进行管理，段表中包括段号、段起始点、装入位、段长度等。 <strong>不等长划分</strong></li>
+<li>段/页式管理: 通过段表找到段，再通过段表中的段内偏移(实际是页框号加页内偏移)来找到页<br><img src="/images/计算机中的内存模型之段页式管理.png" alt="img"></li>
+<li>内存映射: 使用<code>mmap</code>函数实现，该函数在内核中建立了文件与虚拟内存空间中某一段内存映射关系，这样该文件便脱离了磁盘文件系统的管理。进程在操作这一段内存时，操作系统自动将对应的数据写入到文件中，而不需要调用效率较低的<code>read</code>,<code>write</code>系统调用函数。同时也可以基于<code>mmap</code>实现不同进程间的文件共享</li>
+<li>写时复制: 使用<code>fork</code>函数创建子进程时，父子进程都通过各自的页表映射打牌物理内存上相同的页，但是当子进程修改内存数据时，由于页表上的访问权限位为只读，此时操作系统为子进程分配新的页</li>
+</ul>
+</li>
+</ul>
+<h2 id="磁盘"><a href="#磁盘" class="headerlink" title="磁盘"></a>磁盘</h2><ul>
+<li>磁盘结构: 通过磁头的转动来获取磁盘上的数据</li>
+</ul>
+<p><img src="/images/计算机中的内存模型之磁盘结构1.png" alt="img"><br><img src="/images/计算机中的内存模型之磁盘结构2.png" alt="img"></p>
+<ul>
+<li>磁盘存取: 通过磁盘控制器来存取数据；磁盘控制器将数据从磁盘读取到IO总线上，然后通过总线传送到内存中。内存此时可以看做是磁盘的一个高速缓存<ul>
+<li>寻道时间: 将磁头组合定位到所在磁道的柱面上需要的时间</li>
+<li>旋转延迟: 等待访问块中第一个扇区转到磁头下的时间</li>
+<li>传输数据: 读写数据时，数据所在磁盘和扇区间的空隙经过磁头的时间</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/计算机中的内存模型之磁盘控制器.png" alt="img"></p>
+<ul>
+<li><p>磁盘调度</p>
+<ul>
+<li>调度算法: 磁盘本身也会根据内存的分页机制来进行分页；由于页面的请求顺序是随机的，但是磁盘控制器控制的磁头组合只有一个，因此需要通过磁盘调度算法实现在最短时间内完成最多的页面请求<ul>
+<li>FCFS: 先来先服务调度算法，将磁盘页面请求排成一个队列，先请求的先服务。优点是公平，缺点是效率太低<br><img src="/images/计算机中的内存模型之磁盘调度算法FCFS.png" alt="img"></li>
+<li>SSTF: 最短寻道时间算法，优先选择距离当前磁头最近的请求。优点是改善了平均请求耗时，缺点是不公平，比如某些距离磁头较远的请求可能长时间得不到响应<br><img src="/images/计算机中的内存模型之磁盘调度算法SSTF.png" alt="img"></li>
+<li>SCAN: 电梯调度算法，当有磁盘页面请求时，将磁头按一个方向移动，当该方向服务完毕后再转换方向，类似电梯。由于磁盘也是高速旋转设备，让它停止并转换方向也是非常耗时的<br><img src="/images/计算机中的内存模型之磁盘调度算法SCAN.png" alt="img"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>磁盘预读和缓冲: 提高磁盘访问的效率，减少磁盘IO的次数</p>
+<ul>
+<li>预读: 每次读取磁盘数据时，总会多读取相邻的几页数据。利用局部性原理，减少磁盘IO的次数</li>
+<li>缓冲: 每次写入磁盘时，并不是立即写入到磁盘中去，而是先添加到缓冲区中，等缓冲区满或有必要的时候再刷新到磁盘中去，减少磁盘IO的次数</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/04/优秀博客收藏/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1761,849 +2539,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/14/架构师必备的技术栈/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/14/架构师必备的技术栈/" itemprop="url">架构师必备的技术栈</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T10:44:26+08:00">
-                2019-02-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/02/14/架构师必备的技术栈/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/14/架构师必备的技术栈/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li><p>计算机基础</p>
-<ul>
-<li>操作系统<ul>
-<li>CPU多级缓存</li>
-<li>进程/线程/协程</li>
-<li>系统空间/用户空间</li>
-<li>I/O模型<ul>
-<li>Block IO</li>
-<li>Non Block IO</li>
-<li>Multiplex IO (Reactor)<ul>
-<li>select</li>
-<li>poll</li>
-<li>epoll</li>
-</ul>
-</li>
-<li>Async IO (Proactor)</li>
-</ul>
-</li>
-<li>Linux原理</li>
-</ul>
-</li>
-<li>体系机构</li>
-<li>数据结构<ul>
-<li>队列</li>
-<li>集合</li>
-<li>链表、数组</li>
-<li>字典、关联数组</li>
-<li>栈</li>
-<li>树<ul>
-<li>二叉树</li>
-<li>完全二叉树</li>
-<li>平衡二叉树</li>
-<li>二叉查找时</li>
-<li>红黑树</li>
-<li>B, B+, B*树</li>
-<li>LSM树</li>
-</ul>
-</li>
-<li>BitSet</li>
-</ul>
-</li>
-<li>算法<ul>
-<li>排序<ul>
-<li>选择排序</li>
-<li>冒泡排序</li>
-<li>插入排序</li>
-<li>快速排序</li>
-<li>归并排序</li>
-<li>希尔排序</li>
-<li>堆排序</li>
-<li>计数排序</li>
-<li>桶排序</li>
-<li>基数排序</li>
-</ul>
-</li>
-<li>查找<ul>
-<li>二分查找</li>
-</ul>
-</li>
-<li>布隆过滤器</li>
-<li>字符串比较<ul>
-<li>KMP算法</li>
-</ul>
-</li>
-<li>深度/广度优先</li>
-<li>贪心算法</li>
-<li>回溯算法</li>
-<li>剪枝算法</li>
-<li>动态规划</li>
-<li>朴素贝叶斯</li>
-<li>推荐算法</li>
-<li>最小生成树</li>
-<li>最短路径</li>
-</ul>
-</li>
-<li>数据库<ul>
-<li>关系型<ul>
-<li>三大范式</li>
-</ul>
-</li>
-<li>Nosql</li>
-</ul>
-</li>
-<li>计算机网络<ul>
-<li>TCP/IP</li>
-<li>HTTP</li>
-<li>短连接/长连接</li>
-<li>序列化框架<ul>
-<li>Protobuf</li>
-</ul>
-</li>
-<li>WebSocket</li>
-</ul>
-</li>
-<li>编程语言<ul>
-<li>静态语言</li>
-<li>动态语言</li>
-<li>函数式</li>
-</ul>
-</li>
-<li>设计模式<ul>
-<li>六大原则</li>
-<li>23种常见设计模式与应用场景</li>
-<li>MVC</li>
-<li>UML</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>常用中间件</p>
-<ul>
-<li>RelationDB<ul>
-<li>Mysql<ul>
-<li>InnoDB/MyISAM</li>
-<li>优化</li>
-<li>索引<ul>
-<li>聚集/非聚集索引</li>
-<li>复合索引</li>
-</ul>
-</li>
-<li>Explain</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>搜索引擎<ul>
-<li>Lucene</li>
-<li>Solr</li>
-<li>Elasticsearch</li>
-<li>Sphinx</li>
-</ul>
-</li>
-<li>WebServer<ul>
-<li>Nginx</li>
-<li>Tomcat</li>
-</ul>
-</li>
-<li>Nosql<ul>
-<li>Redis</li>
-<li>Memcache</li>
-<li>HBase</li>
-</ul>
-</li>
-<li>消息队列<ul>
-<li>消息总线</li>
-<li>Kafka</li>
-<li>Redis</li>
-<li>ZeroMQ</li>
-<li>RabbitMQ</li>
-<li>NSQ</li>
-</ul>
-</li>
-<li>RPC<ul>
-<li>gRPC</li>
-<li>Thrit</li>
-</ul>
-</li>
-<li>日志系统<ul>
-<li>ELK</li>
-</ul>
-</li>
-<li>配置中心<ul>
-<li>Zookeeper</li>
-<li>Etcd</li>
-<li>Consul</li>
-</ul>
-</li>
-<li>大数据<ul>
-<li>流式计算<ul>
-<li>Storm</li>
-<li>Flink</li>
-<li>Kafka Stream</li>
-</ul>
-</li>
-<li>Hadoop<ul>
-<li>HDFS</li>
-<li>MapReduce</li>
-<li>Yarn</li>
-</ul>
-</li>
-<li>Spark</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>高性能问题</p>
-<ul>
-<li>高并发问题<ul>
-<li>多线程/多协程</li>
-<li>线程/协程安全</li>
-<li>I/O模型 Reactor/Proactor</li>
-<li>一致性与事务<ul>
-<li>ACID</li>
-<li>事务的隔离级别</li>
-<li>MVCC</li>
-</ul>
-</li>
-<li>锁<ul>
-<li>悲观/乐观锁</li>
-<li>读写锁</li>
-<li>可重入/不可重入</li>
-<li>RingBuffer</li>
-<li>CopyOnWrite</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>负载均衡</li>
-<li>读写分离</li>
-<li>分库分表</li>
-<li>Nosql</li>
-</ul>
-</li>
-<li><p>高可用问题</p>
-</li>
-<li><p>高可扩展性</p>
-</li>
-<li><p>分布式</p>
-</li>
-<li><p>微服务</p>
-<ul>
-<li>ServiceMesh</li>
-</ul>
-</li>
-<li><p>安全</p>
-<ul>
-<li>Web安全<ul>
-<li>XSS</li>
-<li>CSRF</li>
-<li>SQL注入</li>
-<li>脚本注入</li>
-</ul>
-</li>
-<li>DDos防范</li>
-<li>加密解密<ul>
-<li>对称加密</li>
-<li>非对称加密</li>
-</ul>
-</li>
-<li>授权认证<ul>
-<li>RBAC</li>
-<li>JWT</li>
-<li>OAuth2.0</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>运维部署</p>
-<ul>
-<li>监控</li>
-<li>CI/CD</li>
-<li>运维自动化</li>
-<li>容器技术<ul>
-<li>Docker</li>
-<li>K8S</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>项目管理</p>
-<ul>
-<li>架构评审</li>
-<li>重构</li>
-<li>代码规范</li>
-<li>代码审查</li>
-<li>看板管理</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/12/TCP-IP协议/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/12/TCP-IP协议/" itemprop="url">TCP/IP协议</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-12T17:36:12+08:00">
-                2019-02-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程技术/" itemprop="url" rel="index">
-                    <span itemprop="name">编程技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/02/12/TCP-IP协议/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/12/TCP-IP协议/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>TCP/IP是一个协议簇，有多个协议组成<br>从上往下，可以将TCP/IP分为四层，分别为</p>
-<ul>
-<li>应用层: 负责向用户提供具体的应用服务 HTTP/DNS/FTP等 <strong>应用层数据</strong></li>
-<li>传输层: 负责两台计算机间的数据传输 TCP/UDP<ul>
-<li>TCP <strong>TCP报文段(Segment)</strong><ul>
-<li>提供字节流服务，使用包序号和重传机制实现可靠数据传输</li>
-<li>面向连接，使用SYNC、ACK标志位进行握手，使用FIN、ACK标志位进行挥手</li>
-<li>使用滑动窗口实现流量控制</li>
-<li>使用慢开始、拥塞避免、快重传和快恢复进行拥塞控制</li>
-</ul>
-</li>
-<li>UDP<ul>
-<li>提供数据报文服务，不可靠</li>
-<li>不面向连接</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>网络层: 负责根据IP地址、MAC地址、ARP协议和路由对网络上数据包进行寻址 IP、TGMP、ICMP <strong>IP数据报(Datagram)</strong></li>
-<li>数据链路层: 负责网络连接的硬件部分 ARP、RARP和Ethernet等 <strong>帧(Frame)</strong></li>
-</ul>
-<p><img src="/images/TCP IP之七层与四层模型.png" alt="七层与四层模型"></p>
-<p>数据的流动在发送端为自上向下，在接收端为自下向上<br>在发送端的层与层之间传输数据时，每经过一层时会增加一个该层的首部信息；反之在接收端层与层之间传输时，每经过一层会把该层对应的首部消去</p>
-<p><img src="/images/TCP IP之数据通信过程.png" alt="数据通信过程"></p>
-<ul>
-<li>TCP首部格式</li>
-</ul>
-<p><img src="/images/TCP首部格式.png" alt="TCP首部"></p>
-<ul>
-<li>TCP的三次握手<ul>
-<li>TCP服务器进程创建传输控制块TCB, 时刻准备接受客户端进程的连接请求, 进入了LISTEN状态</li>
-<li>TCP客户端进程创建传输控制块TCB, 然后向服务器发出连接请求报文，报文首部中的同步标志位SYN=1，同时选择一个初始序列号seq=x，此时TCP客户端进程进入了SYN-SENT状态</li>
-<li>TCP服务器收到请求报文后, 如果同意连接, 则发出确认报文。确认报文中的ACK=1，SYN=1，ack=x+1，同时也要为自己初始化一个序列号seq=y，此时TCP服务器进程进入SYN-RCVD状态</li>
-<li>TCP客户端进程收到确认后向服务器给出确认报文，报文的ACK=1，ack=y+1，seq=x+1</li>
-<li>TCP连接建立，客户端进入ESTABLISHED状态。当服务器收到客户端的确认后也进入ESTABLISHED状态，此后双方就可以开始通信</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/TCP三次握手.gif" alt="TCP三次握手"></p>
-<p>为什么不用两次握手?</p>
-<p>为了防止已经失效的连接请求报文突然又传送到了服务器，从而产生错误和浪费服务器资源。假设有这样一种场景，客户端发送的第一个请求连接并且没有丢失，只是因为在网络中滞留的时间太长了，由于TCP的客户端迟迟没有收到确认报文，以为服务器没有收到，此时重新向服务器发送这条报文，此后客户端和服务器经过两次握手完成连接，传输数据，然后关闭连接。此时之前滞留的那一次请求连接，因为网络通畅了, 到达了服务器，这个报文本该是失效的，但是，两次握手的机制将会让客户端和服务器再次建立连接，这将导致不必要的错误和资源的浪费。如果采用的是三次握手，就算是那一次失效的报文传送过来了，服务端接受到了那条失效报文并且回复了确认报文，但是客户端不会再次发出确认。由于服务器收不到确认，就知道客户端并没有请求连接。</p>
-<ul>
-<li>TCP的四次挥手<ul>
-<li>客户端进程发出连接释放报文，并且停止发送数据。报文首部FIN=1，seq=u此时客户端进入FIN-WAIT-1（终止等待1）状态</li>
-<li>服务器收到连接释放报文，发出确认报文ACK=1，ack=u+1，并且带上自己的序列号seq=v，此时服务端就进入了CLOSE-WAIT（关闭等待）状态</li>
-<li>TCP服务器通知上层的应用进程，客户端向服务器的方向释放，此时处于半关闭状态，即客户端已经没有数据要发送了；但服务器若发送数据，客户端依然要接受。这个状态还要持续一段时间，也就是整个CLOSE-WAIT状态持续的时间</li>
-<li>客户端收到服务器的确认请求后，此时客户端就进入FIN-WAIT-2（终止等待2）状态，等待服务器发送连接释放报文（在这之前还需要接受服务器发送的最终数据）</li>
-<li>服务器将最后的数据发送完毕后，就向客户端发送连接释放报文FIN=1，确认序号为v+1，由于在半关闭状态，服务器很可能又发送了一些数据，假定此时的序列号为seq=w，此时服务器就进入了LAST-ACK（最后确认）状态，等待客户端的确认报文</li>
-<li>客户端收到服务器的连接释放报文后，必须发出确认报文ACK=1，ack=w+1，seq=u+1，此时客户端就进入了TIME-WAIT（时间等待）状态。注意此时TCP连接还没有释放，必须经过2∗MSL（最长报文段寿命）的时间后，当客户端撤销相应的TCB后，才进入CLOSED状态</li>
-<li>服务器只要收到了客户端发出的确认，立即进入CLOSED状态。同样撤销TCB后，就结束了这次的TCP连接。可以看到，服务器结束TCP连接的时间要比客户端早一些</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/TCP四次挥手.gif" alt="TCP四次挥手"></p>
-<p>为什么最后客户端还要等待2*MSL的时间呢?</p>
-<p>MSL（Maximum Segment Lifetime），这是一个IP数据包能生存的最长时间，TCP允许不同的实现可以设置不同的MSL值。第一，保证客户端发送的最后一个ACK报文能够到达服务器，因为这个ACK报文可能丢失，站在服务器的角度看来，我已经发送了FIN+ACK报文请求断开了，客户端还没有给我回应，应该是我发送的请求断开报文它没有收到，于是服务器又会重新发送一次，而客户端就能在这个2MSL时间段内收到这个重传的报文，接着给出回应报文，并且会重启2MSL计时器。第二，防止类似与“三次握手”中提到了的“已经失效的连接请求报文段”出现在本连接中。客户端发送完最后一个确认报文后，在这个2MSL时间中，就可以使本连接持续的时间内所产生的所有报文段都从网络中消失。这样新的连接中不会出现旧连接的请求报文</p>
-<ul>
-<li>IP分片机制和TCP分段机制</li>
-</ul>
-<p>MTU（Max Transmision Unit，最大传输单元，以太网一般为1500字节），数据链路层的数据帧的最大长度；IP分片机制主要就是为了解决不同物理网络MTU不同造成的问题<br>IP协议在传输数据包时，如果IP数据包+数据帧头部之后的长度大于MTU的话，会在发送端将数据报文分为若干片进行传输，在接收端将这些分片进行重组，这个过程称为分片<br>IP分片机制对于传输层是透明的，每一个分片中包含IP首部，IP数据包的ID、该分片相对于数据包的偏移量、是否还有新分片的标识位，IP层使用这些信息进行分片重组<br>IP分片在到达发送端时，这些分片可能是乱序的，由于IP层没有重传和超时机制，因此当来自TCP的部分IP分片丢失时，需要整个TCP数据包进行重传 <strong>影响传输效率</strong></p>
-<p>MSS（Max Segmentation Size最大分段长度，以太网一般为1460字节）为TCP数据包每次能够传输的最大数据长度，一般通过传输双方在建立连接时协商确定；TCP分段的原因是为了满足MSS的要求<br>一般来讲，MTU往往大于MSS，从而避免IP分片；由于UDP没有限定数据包大小，因此IP分片往往发生在UDP传输中</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/12/图解HTTP/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/12/图解HTTP/" itemprop="url">图解HTTP</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-12T17:30:12+08:00">
-                2019-02-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程技术/" itemprop="url" rel="index">
-                    <span itemprop="name">编程技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/02/12/图解HTTP/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/12/图解HTTP/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>URI: 统一资源标识符</p>
-<ul>
-<li>协议方案名: 如http/https，指定访问资源时使用的协议类型</li>
-<li>登录认证信息: 可选项。指定用户名和密码作为从服务器获取资源时的登录认证信息</li>
-<li>服务器地址: 可以是DNS可解析的域名或IP地址</li>
-<li>服务器端口号: 可选项。指定服务器连接的端口号，默认为协议对应的默认端口号</li>
-<li>带层次的文件路径: 指定资源在服务器上的绝对路径，与UNIX文件系统目录类似</li>
-<li>查询字符串: 可选项。指定资源的查询条件</li>
-<li>片段标识符: 可选项。指定资源中的子资源(文档的某个位置)</li>
-</ul>
-<p><img src="/images/URI格式.png" alt="URI的格式"></p>
-<p>HTTP: 超文本传输协议</p>
-<ul>
-<li>基本上所有的Web项目都遵从该协议，绝大多数使用的是HTTP/1.1版本，最新的版本为HTTP/2.0</li>
-<li>属于TCP/IP协议族中的应用层协议</li>
-<li><p>是一种无状态协议</p>
-</li>
-<li><p>HTTP请求</p>
-<ul>
-<li>请求行: 请求方法(GET/POST/DELETE/PUT/HEAD等) + URI + HTTP版本号</li>
-<li>请求首部字段: HTTP请求首部，如Authorization、Host、Origin等</li>
-<li>请求内容实体: 请求的参数</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/HTTP请求方法.png" alt="HTTP请求方法"></p>
-<ul>
-<li>HTTP响应<ul>
-<li>响应行: HTTP版本号 + 响应状态码(200, 301, 404, 501等) + 原因短语(OK，Not Authorized等)</li>
-<li>响应首部字段: HTTP响应首部，如Content-Type、Content-Length等</li>
-<li>响应内容实体: 响应内容</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/HTTP响应状态码.png" alt="HTTP响应状态码"></p>
-<p><img src="/images/HTTP请求和响应报文结构.png" alt="HTTP请求与响应报文"></p>
-<ul>
-<li>HTTP首部: 用于在客户端和服务端之间进行协调</li>
-</ul>
-<p>通用首部:<br><img src="/images/HTTP通用首部.png" alt="HTTP通用首部"></p>
-<p>请求首部:<br><img src="/images/HTTP通用首部.png" alt="HTTP请求首部"></p>
-<p>响应首部:<br><img src="/images/HTTP通用首部.png" alt="HTTP响应首部"></p>
-<p>实体首部:<br><img src="/images/HTTP通用首部.png" alt="HTTP实体首部"></p>
-<ul>
-<li><p>HTTP首部字段根据是否缓存代理分成2种类型</p>
-<ul>
-<li>端到端首部(End-to-end Header): 此类别中的首部会转发给请求/响应对应的最终接收目标，且必须保存在由缓存生成的响应中，另外规定它必须被转发</li>
-<li>逐跳首部(Hop-by-hop Header): 此类别中的首部只对单次转发有效，会因通过缓存或代理而不再转发。HTTP/1.1和之后版本中，如果要使用hop-by-hop首部，需提供Connection首部字段</li>
-</ul>
-</li>
-<li><p>使用合适的编码提升传输速率，但是会消耗更多的CPU资源(Accept-Encoding请求头和Content-Encoding响应头)</p>
-</li>
-<li><p>可以发送获取部分内容的范围请求(Range请求头和Content-Range响应头)</p>
-</li>
-<li><p>使用持久连接减少通信数据: 多个请求可以复用同一个TCP连接，避免无谓的TCP建立和断开，减少通信开销。在 HTTP/1.1中，默认开启<code>Connection:keep-alive</code>，所有的连接默认都是持久连接</p>
-</li>
-<li><p>HTTP通信时，可以使用代理、隧道、缓存进行通信数据的转发</p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2654,7 +2589,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">86</span>
+                  <span class="site-state-item-count">89</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2676,7 +2611,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">156</span>
+                  <span class="site-state-item-count">162</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

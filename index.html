@@ -249,6 +249,661 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/GlusterFS-入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/07/GlusterFS-入门/" itemprop="url">GlusterFS-入门</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-07T15:36:27+08:00">
+                2019-05-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/05/07/GlusterFS-入门/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/05/07/GlusterFS-入门/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="基本特点"><a href="#基本特点" class="headerlink" title="基本特点"></a>基本特点</h2><ul>
+<li>使用TCP/IP网络协议将物理上分布的存储资源聚集一起，形成统一的、可以弹性扩展的存储资源池</li>
+<li>使用全局命名空间来管理数据存储池，对上层应用屏蔽了底层的物理存储</li>
+<li>使用弹性哈希算法在存储池中定位数据，优化了数据分布，不再依赖元数据服务器，避免了单点故障，同时提高了可扩展性</li>
+<li>高可用性，可以对文件自动进行复制和修复，从而保证数据的可用性</li>
+<li>适合存储大文件，对于小文件性能较差</li>
+</ul>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
+<li>Brick<ul>
+<li>基本的存储单元，是存储池中某个服务器上的一个导出目录</li>
+<li>通过<code>Node:/Export</code>来表示</li>
+<li>底层是RAID或磁盘经XFS、EXT文件系统</li>
+<li>每一个Node上面的Brick数量不限</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/GlusterFS之Brick.png" alt="img"></p>
+<ul>
+<li><p>Volume</p>
+<ul>
+<li>一组Bricks的集合，每个Node上的不同Brick可以属于不同的Volume</li>
+<li>是一个可以在Client上挂载的目录</li>
+<li>分为以下几类<ul>
+<li>分布式卷<ul>
+<li>文件根据弹性哈希算法分布在不同的Brick中</li>
+<li>单个Brick失效会导致数据丢失</li>
+</ul>
+</li>
+<li>复制卷<ul>
+<li>自动复制卷中所有的目录和文件，副本数量一般为2或3</li>
+<li>当Node故障或Brick失效时数据仍可用</li>
+<li>需要通过事务保证数据的一致性</li>
+</ul>
+</li>
+<li>条带卷<ul>
+<li>文件切分为多个Chunk，存放在不同的Brick中</li>
+<li>一般当文件比较大的时候使用</li>
+<li>当Brick失效会导致数据丢失</li>
+</ul>
+</li>
+<li>分布式复制卷<ul>
+<li>最常见的使用方式</li>
+<li>具有分布式卷和复制卷的优点</li>
+</ul>
+</li>
+<li>条带复制卷</li>
+<li>分布式条带复制卷</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>GFID: GlusterFS的Volume中每一个文件或目录的唯一标识，类似于inode</p>
+</li>
+<li>Namespace: 每一个Volume都导出为单个命名空间，作为POSIX的挂载点</li>
+<li><p>Node</p>
+<ul>
+<li>物理上的存储设备，包含若干个Brick</li>
+<li>各个Node之间是对等关系</li>
+<li>每个Node都存储了整个集群的配置信息，需要保证节点间配置信息的一致性</li>
+</ul>
+</li>
+<li><p>Trusted Storage Pool: 由多个Node组成的存储池，其中的Node可以动态加入和删除</p>
+</li>
+<li>Client: 挂载了GlusterFS中的Volume，并对Volume进行读写的客户端</li>
+</ul>
+<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><ul>
+<li>在每一个Node上启动gluster服务</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service glusterd start</span><br></pre></td></tr></table></figure>
+<ul>
+<li>添加和删除Node: 通过一个Node来邀请其他Node加入</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> on node1</span><br><span class="line">gluster peer probe node2</span><br><span class="line">gluster peer detach node3</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查看Node状态</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gluster peer status</span><br></pre></td></tr></table></figure>
+<ul>
+<li>创建分布式卷</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gluster volume create test-volume node1:/export1 node2:/export2</span><br></pre></td></tr></table></figure>
+<p><img src="/images/GlusterFS之分布式卷.png" alt="img"></p>
+<ul>
+<li>创建复制卷</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gluster volume create test-volume replica 2 transport tcp node1:/export1 node2:/export2</span><br></pre></td></tr></table></figure>
+<p><img src="/images/GlusterFS之复制卷.png" alt="img"></p>
+<ul>
+<li>启动/停止/删除数据卷</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gluster volume start test-volume</span><br><span class="line">gluster volume stop test-volume</span><br><span class="line">gluster volume delete test-volume</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查看数据卷信息和状态</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gluster volume info</span><br><span class="line">gluster volume status</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在Client上挂载数据卷</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount.glusterfs node1:/test-volume /mnt/gluster</span><br></pre></td></tr></table></figure>
+<h2 id="使用流程"><a href="#使用流程" class="headerlink" title="使用流程"></a>使用流程</h2><ul>
+<li>在Client上启动GlusterFS客户端，此时会向OS注册一个FUSE文件系统，该FUSE文件系统和EXT文件系统位于同一层次，EXT文件系统对本地磁盘进行处理，而FUSE将数据通过/dev/fuse设备文件递交给GlusterFS客户端</li>
+<li>在Clien上将GlusterFS进行挂载，被挂载的目录对Client是透明的，Client不会察觉到它是本地文件系统还是分布式文件系统</li>
+<li>在Client上用户对该目录进行读写操作，该操作被交给OS的VFS进行处理，最终递交给GlusterFS客户端进行处理</li>
+<li>GlusterFS客户端将读写操作递交给GlusterFS服务端进行处理，最终将数据从存储池中读取并返回或将数据写入存储池中</li>
+</ul>
+<p><img src="/images/GlusterFS之读写流程.png" alt="img"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/19/MongoDB之索引/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/19/MongoDB之索引/" itemprop="url">MongoDB之索引</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-19T13:22:33+08:00">
+                2019-04-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/19/MongoDB之索引/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/04/19/MongoDB之索引/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/18/MongoDB入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/18/MongoDB入门/" itemprop="url">MongoDB入门</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-18T17:53:36+08:00">
+                2019-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/18/MongoDB入门/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/04/18/MongoDB入门/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>BSON结构的、面向文档的NoSQL数据库</p>
+<h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ul>
+<li>高性能</li>
+<li>丰富的查询形式</li>
+<li>基于ReplicaSet的高可用</li>
+<li>基于Sharding的水平扩展</li>
+<li>支持多个存储引擎</li>
+</ul>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
+<li><p>DataBase: 数据库，包含很多Collection</p>
+</li>
+<li><p>Collection: 数据集合，包含很多Document</p>
+</li>
+<li><p>Document: BSON格式的文档，是可以操作的最小单位</p>
+<ul>
+<li>包含多个字段，且可以嵌套</li>
+<li><code>_id</code>字段作为Document的默认主键，并为其添加唯一索引</li>
+<li>使用<code>field1.field2</code>来获取嵌套字段值</li>
+<li>使用<code>field1.index</code>来获取数组字段的某个元素值</li>
+</ul>
+</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><ul>
+<li><p>启动参数</p>
+<ul>
+<li><code>--config</code>或<code>-f</code>: 配置文件路径</li>
+<li><code>--logpath</code>: 日志文件路径</li>
+<li><code>--dbpath</code>: 数据存储路径</li>
+<li><code>--auth</code>: 启动用户认证</li>
+<li><code>--port</code>: 监听的端口号</li>
+</ul>
+</li>
+<li><p>Docker</p>
+<ul>
+<li><code>docker container run -d -p 27017:27017 -v mongo_data:/data/db --name MyMongo mongo</code></li>
+</ul>
+</li>
+<li><p>Kubernetes: <a href="https://docs.mongodb.com/kubernetes-operator/stable/tutorial/install-k8s-operator/" target="_blank" rel="noopener">MongoDB</a></p>
+</li>
+</ul>
+<h2 id="Shell使用"><a href="#Shell使用" class="headerlink" title="Shell使用"></a>Shell使用</h2><ul>
+<li>使用<code>mongo --username --password --authenticationDatabase --host --port</code>连接MongoDB数据库并进入Shell</li>
+<li>常用命令<ul>
+<li>help: 查看帮助</li>
+<li>show dbs: 查看系统中的Database</li>
+<li>use dbName: 使用某一个Database</li>
+<li>db: 查看当前使用的Database</li>
+<li>db.colName.xxx: 对某个Database的某个Collection进行CURD等操作</li>
+</ul>
+</li>
+</ul>
+<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><ul>
+<li>插入: 如果插入的Document没有<code>_id</code>字段，系统会自动创建该字段<ul>
+<li><code>insertOne</code></li>
+<li><code>insertMany</code></li>
+</ul>
+</li>
+<li>读取<ul>
+<li><code>find</code><ul>
+<li>如果没有提供查询条件，默认列出所有Document</li>
+<li><code>find({&quot;field1&quot;: &quot;value1&quot;})</code>，列出字段field1值为value1的Document</li>
+<li><code>find({&quot;field1&quot;: {&quot;$in&quot;: [&quot;value1&quot;, &quot;value2&quot;]}})</code>，列出字段field1值为value1或value2的Document</li>
+<li><code>find({&quot;field1&quot;: &quot;value1&quot;}, {&quot;field2&quot;: &quot;value2&quot;})</code>，列出同时满足多个条件Document</li>
+<li><code>find({&quot;$or&quot;:[{&quot;field1&quot;: &quot;value1&quot;}, {&quot;field2&quot;: &quot;value2&quot;}]})</code>，列出至少满足一个条件Document</li>
+<li><code>find({&quot;field1&quot;: &quot;value1&quot;}, {&quot;$or&quot;:[{&quot;field2&quot;: &quot;value2&quot;}, {&quot;field3&quot;: &quot;value3&quot;}]})</code>，列出满足多个条件的Document</li>
+<li><code>find({&quot;field1&quot;: {&quot;$regex&quot;: &quot;value1&quot;}})</code>，列出满足正则表达式条件的Document</li>
+<li><code>find({&quot;field1.field2&quot;: &quot;value1&quot;})</code>，列出嵌套字段满足条件的Document</li>
+<li><code>find({&quot;arrayField&quot;: {&quot;$all&quot;: [&quot;item1&quot;, &quot;item2&quot;]}})</code>，列出满足数组字段条件的Document</li>
+<li><code>find({&quot;arrayField&quot;: &quot;item1&quot;)</code>，列出数组字段元素中至少包含等于该字段值的Document</li>
+<li><code>find({&quot;arrayField&quot;: {&quot;$gt&quot;: &quot;item1&quot;})</code>，列出数组字段元素中至少包含一个满足条件的Document</li>
+<li><code>find({&quot;arrayField.0&quot;: {&quot;$gt&quot;: &quot;item1&quot;})</code>，列出数组字段中第一个元素中满足条件的Document</li>
+<li><code>find({&quot;arrayField&quot;: {&quot;$size&quot;: 3})</code>，列出数组字段长度为3的Document</li>
+<li>其它常用的操作符包括: <code>$eq</code>,<code>$ne</code>,<code>$nin</code>,<code>$lt</code>,<code>$gt</code>,<code>$lte</code>,<code>$gte</code> <a href="https://docs.mongodb.com/manual/reference/operator/query/" target="_blank" rel="noopener">“Query Operators”</a></li>
+<li><code>find({&quot;field1&quot;: &quot;value1&quot;}, {&quot;field1&quot;: 1, &quot;field2&quot;: 1, &quot;field3.field4&quot;: 1})</code>: 设置查询返回的Document字段列表，默认返回所有字段</li>
+<li><code>find({&quot;field1&quot;: &quot;value1&quot;}, {&quot;field1&quot;: 0, &quot;field2&quot;: 0})</code>: 设置查询不返回的Document字段列表</li>
+<li><code>find({&quot;field1&quot;: {&quot;$type&quot;: 10})</code>: 列出字段类型满足条件的Document <a href="https://docs.mongodb.com/manual/reference/bson-types/" target="_blank" rel="noopener">“BSON Types”</a></li>
+<li><code>find({&quot;field1&quot;: {&quot;$exists&quot;: false})</code>: 列出该字段不存在的Document</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>更新: 更新参数格式为<code>&lt;filter&gt;, &lt;update&gt;, &lt;options&gt;</code>，通过filter提供查询条件，对满足条件的Document进行更新<ul>
+<li><code>updateOne</code></li>
+<li><code>updateMany</code></li>
+<li><code>replaceOne</code></li>
+<li>更新常用的操作符包括<code>$set</code> <a href="https://docs.mongodb.com/manual/reference/operator/update/" target="_blank" rel="noopener">“Update Operators”</a></li>
+</ul>
+</li>
+<li>删除: 与读取操作类似，需要提供查询条件，然后删除满足条件的Document<ul>
+<li><code>deleteOne</code></li>
+<li><code>deleteMany</code></li>
+</ul>
+</li>
+<li>BulkWrite操作: 提供了对单个文档的批量操作功能</li>
+<li>MongoDB VS SQL: <a href="https://docs.mongodb.com/manual/reference/sql-comparison/" target="_blank" rel="noopener">“Comparison”</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/16/Kubernetes中的Dashboard/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1938,657 +2593,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/20/Kubernetes中的有状态Pod控制器/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/20/Kubernetes中的有状态Pod控制器/" itemprop="url">Kubernetes中的有状态Pod控制器</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-20T14:18:32+08:00">
-                2019-03-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/20/Kubernetes中的有状态Pod控制器/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/20/Kubernetes中的有状态Pod控制器/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>有状态Pod的控制器: 每一个Pod会被单独进行管理</p>
-<ul>
-<li><p>有状态Pod的部署方式</p>
-<ul>
-<li>使用StatefulSet控制器来管理</li>
-<li>使用Headless Service来暴露<ul>
-<li>普通的Service所管理的一组Pod是无序的，Headless Service会给所管理的每一个Pod赋予唯一标识，使得它们有序</li>
-<li>对Headless Service的名称DNS解析得到的直接是有状态Pod的IP地址列表</li>
-</ul>
-</li>
-<li>使用VolumeClaimTemplates来创建存储卷<ul>
-<li>有状态Pod中每一个Pod所使用的存储卷是不同的</li>
-<li>无法在有状态Pod中定义自己使用的存储卷，而是在StatefulSet中使用volumeClaimTemplates来定义</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>StatefulSet</p>
-<ul>
-<li>功能<ul>
-<li>对有状态服务的Pod进行控制管理，每一个Pod都会被单独管理</li>
-<li>支持扩缩容，当replicas字段值发生变化后会自动调整所管理的Pod副本数量</li>
-<li>支持滚动更新，通过partition值设置需要被更新的Pod列表</li>
-<li>支持版本回滚，使用方式和Deployment类似</li>
-</ul>
-</li>
-<li>对Pod的要求<ul>
-<li>每一个Pod具备稳定且唯一的网络标识符</li>
-<li>每一个Pod具备稳定且持久的存储</li>
-<li>Pod支持有序、平滑地部署和扩展</li>
-<li>Pod支持有序、平滑的删除和终止</li>
-<li>Pod支持有序的滚动更新</li>
-</ul>
-</li>
-<li>spec字段<ul>
-<li><code>revisionHistoryLimit</code>: StatefulSet可以保留的历史版本数量，从而支持版本回滚</li>
-<li><code>podManagementPolicy</code>: Pod在初始化的启动策略，OrderedReady、Parallel</li>
-<li><code>replica</code>: Pod的副本数</li>
-<li><code>selector</code>: Pod标签选择器，用来筛选符合条件的Pod列表</li>
-<li><code>serviceName</code>: 管理Pod的服务名称，同时自动给每一个Pod分配唯一标识符，可以被DNS解析 <strong>POD_NAME.SVC_NAME.NS_NAME.svc.cluster.local</strong></li>
-<li><code>template</code>: 创建Pod的模板</li>
-<li><code>updateStrategy</code>: Pod的更新策略。使用滚动更新机制时，可以更新编号大于等于partition的Pod；通过不断减少partition的值为0，完成所有Pod的更新</li>
-<li><code>volumeClaimTemplates</code>: 在Pod中创建PVC的模板。该机制可以保证每一个Pod始终与相同的PVC进行绑定，当Pod重新创建后数据不会丢失</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/19/Kubernetes中的无状态Pod控制器/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/19/Kubernetes中的无状态Pod控制器/" itemprop="url">Kubernetes中的无状态Pod控制器</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-19T17:52:56+08:00">
-                2019-03-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/19/Kubernetes中的无状态Pod控制器/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/19/Kubernetes中的无状态Pod控制器/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>无状态Pod的控制器: 将一组Pod看做一个整体，不关注单个Pod</p>
-<ul>
-<li><p>ReplicaSet</p>
-<ul>
-<li>功能<ul>
-<li>维护一组Pod的持续运行并保证一定数量的Pod能够在集群中正常运行。会持续监视所管理的Pod的状态，当Pod发生故障而数量减少时会启动Pod的副本</li>
-<li>支持水平扩缩容，当replicas字段值发生变化后会自动调整所管理的Pod副本数量</li>
-<li>不支持自动滚动更新和版本回滚，当template中的镜像发生变化后不会立即使用新镜像来启动新的Pod副本，只有当Pod发生故障或被手动删除而需要重启时，才会使用新的镜像</li>
-</ul>
-</li>
-<li>spec字段<ul>
-<li><code>replicas</code>: Pod的副本数量</li>
-<li><code>selector</code>: 标签选择器，用来过滤出自己所管理的Pod<ul>
-<li><code>matchLabels</code>: 直接给定标签的KV对</li>
-<li><code>matchExpressions</code>: 基于给定的表达式来定义标签选择器</li>
-</ul>
-</li>
-<li><code>template</code>: 当控制器需要创建Pod副本时使用的模板<ul>
-<li><code>metadata</code>: 所管理的Pod的元数据信息</li>
-<li><code>spec</code>: 所管理的Pod的spec信息</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Deployment</p>
-<ul>
-<li>功能<ul>
-<li>基于ReplicaSet之上，在创建Deployment或者更新Deployment配置时会自动创建对应的ReplicaSet</li>
-<li>可以同时管理多个ReplicaSet，并且只有一个ReplicaSet处于激活状态，从而能够方便提供滚动更新、版本回滚、水平扩缩容等功能</li>
-<li>在进行滚动更新时，可以设置更新的粒度，即每次更新和删除Pod的数量</li>
-<li>当replicas或template等字段发生变化时，自动按照设置的更新策略进行更新，不需要手动操作；同时变更的详细信息会被自动添加到Deployment的Annotations中</li>
-<li><code>kubectl rollout</code><ul>
-<li><code>history</code>: 查看Deployment中ReplicaSet的历史版本</li>
-<li><code>undo</code>: 进行Deployment历史ReplicaSet的版本回滚</li>
-<li><code>pause</code>: 将Deployment控制器暂停</li>
-<li><code>resume</code>: 将Deployment从暂停中恢复运行</li>
-<li><code>status</code>: 查看Deployment进行更新的过程</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>spec字段: 除了ReplicaSet的spec字段之外，还包括<ul>
-<li><code>paused</code>: 设置Deployment控制器是否暂停</li>
-<li><code>revisionHistoryLimit</code>: Deployment可以保留的历史ReplicaSet数量，从而支持版本回滚</li>
-<li><code>strategy</code>: 设置使用新Pod替换旧Pod的策略，可以为Recreate、RollingUpdate</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Kubernetes之Deployment与ReplicaSet.png" alt="img"></p>
-<ul>
-<li><p>DaemonSet</p>
-<ul>
-<li>功能<ul>
-<li>在集群的所有Node节点或者符合Node选择器要求的节点上部署基础服务和守护进程，并且确保某种Pod在节点上只运行一个</li>
-<li>支持滚动更新、版本回滚等操作</li>
-</ul>
-</li>
-<li>spec字段<ul>
-<li><code>revisionHistoryLimit</code>: DaemonSet可以保留的历史版本数量，从而支持版本回滚</li>
-<li><code>selector</code>: 标签选择器，用来过滤出自己所管理的Pod</li>
-<li><code>template</code>: 当控制器需要创建Pod副本时使用的模板</li>
-<li><code>updateStrategy</code>: 设置使用新Pod替换旧Pod的策略，可以为RollingUpdate或OnDelete</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Job</p>
-<ul>
-<li>功能<ul>
-<li>对一次性任务进行管理，而不是持续运行的守护进程。可以创建并保证一定数量的Pod成功停止</li>
-</ul>
-</li>
-<li>spec字段<ul>
-<li><code>selector</code>: 标签选择器，用来过滤出自己所管理的Pod</li>
-<li><code>template</code>: 当控制器需要创建Pod副本时使用的模板</li>
-<li><code>completions</code>: 任务对应的需要成功完成的Pod数量</li>
-<li><code>parallelism</code>: 任务对应的Pod可以并行运行的数量</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>CronJob</p>
-<ul>
-<li>功能: 用于对周期性的、不需要持续运行的任务进行管理</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/19/Kubernetes中的Pod/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/19/Kubernetes中的Pod/" itemprop="url">Kubernetes中的Pod</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-19T13:43:17+08:00">
-                2019-03-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/19/Kubernetes中的Pod/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/19/Kubernetes中的Pod/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Pod: Kubernetes中的最小调度单元，可以包含一个或多个容器</p>
-<h2 id="Pod资源的spec字段"><a href="#Pod资源的spec字段" class="headerlink" title="Pod资源的spec字段"></a>Pod资源的spec字段</h2><ul>
-<li><code>containers</code>: Pod使用的容器列表，一个Pod中可以含有多个容器<ul>
-<li><code>args</code>: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数</li>
-<li><code>command</code>: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中</li>
-<li><code>env</code>: 容器中的环境变量，可以直接指定值，也可以从ConfigMap、Secret等指定值<ul>
-<li><code>name</code>: 环境变量名称</li>
-<li><code>value</code>: 直接指定的环境变量值</li>
-<li><code>valueFrom</code>: 从其他源指定环境变量值<ul>
-<li><code>configMapKeyRef</code>: 从ConfigMap中指定</li>
-<li><code>fieldRef</code>: 从当前Pod字段描述中指定</li>
-<li><code>resourceFieldRef</code>: 从当前容器资源描述中指定</li>
-<li><code>secretKeyRef</code>: 从Secret中指定</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><code>name</code>: 容器名称</li>
-<li><code>image</code>: 容器使用的镜像</li>
-<li><code>imagePullPolicy</code>: 拉取镜像的方式，可选值为Always、Never、IfNotPresent</li>
-<li><code>lifecycle</code>: 设置容器在启动后和结束前的钩子操作，包括ExecAction执行自定义命令、TCPSocketAction向指定的TCP端口发送请求、HTTPGetAction向指定的HTTP服务发送请求<ul>
-<li><code>postStart</code></li>
-<li><code>preStop</code></li>
-</ul>
-</li>
-<li><code>livenessProbe</code>: 容器存活的探测方式，包括ExecAction执行自定义命令、TCPSocketAction向指定的TCP端口发送请求、HTTPGetAction向指定的HTTP服务发送请求</li>
-<li><code>readinessProbe</code>: 容器启动后是否就绪的探测方式，只有当容器就绪之后才会被加入到对应Service的EndPoints中，被外部访问，支持的探测方式和livenessProbe相同</li>
-<li><code>ports</code>: 需要从容器中暴露的端口列表，仅仅是给系统提供关于容器端口使用的信息。如果不指定，并不会阻止容器中的进程使用的端口被暴露</li>
-<li><code>resources</code>: 容器需要使用的系统资源列表</li>
-<li><code>volumeMounts</code>: 存储卷在容器中的挂载点</li>
-</ul>
-</li>
-<li><code>hostIPC</code>: 设置Pod中的容器是否与共享Node节点的IPC名称空间</li>
-<li><code>hostNetwork</code>: 设置Pod中的容器是否与共享Node节点的Network名称空间，此时可以直接访问Node地址来直接访问Pod，而不再需要通过Service将Pod暴露</li>
-<li><code>hostPID</code>: 设置Pod中的容器是否与共享Node节点的PID名称空间</li>
-<li><code>imagePullSecrets</code>: 指定在拉取镜像时访问Registry的配置，和docker-registry类型的Secret资源进行绑定</li>
-<li><code>nodeName</code>: 节点名称，直接指定Pod运行的节点名称</li>
-<li><code>nodeSelector</code>: 节点选择器，被调度器使用，用于选择符合条件的Node节点</li>
-<li><code>initContainers</code>: 串行执行的初始化容器列表，一般用于给主容器初始化系统环境，在主容器启动前退出</li>
-<li><code>restartPolicy</code>: 当容器存活探测失败时Pod的重启策略，Always、OnFailure、Never</li>
-<li><code>tolerations</code>: Pod的容忍度列表，被调度器使用，用于选择符合条件的Node节点</li>
-<li><code>volumes</code>: Pod使用的存储卷列表</li>
-<li><code>terminationGracePeriodSeconds</code>: Pod终止时，会向容器中的进程发送Term信号。在等待设置的时间后，再向容器中的进程发送Kill信号。因此容器响应Term信号的时间应小于该值，从而实现平滑终止</li>
-</ul>
-<h2 id="Pod资源的生命周期"><a href="#Pod资源的生命周期" class="headerlink" title="Pod资源的生命周期"></a>Pod资源的生命周期</h2><ul>
-<li><code>Pending</code>: Pod已被系统接受，但是容器镜像尚未创建。包括Pod调度到节点Node上、通过网络下载镜像的时间</li>
-<li><code>Running</code>: Pod已经和某个Node绑定，并且Pod中的容器都已被创建，至少有一个容器处于启动、运行或重启的状态<ul>
-<li>使用串行执行的初始化容器执行系统环境初始化操作</li>
-<li>启动主容器和其他辅助的容器</li>
-<li>在主容器启动后执行postStart钩子操作</li>
-<li>执行readinessProbe和livenessProbe探测操作，如果存活探测失败则根据restartPolicy规则来决定是否重启Pod</li>
-<li>在主容器结束前执行preStop钩子操作</li>
-</ul>
-</li>
-<li><code>Succeeded</code>: Pod中的容器已经成功终止且不再会被重启</li>
-<li><code>Failed</code>: Pod所有容器已经终止且至少有一个容器是因为失败而终止，即进程以非0状态退出或者被操作系统终止，此时根据restartPolicy规则来决定是否重启Pod</li>
-<li><code>Unknown</code>: 由于某些原因Master暂时无法获取到Pod的状态，比如网络通信失败等</li>
-</ul>
-<p><img src="/images/Kubernetes之Pod生命周期.png" alt="img"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2639,7 +2643,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">86</span>
+                  <span class="site-state-item-count">89</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2661,7 +2665,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">156</span>
+                  <span class="site-state-item-count">162</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
