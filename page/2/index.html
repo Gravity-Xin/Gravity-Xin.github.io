@@ -2005,9 +2005,22 @@
 <li>事务<ul>
 <li>ACID特性</li>
 <li>隔离级别: 一个事务中所做的修改对于其他事务的可见性<ul>
-<li>READ UNCOMMITED: 未提交读 发生脏读的情况</li>
-<li>READ COMMITED: 提交读 发生不可重复读的情况</li>
-<li>REPEATABLE READ: 可重复读 解决了脏读的问题，还使用MVCC多版本控制来解决幻读的问题  <strong>mysql默认的隔离级别</strong></li>
+<li>READ UNCOMMITED: 未提交读 发生脏读的情况<ul>
+<li>事务A读取了事务B更新的数据，然后B回滚操作，那么A读取到的数据是脏数据</li>
+</ul>
+</li>
+<li>READ COMMITED: 提交读 发生不可重复读的情况<ul>
+<li>事务A多次读取同一数据，事务B在事务A多次读取的过程中，对数据作了更新并提交，导致事务A多次读取同一数据时，结果不一致</li>
+<li>侧重于对数据的修改</li>
+<li>解决不可重复读的问题只需锁住满足条件的行</li>
+</ul>
+</li>
+<li>REPEATABLE READ: 可重复读 解决了脏读的问题，还使用MVCC多版本控制来解决幻读的问题 <strong>mysql默认的隔离级别</strong><ul>
+<li>事务A将数据库中所有学生的成绩从具体分数改为ABCDE等级，事务B就在这个时候插入了一条具体分数的记录，当事务A结束后发现还有一条记录没有改过来，就好像发生了幻觉一样，这就叫幻读</li>
+<li>侧重于数据的增加或删除</li>
+<li>解决幻读需要锁表</li>
+</ul>
+</li>
 <li>SERIALIZABLE 可串行化 事务串行执行</li>
 </ul>
 </li>
