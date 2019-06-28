@@ -249,6 +249,1478 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/12/图解HTTP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/12/图解HTTP/" itemprop="url">图解HTTP</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-12T17:30:12+08:00">
+                2019-02-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程技术/" itemprop="url" rel="index">
+                    <span itemprop="name">编程技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/12/图解HTTP/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/12/图解HTTP/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>URI: 统一资源标识符</p>
+<ul>
+<li>协议方案名: 如http/https，指定访问资源时使用的协议类型</li>
+<li>登录认证信息: 可选项。指定用户名和密码作为从服务器获取资源时的登录认证信息</li>
+<li>服务器地址: 可以是DNS可解析的域名或IP地址</li>
+<li>服务器端口号: 可选项。指定服务器连接的端口号，默认为协议对应的默认端口号</li>
+<li>带层次的文件路径: 指定资源在服务器上的绝对路径，与UNIX文件系统目录类似</li>
+<li>查询字符串: 可选项。指定资源的查询条件</li>
+<li>片段标识符: 可选项。指定资源中的子资源(文档的某个位置)</li>
+</ul>
+<p><img src="/images/URI格式.png" alt="URI的格式"></p>
+<p>HTTP: 超文本传输协议</p>
+<ul>
+<li>基本上所有的Web项目都遵从该协议，绝大多数使用的是HTTP/1.1版本，最新的版本为HTTP/2.0</li>
+<li>属于TCP/IP协议族中的应用层协议</li>
+<li><p>是一种无状态协议</p>
+</li>
+<li><p>HTTP请求</p>
+<ul>
+<li>请求行: 请求方法(GET/POST/DELETE/PUT/HEAD等) + URI + HTTP版本号</li>
+<li>请求首部字段: HTTP请求首部，如Authorization、Host、Origin等</li>
+<li>请求内容实体: 请求的参数</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/HTTP请求方法.png" alt="HTTP请求方法"></p>
+<ul>
+<li>HTTP响应<ul>
+<li>响应行: HTTP版本号 + 响应状态码(200, 301, 404, 501等) + 原因短语(OK，Not Authorized等)</li>
+<li>响应首部字段: HTTP响应首部，如Content-Type、Content-Length等</li>
+<li>响应内容实体: 响应内容</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/HTTP响应状态码.png" alt="HTTP响应状态码"></p>
+<p><img src="/images/HTTP请求和响应报文结构.png" alt="HTTP请求与响应报文"></p>
+<ul>
+<li>HTTP首部: 用于在客户端和服务端之间进行协调</li>
+</ul>
+<p>通用首部:<br><img src="/images/HTTP通用首部.png" alt="HTTP通用首部"></p>
+<p>请求首部:<br><img src="/images/HTTP通用首部.png" alt="HTTP请求首部"></p>
+<p>响应首部:<br><img src="/images/HTTP通用首部.png" alt="HTTP响应首部"></p>
+<p>实体首部:<br><img src="/images/HTTP通用首部.png" alt="HTTP实体首部"></p>
+<ul>
+<li><p>HTTP首部字段根据是否缓存代理分成2种类型</p>
+<ul>
+<li>端到端首部(End-to-end Header): 此类别中的首部会转发给请求/响应对应的最终接收目标，且必须保存在由缓存生成的响应中，另外规定它必须被转发</li>
+<li>逐跳首部(Hop-by-hop Header): 此类别中的首部只对单次转发有效，会因通过缓存或代理而不再转发。HTTP/1.1和之后版本中，如果要使用hop-by-hop首部，需提供Connection首部字段</li>
+</ul>
+</li>
+<li><p>使用合适的编码提升传输速率，但是会消耗更多的CPU资源(Accept-Encoding请求头和Content-Encoding响应头)</p>
+</li>
+<li><p>可以发送获取部分内容的范围请求(Range请求头和Content-Range响应头)</p>
+</li>
+<li><p>使用持久连接减少通信数据: 多个请求可以复用同一个TCP连接，避免无谓的TCP建立和断开，减少通信开销。在 HTTP/1.1中，默认开启<code>Connection:keep-alive</code>，所有的连接默认都是持久连接</p>
+</li>
+<li><p>HTTP通信时，可以使用代理、隧道、缓存进行通信数据的转发</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/12/Elasticsearch-聚合和复合查询/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/12/Elasticsearch-聚合和复合查询/" itemprop="url">Elasticsearch-聚合和复合查询</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-12T16:49:09+08:00">
+                2019-02-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/12/Elasticsearch-聚合和复合查询/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/12/Elasticsearch-聚合和复合查询/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="聚合查询"><a href="#聚合查询" class="headerlink" title="聚合查询"></a>聚合查询</h2><ul>
+<li>sum: 求和</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"size":0, "aggs":&#123;"sum of age":&#123;"sum":&#123;"field":"age"&#125;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>min: 求最小值</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"size":0, "aggs":&#123;"min of age":&#123;"min":&#123;"field":"age"&#125;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>max: 求最大值</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"size":0, "aggs":&#123;"max of age":&#123;"max":&#123;"field":"age"&#125;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>avg: 求平均值</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"size":0, "aggs":&#123;"avg of age":&#123;"avg":&#123;"field":"age"&#125;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>cardinality: 求基数(互不相同的字段值的个数)</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"size":0, "aggs":&#123;"avg of cardinality":&#123;"avg":&#123;"field":"age"&#125;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>terms: 分组，类似于SQL中的<code>GROUP BY</code></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"size":0, "aggs":&#123;"group by birthday":&#123;"terms":&#123;"field":"birthday"&#125;&#125;&#125;&#125;</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"size":0, "query":&#123;"match":&#123;"interests":"changge"&#125;&#125;,"aggs":&#123;"sum of age":&#123;"terms":&#123;"field":"birthday"&#125;&#125;&#125;&#125;  // 对interests包含changge的文档按照birthday进行分组</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"size":0,"query":&#123;"match":&#123;"interests":"chang ge"&#125;&#125;,"aggs":&#123;"group by birthday":&#123;"terms":&#123;"field":"birthday"&#125;,"aggs":&#123;"avg age":&#123;"avg":&#123;"field":"age"&#125;&#125;&#125;&#125;&#125;&#125;  // 对interests包含changge的文档按照birthday进行分组，并且获取每一个组中文档的平均年龄</span><br></pre></td></tr></table></figure>
+<h2 id="复合查询"><a href="#复合查询" class="headerlink" title="复合查询"></a>复合查询</h2><p>使用bool将多个基本的查询条件进行组合，得到一个复杂的查询条件</p>
+<p>查询条件本身可以嵌套</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/12/Elasticsearch-Filter查询/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/12/Elasticsearch-Filter查询/" itemprop="url">Elasticsearch-Filter查询</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-12T16:06:06+08:00">
+                2019-02-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/12/Elasticsearch-Filter查询/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/12/Elasticsearch-Filter查询/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>与Query查询不同的是，Filter查询不计算文档与查询条件之间的相关性(score值)，同时可以进行查询结果的缓存，因此Filter查询的速度比Query快</p>
+<ul>
+<li>简单的过滤查询</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"post_filter": &#123;"term": &#123;"name": "zhaoming"&#125;&#125;&#125;  // 也可以用terms、match、range、exists等其他查询方式</span><br></pre></td></tr></table></figure>
+<ul>
+<li>bool过滤查询</li>
+</ul>
+<p>通过<code>must</code>, <code>should</code>和<code>must_not</code>可以实现多个过滤条件的组合</p>
+<p>must: 类似于SQL中的<code>AND</code><br>should: 类似于SQL中的<code>OR</code><br>must_not: 类似于SQL中的<code>NOT</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"bool":&#123;"filter":[&#123;"term":&#123;"name":"zhaoming"&#125;&#125;]&#125;&#125;&#125;  // 普通的过滤查询</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"bool":&#123;"must":[&#123;"term":&#123;"name":"zhaoming"&#125;&#125;],"must_not":[&#123;"term":&#123;"age":20&#125;&#125;]&#125;&#125;&#125;  // 名称必须为zhaoming且年龄不是20的文档</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"bool":&#123;"should":[&#123;"term":&#123;"name":"zhaoming"&#125;&#125;,&#123;"term":&#123;"name":"lisi"&#125;&#125;]&#125;&#125;&#125;  // 名称为zhaoming或lisi的文档</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/12/Elasticsearch-Query查询/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/12/Elasticsearch-Query查询/" itemprop="url">Elasticsearch-Query查询</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-12T13:47:19+08:00">
+                2019-02-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/12/Elasticsearch-Query查询/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/12/Elasticsearch-Query查询/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ul>
+<li>简单的Query查询</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search?q=name:zhangsan  //单字段匹配</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search?q=name:zhangsan&amp;_source=name,age  // 单字段匹配，指定需要返回的字段</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search?q=interests:changge&amp;sort=age:desc  // 单字段匹配，指定返回的多个文档的排序规则，默认按照相似度的score值进行降序返回</span><br></pre></td></tr></table></figure>
+<ul>
+<li>term和terms查询</li>
+</ul>
+<p>向倒排索引中寻找确切的term，不对查询字段进行分词，该查询适合字符串、数值型和日期型等数据类型<br>适合<code>精确查找</code><br>term查询: 查询某个字段中包含某个关键词的文档<br>terms查询: 查询某个字段中包含多个关键词的查询</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query": &#123;"term": &#123;"interests": "changge"&#125;&#125;&#125;   // 单一关键词查询</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query": &#123;"terms": &#123;"interests": ["changge", "tiaowu"]&#125;&#125;&#125;   // 多个关键词查询，满足一个即可</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query": &#123;"terms": &#123;"interests": ["changge", "tiaowu"]&#125;&#125;, "from": 0, "size": 2&#125;   // 规定返回文档的偏移量和数量</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"version": true, "query": &#123;"term": &#123;"interests": "changge"&#125;&#125;&#125;   // 返回文档的版本号</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query": &#123;"term": &#123;"interests": "changge"&#125;&#125;, "sort": [&#123;"age": &#123;"order": "desc"&#125;&#125;]&#125;   // 规定返回文档的排序方式</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"_source": ["address", "name"], "query": &#123;"term": &#123;"interests": "changge"&#125;&#125;&#125;   // 规定返回文档中的字段</span><br></pre></td></tr></table></figure>
+<ul>
+<li>match查询</li>
+</ul>
+<p>match查询会对输入的查询字段先进行分词操作，然后再查询</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"match":&#123;"interests": "changge tiaowu"&#125;&#125;&#125;  // 先分词，再分别对分词的每一个结果进行查询</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"match":&#123;"age": 23&#125;&#125;&#125;</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"match_all":&#123;&#125;&#125;&#125;   // 使用match_all来查询所有文档</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"multi_match":&#123;"query":"changge","fields":["interests","name"]&#125;&#125;&#125; // 使用multi_match来查询多个字段</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"match_phrase":&#123;"interests":"chang ge tiao wu"&#125;&#125;&#125; // 使用match_phrase来进行短语匹配查询，意味着必须匹配所有分词结果，且各个分词的相对位置不变</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query": &#123;"match_phrase_prefix": &#123;"interests": "changg"&#125;&#125;&#125;  // 使用match_phrase_prefix来进行前缀匹配查询，只需要分词的前缀匹配即可</span><br></pre></td></tr></table></figure>
+<ul>
+<li>range查询</li>
+</ul>
+<p>查询某字段值在某个范围的文档，适合数值型和日期型字段</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"range":&#123;"age":&#123;"gt":20,"lte":30&#125;&#125;&#125;&#125;</span><br><span class="line"></span><br><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"range":&#123;"birthday":&#123;"gte":"1970-10-12","lt":"1987-05-05"&#125;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>wildcard查询</li>
+</ul>
+<p>使用通配符<code>*</code>和<code>?</code>进行查询，<code>*</code>代表0个或多个字符，<code>?</code>代表一个字符</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"wildcard":&#123;"name": "zh?o*"&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>fuzzy查询</li>
+</ul>
+<p>当对搜索的字符的精确值不清楚时，可以使用fuzzy进行模糊查询</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"fuzzy":&#123;"name": "lii"&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>exist查询</li>
+</ul>
+<p>判断文档中的某个字段的字段值是否为空<br>类似于SQL中的<code>IS NOT NULL</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search</span><br><span class="line">&#123;"query":&#123;"exists":&#123;"field":"age"&#125;&#125;&#125;  // 获取age字段不为空的所有文档</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/11/Elasticsearch-文档版本控制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/11/Elasticsearch-文档版本控制/" itemprop="url">Elasticsearch 文档版本控制</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-11T17:58:10+08:00">
+                2019-02-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/11/Elasticsearch-文档版本控制/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/11/Elasticsearch-文档版本控制/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>ES使用乐观锁来保证文档数据的一致性，即每个用户对同一个文档的更新或删除操作并不需要进行加锁和解锁的操作，只需要提供要操作的文档版本号即可</p>
+<p>内部版本控制: ES的默认版本控制，使用文档的_version字段。当操作提供的版本号与文档当前版本号一致时，ES允许操作顺利进行并将版本号递增，否则提示版本号冲突并抛出异常; 文档内部版本号为[1, 2^63-1]</p>
+<p>外部版本控制: 判断操作提供的版本号是否大于文档当前版本号，如果大于，则允许操作顺利进行并将版本号改为提供的版本号，否则提示版本冲突并抛出异常；需要将设置version_type=external</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">PUT index3/weather/1?version=4  // 使用内部版本控制</span><br><span class="line">&#123;</span><br><span class="line">  "name": "NJ",</span><br><span class="line">  "status": "Rainy"</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT index3/weather/2?version=5&amp;version_type=external  // 使用外部版本控制</span><br><span class="line">&#123;</span><br><span class="line">  "name": "SH",</span><br><span class="line">  "status": "Sunny"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/11/Elasticsearch-Mapping/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/11/Elasticsearch-Mapping/" itemprop="url">Elasticsearch Mapping</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-11T17:47:19+08:00">
+                2019-02-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/11/Elasticsearch-Mapping/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/11/Elasticsearch-Mapping/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Mapping是用于描述文档schema的，即对文档中各个字段的数据类型、如何进行分词、是否建立索引等进行描述</p>
+<p>在添加文档时，ES会根据插入的文档，自动创建Mapping，可以使用<code>GET /index1/user/_mapping</code>来查看</p>
+<p>也可以在创建索引时，手动创建Mapping</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">PUT index4</span><br><span class="line">&#123;</span><br><span class="line">  "mappings": &#123;</span><br><span class="line">    "books": &#123;</span><br><span class="line">      "properties": &#123;</span><br><span class="line">        "ids": &#123;</span><br><span class="line">          "type": "long"</span><br><span class="line">        &#125;,</span><br><span class="line">        "price": &#123;</span><br><span class="line">          "type": "long"</span><br><span class="line">        &#125;,</span><br><span class="line">        "title": &#123;</span><br><span class="line">          "type": "text",</span><br><span class="line">          "fields": &#123;</span><br><span class="line">            "keyword": &#123;</span><br><span class="line">              "type": "keyword",</span><br><span class="line">              "ignore_above": 256</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Mapping中常用的字段数据类型:</p>
+<ul>
+<li>核心数据类型<ul>
+<li>字符型: string, 包括text和keyword<ul>
+<li>text: 对长文本进行索引，在建立索引时对其进行分词，不可用于排序和聚合</li>
+<li>keyword: 不需要进行分词，只可以使用本身来进行检索过滤，还可以用来排序和聚合</li>
+</ul>
+</li>
+<li>数值型: long, integer, short, byte, double, float，不进行分词</li>
+<li>日期型: date，不进行分词</li>
+<li>布尔型: boolean，不进行分词</li>
+<li>二进制型: binary，不进行分词</li>
+</ul>
+</li>
+<li>复杂数据类型<ul>
+<li>数组类型: json数组</li>
+<li>对象类型: _object json对象</li>
+<li>嵌套类型: _nested</li>
+</ul>
+</li>
+<li>地理位置类型<ul>
+<li>地理坐标类型: _geo_point</li>
+<li>地理形状类型: _geo_shape</li>
+</ul>
+</li>
+<li>其他</li>
+</ul>
+<p>Mapping描述字段常用的属性:</p>
+<ul>
+<li>store: false 字段不单独进行存储</li>
+<li>index: true 是否对该字段进行分词</li>
+<li>analyzer: ik 指定分词器，默认为standard</li>
+<li>boost: 1.23 字段级别的分数加权</li>
+<li>ignore_above: 100 字段值的长度超过该值，则进行忽略，不被索引</li>
+<li>search_analyzer: ik 默认与analyzer一致</li>
+<li>其他</li>
+</ul>
+<p>在基于字段进行查询时，该字段的mapping决定了查询方式</p>
+<ul>
+<li>text类型基于分词结果进行查询，因此可以进行模糊匹配</li>
+<li>其他类型不进行分词，必须使用全字匹配来进行查询，因此只可以进行精确匹配</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GET /index1/user/_search?q=first_name:Douglas</span><br><span class="line">GET index1/user/_search?q=age:2</span><br><span class="line">GET index1/user/_search?q=age:23</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/11/Elasticsearch-API/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/11/Elasticsearch-API/" itemprop="url">Elasticsearch API</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-11T17:47:05+08:00">
+                2019-02-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/11/Elasticsearch-API/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/11/Elasticsearch-API/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>ES提供了Restful接口对索引、类型和文档进行CURD操作</p>
+<h2 id="基本的CURD"><a href="#基本的CURD" class="headerlink" title="基本的CURD"></a>基本的CURD</h2><ul>
+<li>添加索引</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PUT index1</span><br><span class="line">&#123;</span><br><span class="line">"settings" : &#123;</span><br><span class="line">      "index" : &#123;</span><br><span class="line">        "number_of_shards" : "3",  // 分片</span><br><span class="line">        "number_of_replicas" : "1"  // 副本</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查看索引</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET _all  // 获取所有索引</span><br><span class="line">GET index1</span><br></pre></td></tr></table></figure>
+<ul>
+<li>删除索引</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELETE index1</span><br></pre></td></tr></table></figure>
+<ul>
+<li>添加文档</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">PUT index1/user/1  // 索引名称/类型名称/文档ID</span><br><span class="line">&#123;</span><br><span class="line">  "first_name": "Jane",</span><br><span class="line">  "last_name": "Smith",</span><br><span class="line">  "age": 32,</span><br><span class="line">  "about": "I like to collect rock albums",</span><br><span class="line">  "interests": [</span><br><span class="line">    "music"</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">POST index1/user  // 索引名称/类型名称</span><br><span class="line">&#123;</span><br><span class="line">  "first_name": "Douglas",</span><br><span class="line">  "last_name": "Fir",</span><br><span class="line">  "age": 23,</span><br><span class="line">  "about": "I like to build cabinets",</span><br><span class="line">  "interests": [</span><br><span class="line">    "forestry"</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查看文档</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET index1/user/1</span><br><span class="line">GET index1/user/1?_source=first_name,about   // 查看特定字段</span><br></pre></td></tr></table></figure>
+<ul>
+<li>更新文档</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">PUT index1/user/1  // 用新的文档覆盖当前文档</span><br><span class="line">&#123;</span><br><span class="line">  "first_name": "Jane",</span><br><span class="line">  "last_name": "Smith",</span><br><span class="line">  "age": 33,</span><br><span class="line">  "about": "I like to collect rock albums",</span><br><span class="line">  "interests": [</span><br><span class="line">    "music",</span><br><span class="line">    "football",</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">POST index1/user/1/_update  // 可以单独更新某些字段</span><br><span class="line">&#123;</span><br><span class="line">  "doc": &#123;</span><br><span class="line">    "age": 34</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>删除文档</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELETE index1/user/1</span><br></pre></td></tr></table></figure>
+<h2 id="基于MultiGet的批量文档查询"><a href="#基于MultiGet的批量文档查询" class="headerlink" title="基于MultiGet的批量文档查询"></a>基于MultiGet的批量文档查询</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">GET /_mget    // 获取不同索引，不同类型下的不同文档</span><br><span class="line">&#123;</span><br><span class="line">  "docs": [</span><br><span class="line">    &#123;</span><br><span class="line">      "_index": "index1",</span><br><span class="line">      "_type": "user",</span><br><span class="line">      "_id": 1,</span><br><span class="line">      "_source": [  // 还可以指定返回的字段列表</span><br><span class="line">        "first_name",</span><br><span class="line">        "age"</span><br><span class="line">      ]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      "_index": "index1",</span><br><span class="line">      "_type": "user",</span><br><span class="line">      "_id": 2</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GET index1/user/_mget  // 获取相同索引，相同类型下的多个文档</span><br><span class="line">&#123;</span><br><span class="line">  "docs": [</span><br><span class="line">    &#123;</span><br><span class="line">      "_id": 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      "_id": 2</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GET index1/user/_mget  // 获取相同索引，相同类型下的多个文档</span><br><span class="line">&#123;</span><br><span class="line">  "ids":[1,2]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="基于Bulk的批量文档操作"><a href="#基于Bulk的批量文档操作" class="headerlink" title="基于Bulk的批量文档操作"></a>基于Bulk的批量文档操作</h2><p>bulk的格式:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;action:&#123;metadata&#125;&#125;</span><br><span class="line">&#123;request_body&#125;</span><br></pre></td></tr></table></figure>
+<p>action表示操作类型:</p>
+<ul>
+<li>create: 批量添加，如果文档已存在则添加失败，此时必须指定文档ID</li>
+<li>update: 批量更新</li>
+<li>index: 批量添加或替换已存在的文档，可以不指定文档ID，此时ES添加文档并生成ID</li>
+<li>delete: 批量删除</li>
+</ul>
+<p>metadata表示文档所属的索引、类型和ID<br>request_body为文档具体内容</p>
+<p>批量添加文档</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">POST /index2/books/_bulk</span><br><span class="line">&#123;"create":&#123;"_id":1&#125;&#125;</span><br><span class="line">&#123;"title":"Java","price":55&#125;</span><br><span class="line">&#123;"create":&#123;"_id":2&#125;&#125;</span><br><span class="line">&#123;"title":"C++","price":65&#125;</span><br><span class="line">&#123;"create":&#123;"_id":3&#125;&#125;</span><br><span class="line">&#123;"title":"Golang","price": 45&#125;</span><br></pre></td></tr></table></figure>
+<p>批量更新文档</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">POST /index2/books/_bulk</span><br><span class="line">&#123;"update":&#123;"_id":1&#125;&#125;</span><br><span class="line">&#123;"doc":&#123;"title":"Java1"&#125;&#125;</span><br><span class="line">&#123;"update":&#123;"_id":2&#125;&#125;</span><br><span class="line">&#123;"doc":&#123;"title":"C++1"&#125;&#125;</span><br><span class="line">&#123;"update":&#123;"_id":3&#125;&#125;</span><br><span class="line">&#123;"doc":&#123;"title":"Golang1"&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>批量删除文档</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">POST /index2/books/_bulk</span><br><span class="line">&#123;"delete":&#123;"_id":1&#125;&#125;  // 删除操作不需要请求体</span><br><span class="line">&#123;"delete":&#123;"_id":2&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>批量混合操作</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">POST /index2/books/_bulk</span><br><span class="line">&#123;"create":&#123;"_id":1&#125;&#125;</span><br><span class="line">&#123;"title":"Java","price":55&#125;</span><br><span class="line">&#123;"delete":&#123;"_id":3&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>bulk操作是将待处理的数据载入到内存当中，因此其对数据大小有限制<strong>一般建议文档数最大为1000-5000个，数据大小最大为5-15MB</strong></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/11/CPU-GPU-FPGA-ASIC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/11/CPU-GPU-FPGA-ASIC/" itemprop="url">CPU GPU FPGA ASIC</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-11T10:26:50+08:00">
+                2019-02-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/11/CPU-GPU-FPGA-ASIC/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/11/CPU-GPU-FPGA-ASIC/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ul>
+<li><p>数据的训练: 使用CPU或GPU</p>
+<ul>
+<li>CPU VS GPU<ul>
+<li>相同点<ul>
+<li>基于摩尔定律，该定律已步入晚年</li>
+<li>基于冯·诺依曼体系结构，指令译码执行、共享内存，主要包含控制器(Control)、寄存器(Cache、DRAM)和算术逻辑部件运算器(Arithmetic Logical Unit)等</li>
+<li>指令流的控制逻辑复杂，不可能有太多条独立的指令流，因此使用SIMD(单指令流多数据流)来让多个执行单元以同样的步调处理不同的数据</li>
+<li>使用内存来保存中间状态和进行单元间的通信，由于内存是共享的，因此需要提供访问仲裁的机制</li>
+<li>为了利用内存访问的局部性，每一个执行单元都有一个私有的缓存，因此需要提供维持缓存一致性的机制</li>
+</ul>
+</li>
+<li>不同点<ul>
+<li>CPU的执行单元可以执行任意指令，需要提供分支跳转处理逻辑等，因此控制器和寄存器占据了较大部分；GPU只需要进行高速运算，而不需要分支跳转处理逻辑等，因此ALU占据了较大部分</li>
+<li>CPU是基于低延时的设计，使用缓存、分支预测等降低延时；GPU是基于大吞吐量的设计，使用大量的可以并行执行的ALU来进行运算</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>数据的推断: 使用FPGA或ASIC</p>
+<ul>
+<li>FPGA(Field Programmable Gate Array，现场可编程门阵列)<ul>
+<li>无指令、无需共享内存的体系结构</li>
+<li>可以使用MIMD(多指令流多数据流)来执行</li>
+<li>每个逻辑单元的功能在重编程(烧写)时就已经确定，不需要指令</li>
+<li>寄存器和片上内存(BRAM)是属于各自的控制逻辑，无需内存访问仲裁和私有缓存</li>
+</ul>
+</li>
+<li>ASIC(Application Specific Integrated Circuit，专用芯片)<ul>
+<li>研发成本高，周期长</li>
+<li>针对特定功能深度学习算法量身定做，灵活性比FPGA差</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/25/Elasticsearch入门/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -612,1716 +2084,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/23/Git-基本操作/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/23/Git-基本操作/" itemprop="url">Git-基本操作</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-23T14:05:31+08:00">
-                2019-01-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程技术/" itemprop="url" rel="index">
-                    <span itemprop="name">编程技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/01/23/Git-基本操作/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/23/Git-基本操作/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Git是流行的分布式版本控制系统。</p>
-<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 设置全局的用户名和邮箱，在每次提交中将会使用该配置</span><br><span class="line">git config --global user.name "yihang.xin"</span><br><span class="line">git config --global user.email "xyh_nju@163.com"</span><br></pre></td></tr></table></figure>
-<h2 id="初始化版本库"><a href="#初始化版本库" class="headerlink" title="初始化版本库"></a>初始化版本库</h2><p>Repository，成为代码仓库或代码版本库</p>
-<ul>
-<li>创建新的Repository</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir myRepo</span><br><span class="line">cd myRepo</span><br><span class="line"><span class="meta">#</span> 进行版本库初始化，生成.git文件夹，用于存放git相关信息</span><br><span class="line">git init</span><br></pre></td></tr></table></figure>
-<ul>
-<li>克隆远程Repository到本地</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git@github.com:userName/projectName.git</span><br></pre></td></tr></table></figure>
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
-<li><p>工作区(Working Directory): 当前的工作目录</p>
-</li>
-<li><p>暂存区(Stage): 保存尚未提交到本地版本库中的修改</p>
-</li>
-<li><p>本地版本库(Repository)</p>
-<ul>
-<li>对于工作区中.git隐藏目录</li>
-<li>其中包含了各个分支，各个分支最新提交(HEAD)等信息</li>
-<li>文件的修改必须先添加到暂存区，然后才可以提交到本地版本库</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/git之本地仓库.png" alt="Git本地仓库"></p>
-<ul>
-<li>远程版本库<ul>
-<li>可以克隆远程版本库</li>
-<li>可以从远程版本库拉取更新或将本地更新推送到远程版本库</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/git之远程仓库.png" alt="Git远程仓库"></p>
-<p>GitHub是免费的Git服务器，可以将个人仓库放在上面</p>
-<p><img src="/images/git之GitHub使用流程.png" alt="GitHub使用流程"></p>
-<h2 id="文件状态操作"><a href="#文件状态操作" class="headerlink" title="文件状态操作"></a>文件状态操作</h2><p><img src="/images/git之本地仓库文件状态流转.png" alt="Git文件状态流转"></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 查看版本库状态</span><br><span class="line">git status</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 将文件添加到暂存区，在.git目录中建立索引</span><br><span class="line">git add file.go</span><br><span class="line"><span class="meta">#</span> 将文件中尚未提交到暂存区的的修改撤销，恢复到和暂存区相同的状态</span><br><span class="line">git checkout file.go</span><br><span class="line"><span class="meta">#</span> 将文件中已经提交到暂存区的修改进行撤销，将修改放回到工作区</span><br><span class="line">git reset HEAD file.go</span><br><span class="line"><span class="meta">#</span> 在git中，删除文件也是一种修改</span><br><span class="line">git rm file.go</span><br><span class="line"><span class="meta">#</span> 将文件的修改提交到本地仓库的分支</span><br><span class="line">git commit -m "commit message"</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 查看提交的历史记录</span><br><span class="line"><span class="meta">#</span> commit: 提交的ID</span><br><span class="line"><span class="meta">#</span> 使用HEAD表示当前分支最新的版本，也就是最新的提交ID</span><br><span class="line">git log</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 在本地仓库的当前分支上进行版本回退，可以回退到HEAD之前或之后的任意提交</span><br><span class="line">git reset --hard commitID</span><br><span class="line"><span class="meta">#</span> 在本地仓库进行版本回退后，如果希望进行恢复，那么需要知道HEAD后一次的commitID</span><br><span class="line"><span class="meta">#</span> 查看当前分支所有的commitID</span><br><span class="line">git reflog</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 为本地仓库添加远程仓库，命名为origin</span><br><span class="line">git remote add origin git@github.com:userName/projectName.git</span><br><span class="line"><span class="meta">#</span> 查看远程仓库信息</span><br><span class="line">git remote -v</span><br><span class="line"><span class="meta">#</span> 与远程仓库分支建立关联并将文件提交到远程仓库的分支</span><br><span class="line">git push --set-upstream origin master</span><br></pre></td></tr></table></figure>
-<h2 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h2><p>保证多项任务的同时进行，如同时开发多功能，或一边开发功能一边修改bug</p>
-<ul>
-<li>分支创建，修改，合并的过程</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 基于当前master分支，创建dev分支</span><br><span class="line">git branch dev</span><br><span class="line"><span class="meta">#</span> 将当前工作区切换到dev分支</span><br><span class="line">git checkout dev</span><br><span class="line"><span class="meta">#</span> 查看当前工作的分支</span><br><span class="line">git branch</span><br><span class="line"><span class="meta">#</span> 在dev分支上进行修改并提交</span><br><span class="line">git commit -a -m "first commit on branch dev"</span><br><span class="line"><span class="meta">#</span> 切换到master分支</span><br><span class="line">git checkout master</span><br><span class="line"><span class="meta">#</span> 将dev分支的修改merge到master分支上，此时master分支和dev分支对齐</span><br><span class="line">git merge dev</span><br><span class="line"><span class="meta">#</span> 将修改推送到远程仓库</span><br><span class="line">git push</span><br><span class="line"><span class="meta">#</span> 删除不再使用的dev分支</span><br><span class="line">git branch -d dev</span><br></pre></td></tr></table></figure>
-<ul>
-<li>合并分支时手动解决冲突<ul>
-<li>在执行<code>git merge</code>时，有可能出现当前分支的修改与被合并的分支的修改之间出现冲突的情况</li>
-<li>此时需要在本地手动修改发生冲突的文件内容，然后再进行一次提交</li>
-</ul>
-</li>
-</ul>
-<p>解决冲突后的历史记录:<img src="/images/git之解决冲突.png" alt="解决冲突后的历史记录"></p>
-<ul>
-<li>合并分支时禁用快进模式(Fast-forward)<ul>
-<li>Git在进行合并时，默认会尝试使用快进模式，即只移动分支的HEAD指针进行合并</li>
-<li>此时生成的提交记录是线性的，但是当被合并的分支被删除之后，在提交记录中会丢失此次合并的信息</li>
-<li>可以在执行<code>git merge</code>时使用<code>--no-ff</code>模式，此时Git会在合并时生成一个新的commit</li>
-</ul>
-</li>
-</ul>
-<p>快进合并后的历史记录:<img src="/images/git之Fast-forward合并模式.png" alt="快进合并后的历史记录"></p>
-<p>非快进合并后的历史记录:<img src="/images/git之非Fast-forward合并模式.png" alt="非快进合并后的历史记录"></p>
-<ul>
-<li>临时保存工作区的修改</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 当前在feature1分支，保存工作区的修改</span><br><span class="line">git stash</span><br><span class="line"><span class="meta">#</span> 查看stash中的内容</span><br><span class="line">git stash list</span><br><span class="line"><span class="meta">#</span> 切换到另一个分支</span><br><span class="line">git checkout feature2</span><br><span class="line"><span class="meta">#</span> 修改并提交</span><br><span class="line">git commit -a -m "fix bug"</span><br><span class="line"><span class="meta">#</span> 切换到feature1分支</span><br><span class="line">git checkout feature1</span><br><span class="line"><span class="meta">#</span> 恢复工作区，继续进行修改</span><br><span class="line">git stash pop</span><br></pre></td></tr></table></figure>
-<ul>
-<li>分支合并与分支变基<ul>
-<li>在进行分支合并时，可以使用<code>git merge</code>操作，但是有可能因为出现冲突或使用非快进的模式导致出现一个新的commit，从而使得提交记录是非线性的</li>
-<li>可以使用<code>git rebase</code>进行变基操作，可以得到线性的提交记录</li>
-<li>变基操作的原理<ul>
-<li>找出分支feature1和master中最后相同的一次提交commitA</li>
-<li>将feature1分支中commitA后的下一次提交移动到master的最后一次提交之后</li>
-<li>此时，feature1分支中的历史记录变为线性</li>
-</ul>
-</li>
-<li>将feature1分支合并到master分支上<ul>
-<li>切换到master分支</li>
-<li>执行<code>git merge feature1</code></li>
-</ul>
-</li>
-<li>将feature1分支变基到master分支上<ul>
-<li>切换到feature1分支</li>
-<li>执行<code>git rebase master</code></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 此时处于feature1分支，对其进行变基</span><br><span class="line">git rebase master</span><br><span class="line"><span class="meta">#</span> 切换到master分支</span><br><span class="line">git checkout master</span><br><span class="line"><span class="meta">#</span> 对master分支执行变基，此时feature1上面的修改全部合并到master分支中</span><br><span class="line">git rebase feature1</span><br></pre></td></tr></table></figure>
-<h2 id="标签管理"><a href="#标签管理" class="headerlink" title="标签管理"></a>标签管理</h2><p>标签(Tag)可以看做是执行某次commit的指针，保存了某次commit对应的版本快照，只不过标签不能够在commit上进行移动</p>
-<p>可以使用标签进行版本管理，在发布版本时给代码库打一个标签，从而方便查找历史版本的代码</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 创建标签</span><br><span class="line">git tag v1.0</span><br><span class="line"><span class="meta">#</span> 查看存在的标签列表</span><br><span class="line">git tag</span><br><span class="line"><span class="meta">#</span> 查看标签信息</span><br><span class="line">git show v1.0</span><br><span class="line"><span class="meta">#</span> 创建的标签默认在本地，可以将标签推送至远程仓库</span><br><span class="line">git push origin v1.0</span><br><span class="line"><span class="meta">#</span> 将本地所有的标签推送到远程仓库</span><br><span class="line">git push --tags</span><br><span class="line"><span class="meta">#</span> 删除标签</span><br><span class="line">git tag -d v1.0</span><br><span class="line"><span class="meta">#</span> 删除远程仓库的标签</span><br><span class="line">git push origin :refs/tags/v1.0</span><br></pre></td></tr></table></figure>
-<h2 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h2><ul>
-<li>使用<code>.gitignore</code>将特定文件从仓库中忽略</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/22/Golang-slice/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/22/Golang-slice/" itemprop="url">Golang-slice</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-22T17:25:33+08:00">
-                2019-01-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程技术/" itemprop="url" rel="index">
-                    <span itemprop="name">编程技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/01/22/Golang-slice/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/22/Golang-slice/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>golang中的slice(切片)是基于array(数组)上的内置类型，可以看做是能够自动扩容的动态数组<br>与内置的map, chan一样，都是引用类型</p>
-<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><ul>
-<li>array<ul>
-<li>需要指定数组元素类型和数组长度</li>
-<li>底层为连续的内存空间，使用下标作为索引来进行存取</li>
-<li>声明后，数组元素为零值</li>
-<li>数组长度也是数组类型的一部分，因此<code>[3]int</code>和<code>[4]int</code>不是同一个类型</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    nums := [<span class="number">3</span>]<span class="keyword">int</span>&#123;&#125;</span><br><span class="line">    nums[<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line">    n := nums[<span class="number">0</span>]</span><br><span class="line">    n = <span class="number">2</span></span><br><span class="line">    fmt.Printf(<span class="string">"nums: %v\n"</span>, nums)</span><br><span class="line">    fmt.Printf(<span class="string">"n: %d\n"</span>, n)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>slice<ul>
-<li>底层为数组</li>
-<li>不需要指定切片的长度</li>
-<li>使用<code>var []T</code>, <code>[]T{}</code>或 <code>make([]T, len, cap)</code>来创建</li>
-<li>使用<code>append</code>来增加元素，可以自动扩容</li>
-<li>使用<code>copy</code>来进行切片的拷贝，返回被复制的元素数</li>
-<li>使用<code>[start:end]</code>来进行切片的resize操作</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    nums := [<span class="number">3</span>]<span class="keyword">int</span>&#123;&#125;</span><br><span class="line">    nums[<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line">    dnums := nums[:]</span><br><span class="line">    fmt.Printf(<span class="string">"dnums: %v"</span>, dnums)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h2><p><img src="/images/Golang-slice的实现.png" alt="slice"></p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> slice <span class="keyword">struct</span> &#123;</span><br><span class="line">    array unsafe.Pointer <span class="comment">//所引用的底层数据的指针</span></span><br><span class="line">    <span class="built_in">len</span>   <span class="keyword">int</span>  <span class="comment">// 当前切片的元素个数</span></span><br><span class="line">    <span class="built_in">cap</span>   <span class="keyword">int</span>  <span class="comment">// 当前切片的容量(底层数组的长度)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>扩容带来的问题</p>
-<ul>
-<li>未扩容时，对slice的修改会直接影响到底层的array</li>
-<li>发送扩容时，slice不再引用底层数据，对slice的修改不再影响到底层的array</li>
-</ul>
-<p>empty slice和nil slice</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">emptyNums := []<span class="keyword">int</span>&#123;&#125; <span class="comment">// 切片中的array指向一个空的数组</span></span><br><span class="line"><span class="keyword">var</span> nilNums []<span class="keyword">int</span> <span class="comment">// 切片中的array为nil，不指向任何数组</span></span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/22/Golang-corba/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/22/Golang-corba/" itemprop="url">Golang-corba</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-22T11:18:51+08:00">
-                2019-01-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程技术/" itemprop="url" rel="index">
-                    <span itemprop="name">编程技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/01/22/Golang-corba/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/22/Golang-corba/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>使用corba库可以方便的编写cli程序，其中Docker和Kubernetes的客户端程序便是基于corba库进行开发的。</p>
-<p>corba库的特点:</p>
-<ul>
-<li>支持子命令，如<code>app fetch</code>, <code>app push</code>等</li>
-<li>兼容Posix标准的命令行模式</li>
-<li>支持子命令的嵌套</li>
-<li>支持全局、局部和串联的<code>Flag</code></li>
-<li>使用<code>corba create appname</code>和<code>corba add cmdname</code>可以方便的创建应用程序和增加命令</li>
-<li>命令输入错误时的智能提示</li>
-<li>自动生成命令和Flag的帮助信息</li>
-<li>默认支持<code>-h</code>和<code>--help</code>，输出帮助信息</li>
-<li>Bash下命令的自动补全</li>
-<li>自动生成应用的man手册信息</li>
-<li>支持命令别名</li>
-<li>支持自定义<code>Help</code>、<code>Usage</code>等信息</li>
-</ul>
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
-<li><code>Command</code>: 命令，代表执行的动作</li>
-<li><code>Arg</code>: 命令对象，代表动作对应的对象</li>
-<li><code>Flag</code>: 命令参数</li>
-</ul>
-<p>因此，cli程序的使用方式为<code>AppName Command Arg --Flag</code>，其中<code>Command</code>还有可能包含子命令</p>
-<h2 id="项目初始化"><a href="#项目初始化" class="headerlink" title="项目初始化"></a>项目初始化</h2><ul>
-<li>安装:<code>go get -u github.com/spf13/cobra/cobra</code></li>
-<li><p>导入: <code>import &quot;github.com/spf13/cobra&quot;</code></p>
-</li>
-<li><p>项目结构:</p>
-</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">appName/</span><br><span class="line">    cmd/</span><br><span class="line">        cmd1.<span class="keyword">go</span></span><br><span class="line">        cmd2.<span class="keyword">go</span></span><br><span class="line">    main.<span class="keyword">go</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>main.go: 初始化corba</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">"appName/cmd"</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    cmd.Execute()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="使用corba命令自动生成代码"><a href="#使用corba命令自动生成代码" class="headerlink" title="使用corba命令自动生成代码"></a>使用corba命令自动生成代码</h3><ul>
-<li><p>执行<code>corba init toolchain</code>: 在{GOPATH}/src/toolchain下生成应用代码</p>
-</li>
-<li><p>在{GOPATH}/src/toolchain下执行<code>corba add scenario</code>: 为应用程序增加命令scenario</p>
-</li>
-<li><p>在{GOPATH}/src/toolchain下执行<code>corba add create -p scenarioCmd</code>: 为scenario增加子命令create</p>
-</li>
-</ul>
-<h3 id="手动编写代码"><a href="#手动编写代码" class="headerlink" title="手动编写代码"></a>手动编写代码</h3><ul>
-<li><p>在{GOPATH}/src/toolchain下手动创建main.go文件，进行corba的初始化</p>
-</li>
-<li><p>在{GOPATH}/src/toolchain/cmd手动创建各个命令文件，对命令进行定义</p>
-</li>
-</ul>
-<h2 id="Command对象"><a href="#Command对象" class="headerlink" title="Command对象"></a>Command对象</h2><p>命令对象是cli应用的核心，命令可能还会包括子命令</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Command <span class="keyword">struct</span> &#123;</span><br><span class="line">    Use <span class="keyword">string</span> <span class="comment">// 命令的名称</span></span><br><span class="line"></span><br><span class="line">    Aliases []<span class="keyword">string</span> <span class="comment">// 命令的别名列表</span></span><br><span class="line"></span><br><span class="line">    SuggestFor []<span class="keyword">string</span> <span class="comment">// 该命令可以被提议使用的名称列表</span></span><br><span class="line"></span><br><span class="line">    Short <span class="keyword">string</span> <span class="comment">// 命令的简短描述，在help信息中展示</span></span><br><span class="line"></span><br><span class="line">    Long <span class="keyword">string</span> <span class="comment">// 命令的详细描述，在'help &lt;this-command&gt;'中展示</span></span><br><span class="line"></span><br><span class="line">    Example <span class="keyword">string</span> <span class="comment">// 命令的使用例子</span></span><br><span class="line"></span><br><span class="line">    ValidArgs []<span class="keyword">string</span> <span class="comment">// 在Bash自动补全中的所有合法的Arg列表</span></span><br><span class="line"></span><br><span class="line">    Args PositionalArgs <span class="comment">// Arg参数校验规则函数</span></span><br><span class="line"></span><br><span class="line">    ArgAliases []<span class="keyword">string</span> <span class="comment">// Arg参数别名列表</span></span><br><span class="line"></span><br><span class="line">    BashCompletionFunction <span class="keyword">string</span> <span class="comment">// Bash自动补全时的字符串</span></span><br><span class="line"></span><br><span class="line">    Deprecated <span class="keyword">string</span> <span class="comment">// 使用已被弃用的命令时输出的字符串</span></span><br><span class="line"></span><br><span class="line">    Hidden <span class="keyword">bool</span> <span class="comment">// 命令是否隐藏，如果隐藏则不会输出给用户</span></span><br><span class="line"></span><br><span class="line">    Annotations <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span> <span class="comment">// 命令关联的KV对，用于标识命令或对命令进行分组</span></span><br><span class="line"></span><br><span class="line">    Version <span class="keyword">string</span> <span class="comment">// 命令的版本</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// *Run系列函数的执行顺序如下:</span></span><br><span class="line">    <span class="comment">//   * PersistentPreRun() 当前命令的子命令可以实现和运行</span></span><br><span class="line">    <span class="comment">//   * PreRun() 当前命令的子命令无法实现和运行</span></span><br><span class="line">    <span class="comment">//   * Run()</span></span><br><span class="line">    <span class="comment">//   * PostRun() 当前命令的子命令无法实现和运行</span></span><br><span class="line">    <span class="comment">//   * PersistentPostRun() 当前命令的子命令可以实现和运行</span></span><br><span class="line">    <span class="comment">// 所有函数的输入参数相同的Arg参数</span></span><br><span class="line">    PersistentPreRun <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line"><span class="function">    <span class="title">PersistentPreRunE</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line"><span class="function">    <span class="title">PreRun</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line"><span class="function">    <span class="title">PreRunE</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line"><span class="function">    <span class="title">Run</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> // 命令的具体实现逻辑，大部分的命令只需要实现该参数</span></span><br><span class="line"><span class="function">    <span class="title">RunE</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line"><span class="function">    <span class="title">PostRun</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line"><span class="function">    <span class="title">PostRunE</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line"><span class="function">    <span class="title">PersistentPostRun</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line"><span class="function">    <span class="title">PersistentPostRunE</span> <span class="title">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
-<h2 id="Flag的使用"><a href="#Flag的使用" class="headerlink" title="Flag的使用"></a>Flag的使用</h2><ul>
-<li>Persistent Flag: 全局Flag，对当前命令及其子命令皆可用</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rootCmd.PersistentFlags().BoolVarP(&amp;Verbose, <span class="string">"verbose"</span>, <span class="string">"v"</span>, <span class="literal">false</span>, <span class="string">"verbose output"</span>)</span><br></pre></td></tr></table></figure>
-<ul>
-<li>Local Flag: 局部Flag，只对当前命令可用</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rootCmd.Flags().StringVarP(&amp;Source, <span class="string">"source"</span>, <span class="string">"s"</span>, <span class="string">""</span>, <span class="string">"Source directory to read from"</span>)</span><br></pre></td></tr></table></figure>
-<ul>
-<li>Flag与Config绑定:</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rootCmd.PersistentFlags().StringVar(&amp;author, <span class="string">"author"</span>, <span class="string">"YOUR NAME"</span>, <span class="string">"Author name for copyright attribution"</span>)</span><br><span class="line">viper.BindPFlag(<span class="string">"author"</span>, RootCmd.PersistentFlags().Lookup(<span class="string">"author"</span>))</span><br></pre></td></tr></table></figure>
-<ul>
-<li>必填的Flag</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rootCmd.Flags().StringVarP(&amp;Region, <span class="string">"region"</span>, <span class="string">"r"</span>, <span class="string">""</span>, <span class="string">"AWS region (required)"</span>)</span><br><span class="line">rootCmd.MarkFlagRequired(<span class="string">"region"</span>)</span><br></pre></td></tr></table></figure>
-<h2 id="Args的校验"><a href="#Args的校验" class="headerlink" title="Args的校验"></a>Args的校验</h2><ul>
-<li>内置校验规则</li>
-</ul>
-<p>NoArgs: 如果包含任何Arg，命令报错<br>ArbitraryArgs: 命令接受任何Arg<br>OnlyValidArgs: 如果有Arg不在ValidArgs中，命令报错<br>MinimumArgs(init): 如果Arg数目少于N个后，命令报错<br>MaximumArgs(init): 如果Arg数目多余N个后，命令报错<br>ExactArgs(init): 如果Arg数目不是N个话，命令报错<br>RangeArgs(min, max): 如果Arg数目不在范围(min, max)中，命令报错</p>
-<ul>
-<li>自定义校验规则</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cmd = &amp;cobra.Command&#123;</span><br><span class="line">    Short: <span class="string">"hello"</span>,</span><br><span class="line">    Args: <span class="function"><span class="keyword">func</span><span class="params">(cmd *cobra.Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(args) &lt; <span class="number">1</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> errors.New(<span class="string">"requires at least one arg"</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> myapp.IsValidColor(args[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> fmt.Errorf(<span class="string">"invalid color specified: %s"</span>, args[<span class="number">0</span>])</span><br><span class="line">    &#125;,</span><br><span class="line">    Run: <span class="function"><span class="keyword">func</span><span class="params">(cmd *cobra.Command, args []<span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"Hello, World!"</span>)</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="自定义Help和Usage"><a href="#自定义Help和Usage" class="headerlink" title="自定义Help和Usage"></a>自定义Help和Usage</h2><ul>
-<li>Help</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cmd.SetHelpCommand(cmd *Command)</span><br><span class="line">cmd.SetHelpFunc(f <span class="function"><span class="keyword">func</span><span class="params">(*Command, []<span class="keyword">string</span>)</span>)</span></span><br><span class="line"><span class="function"><span class="title">cmd</span>.<span class="title">SetHelpTemplate</span><span class="params">(s <span class="keyword">string</span>)</span></span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>Usage</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cmd.SetUsageFunc(f <span class="function"><span class="keyword">func</span><span class="params">(*Command)</span> <span class="title">error</span>)</span></span><br><span class="line"><span class="function"><span class="title">cmd</span>.<span class="title">SetUsageTemplate</span><span class="params">(s <span class="keyword">string</span>)</span></span></span><br></pre></td></tr></table></figure>
-<h2 id="生成帮助文档"><a href="#生成帮助文档" class="headerlink" title="生成帮助文档"></a>生成帮助文档</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"log"</span></span><br><span class="line"></span><br><span class="line">    <span class="string">"github.com/spf13/cobra"</span></span><br><span class="line">    <span class="string">"github.com/spf13/cobra/doc"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cmd := &amp;cobra.Command&#123;</span><br><span class="line">        Use:   <span class="string">"test"</span>,</span><br><span class="line">        Short: <span class="string">"my test program"</span>,</span><br><span class="line">    &#125;</span><br><span class="line">    err := doc.GenMarkdownTree(cmd, <span class="string">"/tmp"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Fatal(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><a href="https://github.com/spf13/cobra" target="_blank" rel="noopener">corba</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/18/Kubernetes安装部署/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/18/Kubernetes安装部署/" itemprop="url">Kubernetes安装部署</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-18T17:15:06+08:00">
-                2019-01-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/01/18/Kubernetes安装部署/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/18/Kubernetes安装部署/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>K8S的安装方式:</p>
-<ul>
-<li>使用<code>Minikube</code>安装K8S单机环境</li>
-<li>使用二进制安装<ul>
-<li>将Master节点上的组件(<code>API Server</code>、<code>Controller Manager</code>、<code>Scheduler</code>、<code>ETCD</code>等)直接以二进制的形式安装在主机上</li>
-<li>Node节点上的组件(<code>Kubelet</code>、<code>Docker</code>、<code>Kube-Proxy</code>等)直接以二进制的形式安装在主机上</li>
-<li>这是一种传统方式，所有K8S组件都是系统级别的守护进</li>
-<li>该方式比较麻烦，因为需要手动去安装和配置各个组件，比如配置节点间安全通信的证书</li>
-<li>在该方式下，如果某些K8S组件出现故障，需要手动去进行管理和维护，因此不推荐该方式<br><a href="https://github.com/opsnull/follow-me-install-kubernetes-cluster" target="_blank" rel="noopener">参考</a></li>
-</ul>
-</li>
-<li>使用<code>Kubeadm</code>自动化工具安装<ul>
-<li>内部调用<code>Kubectl</code>等命令</li>
-<li>在所有主机上安装<code>Docker</code>、<code>Kubelet</code>和<code>Kubeadm</code>组件，提供主机上运行容器和Pod的基础环境</li>
-<li>将某台主机使用<code>Kubeadm init</code>初始化为Master节点</li>
-<li>在其他主机上使用<code>Kubeadm join</code>来进入到K8S集群中，作为Node节点</li>
-<li>在Master节点上以Pod的形式在容器中运行组件(<code>API Server</code>、<code>Controller Manager</code>、<code>Scheduler</code>、<code>ETCD</code>等)</li>
-<li>在Node节点上以Pod的形式在容器中运行组件(<code>Kube-Proxy</code>等)</li>
-<li>K8S所有组件以Pod的方式来运行，这些Pod为静态Pod，由<code>Kubelet</code>进行管理，仅存于特定Node上，不能通过API Server进行管理</li>
-<li>在所有主机上以Pod的方式来运行<code>Flannel</code>，为Pod提供IP地址分配的功能，该Pod由K8S来进行管理<br><a href="https://github.com/kubernetes/kubeadm/blob/master/docs/design/design_v1.10.md" target="_blank" rel="noopener">参考</a></li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/18/Docker的Linux原理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/18/Docker的Linux原理/" itemprop="url">Docker的Linux原理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-18T14:07:53+08:00">
-                2019-01-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/01/18/Docker的Linux原理/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/18/Docker的Linux原理/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="使用namespace实现资源隔离"><a href="#使用namespace实现资源隔离" class="headerlink" title="使用namespace实现资源隔离"></a>使用namespace实现资源隔离</h2><ul>
-<li><p>UTS: 主机与域名隔离，使用独立的主机名称，从而能够网络中标识自己</p>
-</li>
-<li><p>IPC: 进程间通信隔离，如信号量、消息队列、共享内存等</p>
-</li>
-<li><p>PID: 进程隔离，与宿主机中的进程ID隔离</p>
-</li>
-<li><p>Network: 网络设备、网络栈、端口等隔离</p>
-</li>
-<li><p>Mount: 文件系统隔离，使用<code>chroot</code>来切换根目录的挂载点</p>
-</li>
-<li><p>User: 用户，用户组和权限的隔离</p>
-</li>
-</ul>
-<h2 id="使用cgroups实现资源限制"><a href="#使用cgroups实现资源限制" class="headerlink" title="使用cgroups实现资源限制"></a>使用cgroups实现资源限制</h2><ul>
-<li><p>CPU</p>
-</li>
-<li><p>Memory</p>
-</li>
-<li><p>Disk I/O</p>
-</li>
-<li><p>Network I/O</p>
-</li>
-</ul>
-<h2 id="使用union-filesystem实现镜像"><a href="#使用union-filesystem实现镜像" class="headerlink" title="使用union-filesystem实现镜像"></a>使用union-filesystem实现镜像</h2><ul>
-<li><p>基于copy-on-write，写时复制</p>
-</li>
-<li><p>多个layer，最上层为一个可写的层</p>
-</li>
-<li><p>所有对容器的修改其实都是对最上层的修改</p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/17/Kubernetes入门/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/17/Kubernetes入门/" itemprop="url">Kubernetes入门</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-17T16:31:32+08:00">
-                2019-01-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/01/17/Kubernetes入门/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/17/Kubernetes入门/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>当前主流的容器编排技术包括</p>
-<ul>
-<li><code>docker compose</code>: Docker官方的单机版本的容器编排工具</li>
-<li><code>docker swarm</code>: Docker官方的多机版本的容器编排工具</li>
-<li><code>mesos + marathon</code>: Apache提供的集群资源管理和容器编排工具</li>
-<li><code>kubernetes</code>: Google提供的容器编排工具，事实上已经成为容器编排的标准工具</li>
-</ul>
-<h2 id="主要功能"><a href="#主要功能" class="headerlink" title="主要功能"></a>主要功能</h2><ul>
-<li>基于容器的应用的自动部署、滚动升级、自动修复和版本回滚</li>
-<li>应用配置的管理</li>
-<li>服务的自动伸缩和水平扩展</li>
-<li>负载均衡和服务发现</li>
-<li>跨机器和跨地区的集群调度</li>
-<li>无状态和有状态服务</li>
-<li>广泛的数据卷支持和管理</li>
-<li>插件机制保证可扩展性</li>
-</ul>
-<h2 id="系统架构"><a href="#系统架构" class="headerlink" title="系统架构"></a>系统架构</h2><p>Master-Slave(Node)结构</p>
-<p><img src="/images/Kubernetes之系统架构.png" alt="kubernetes architecture"></p>
-<ul>
-<li><p><code>Kubectl</code>: 用户的命令行交互工具</p>
-</li>
-<li><p>K8S Control Plane(Master): 管理整个集群</p>
-<ul>
-<li>各个组件可以以分布式的形式在多台机器上运行</li>
-<li>为保证高可用，推荐部署3个Master节点</li>
-<li>主要组件包括:<ul>
-<li><code>API Server</code>: 用户API入口<ul>
-<li>将K8S API以<code>JSON over HTTP</code>的形式暴露给用户</li>
-<li>用户可以通过kubectl发起请求，对集群中的Pod在Node上进行调度</li>
-<li>请求处理的结果最终保存到ETCD中</li>
-</ul>
-</li>
-<li><code>Controller Manager</code>: 控制器管理器<ul>
-<li>管理多个Pod控制器，一般一个Pod需要一个Pod控制器</li>
-<li>常用的Pod控制器包括:<ul>
-<li><code>ReplicationController</code>: 早期版本的副本控制器</li>
-<li><code>ReplicaSet</code>: 副本集控制器，一般不直接使用</li>
-<li><code>Deployment</code>: 声明式的无状态应用部署控制器，支持滚动升级和版本回滚<ul>
-<li>支持HPA(HorizontalPodAutoscaling)，可以对应用进行自动伸缩</li>
-</ul>
-</li>
-<li><code>DaemonSet</code>: 无状态应用，保证一个Node上运行一个Pod，对应系统级别的后台进程</li>
-<li><code>StatefulSet</code>: 有状态应用</li>
-<li><code>Job</code>: 一次性任务，即完成后便退出的应用</li>
-<li><code>Cronjob</code>: 周期性任务，不需要持续运行的应用</li>
-</ul>
-</li>
-<li>每个控制器分别负责监控集群中的某些状态，使之符合Object.status的要求</li>
-<li>与API Server进行通信，实现资源(Pod, Service)的创建、更新和删除</li>
-</ul>
-</li>
-<li><code>Scheduler</code>: 调度器<ul>
-<li>将集群中所有的Node的资源看做是一个整体</li>
-<li>监控各个Node上的资源使用情况</li>
-<li>对资源进行调度，按照预定的策略将Pod调度到对应的Node上</li>
-</ul>
-</li>
-<li><code>ETCD</code>: 集群状态存储<ul>
-<li>轻量级的分布式一致性KV存储服务</li>
-<li>API Server使用其提供的watch机制对资源状态进行监控</li>
-<li>存储整个集群的状态信息</li>
-</ul>
-</li>
-<li><code>AddONs</code>: 插件，也是以Pod+Service的形式运行<ul>
-<li>DNS: 解析规则会根据集群状态的变化而自动改变</li>
-<li>Dashboard: 集群管理页面</li>
-<li>Heapster: 集群监控</li>
-<li>IngressController: Ingress资源管理</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>K8S Node(Slave): Pod真正运行的机器</p>
-<ul>
-<li>带有容器的运行时，比如Docker</li>
-<li>还包括以下组件<ul>
-<li><code>Kubelet</code><ul>
-<li>对容器、数据卷、网络等进行管理</li>
-<li>监控容器运行状态和资源使用状态并上报到Master</li>
-</ul>
-</li>
-<li><code>Container</code><ul>
-<li>处于Pod的内部，包含了应用所需的依赖</li>
-</ul>
-</li>
-<li><code>Kube-Proxy</code><ul>
-<li>实现了网络代理、服务发现、负载均衡等功能</li>
-<li>当Service对象发生变化后，自动在iptables中修改对应的规则，相当于为Service对象提供了一层抽象</li>
-</ul>
-</li>
-<li><code>cAdvisor</code><ul>
-<li>Kubelet使用cAdvisor进行容器资源使用情况的收集</li>
-<li>对各个容器使用的系统资源(CPU,Memory,Network,File)进行收集</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
-<li><p><code>Namespace</code>: 用于创建多个虚拟集群，对资源进行隔离</p>
-<ul>
-<li>命名空间的名称在系统中唯一</li>
-<li>删除一个命名空间会自动删除属于该空间的资源</li>
-<li>名称为default和kube-system为系统使用，不可以删除</li>
-<li>大多数的资源都属于命名空间，如Pod, Service, Replica, Deployment等</li>
-<li>低级别的资源如Node, PersistentVolume则不属于任何命名空间</li>
-</ul>
-</li>
-<li><p><code>Pod</code>: 系统中可以进行调度的最小对象，可以包含一个或多个容器</p>
-<ul>
-<li>Pod在系统中会被分配一个唯一的IP地址</li>
-<li>Pod中的多个容器共享网络、数据卷等 <strong>使用pause容器作为根容器，Pod中的其它容器共享pause容器的各类名称空间</strong></li>
-<li>Pod内部的容器之间可以通过localhost进行访问 <strong>本质是Pod中的容器使用的是联盟式网络</strong></li>
-<li>Pod是有生命周期的，可能会被集群启动、修改和删除</li>
-<li>跨Pod的容器之间的访问可以通过Service对象来实现</li>
-</ul>
-</li>
-<li><p><code>Service</code>: 一个或多个Pod组成，是Pod之上的概念</p>
-<ul>
-<li>通过Label Selector来筛选Pod，符合条件的Pod的IP和端口组成了一个EndPoints列表</li>
-<li>每一个Service会被分配一个Cluster IP和DNS名称</li>
-<li>外部用户和其他Service可以通过该Cluster IP或DNS名来访问服务，而不需要了解服务对应的Pod列表，可以将Service看做是对Pod的代理</li>
-<li>Kube-Proxy将用户对Service的访问均衡负载到这些EndPoints上，从而实现了负载均衡和服务发现的功能  <strong>本质上是DNS解析和在iptables添加了DNAT数据转发规则</strong></li>
-</ul>
-</li>
-<li><p><code>Volume</code>: 为Pod提供存储空间和文件共享</p>
-</li>
-</ul>
-<p>管理<code>Object</code>的机制包括:</p>
-<ul>
-<li><code>Label</code>: 识别Object的标签<ul>
-<li>key/value对<ul>
-<li>key: 长度小于63字符，只能为数字、字母、下划线、_和.，且以字母开头</li>
-<li>value: 长度小于63字符，可以为空，只能为数字、字母、下划线、_和.，且以字母或数字开头结尾</li>
-</ul>
-</li>
-<li>使用<code>kubectl get --selector</code>命令可以通过指定的标签选择器过滤出符合条件的Object<ul>
-<li>等式: app=nginx env!=production</li>
-<li>集合: env in (production, test)</li>
-<li>组合: app=nginx, env=test</li>
-</ul>
-</li>
-<li>使用<code>kubectl label</code>命令更新对象的标签</li>
-<li>许多资源如<code>ReplicaSet</code>、<code>Deployment</code>支持使用内嵌字段来定义它们的标签选择器，从而从集群中获取符合条件的资源<ul>
-<li><code>matchLabels</code>: 直接给定标签的KV对</li>
-<li><code>matchExpressions</code>: 基于给定的表达式来定义标签选择器</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><code>Annotation</code>: 对Object的描述<ul>
-<li>key/value对，键值大小不受限制</li>
-<li>记录Object的一些附属信息</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/16/Golang-https服务器/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/16/Golang-https服务器/" itemprop="url">Golang-https服务器</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-16T17:05:47+08:00">
-                2019-01-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程技术/" itemprop="url" rel="index">
-                    <span itemprop="name">编程技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/01/16/Golang-https服务器/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/16/Golang-https服务器/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="加密、签名和数字证书"><a href="#加密、签名和数字证书" class="headerlink" title="加密、签名和数字证书"></a>加密、签名和数字证书</h2><ul>
-<li><p>对称加密: 加密和解密的密钥是相同的</p>
-<ul>
-<li>需要使用安全的渠道在通信双方首次通信时协商一个共同的密钥</li>
-<li>密钥的数目多了之后比较难于管理</li>
-<li>常见对称加密算法有: <code>DES</code></li>
-</ul>
-</li>
-<li><p>非对称加密: 加密和解密的密钥是不同的，分为私钥和公钥。其中公钥是公开的，任何人都可以获取，而私钥是私有的。使用公钥加密的数据可以使用私钥来解密；使用私钥加密的数据可以使用公钥来解密</p>
-<ul>
-<li>通信A方将自己的公钥公开，得到该公钥的B方使用其对发送数据进行加密，A方收到数据后再使用自己的私钥进行解密</li>
-<li>常见非对称加密算法有: <code>RSA</code></li>
-</ul>
-</li>
-<li><p>签名: 在发送的数据之后增加一段内容，用于证明数据未被修改。一般是通过对数据进行一个Hash计算得到，是不可逆的。签名和要数据会被一起发送出去</p>
-</li>
-<li><p>数字证书: 确保数字证书里面的公钥确实是这个证书的所有者的，即用证书来确认对方的身份</p>
-<ul>
-<li>如果客户端需要对服务器进行验证，则需要服务器提供数字证书</li>
-<li>如果服务器需要对客户端进行验证，则需要客户端提供数字证书</li>
-<li>证书的主要内容<ul>
-<li><code>Issuer</code>: 证书颁发机构</li>
-<li><code>Valid From、Valid To</code>: 证书的有效期</li>
-<li><code>Public Key</code>: 公钥</li>
-<li><code>Subject</code>: 证书的所有者，一般为某人、某公司名称、某网站地址等</li>
-</ul>
-</li>
-<li>由权威的第三方机构颁发</li>
-</ul>
-</li>
-</ul>
-<h2 id="TLS协议"><a href="#TLS协议" class="headerlink" title="TLS协议"></a>TLS协议</h2><p>https协议使用TLS(Transport Layer Security, 传输层安全协议)来保证通信的安全性和数据的完整性，该协议工作在TCP协议之上，可以看做是SSL协议的升级版</p>
-<p>TLS基于X.509来进行认证，然后使用非对称加密算法来进行通信双方的身份认证，然后进行公钥的交换，并使用公钥对通信双方的数据进行加密</p>
-<p>HTTPS连接的建立过程: 使用非对称加密来交换对称加密的密钥</p>
-<p><img src="/images/HTTPs的建立过程.png" alt="img"></p>
-<h2 id="生成证书"><a href="#生成证书" class="headerlink" title="生成证书"></a>生成证书</h2><ul>
-<li>生成服务端证书</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 生成私钥</span><br><span class="line">openssl genrsa -out server.key 2048</span><br><span class="line"><span class="meta">#</span> 生成证书</span><br><span class="line">openssl req -new -x509 -key server.key -out server.pem -days 3650</span><br></pre></td></tr></table></figure>
-<p>或者直接使用go内置工具</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go run $GOROOT/src/crypto/tls/generate_cert.go --host localhost</span><br></pre></td></tr></table></figure>
-<ul>
-<li>生成客户端证书</li>
-</ul>
-<p>并不是必须的<br>但在某些需要验证客户端身份的场景下，服务器需要客户端提供证书</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 生成私钥</span><br><span class="line">openssl genrsa -out client.key 2048</span><br><span class="line"><span class="meta">#</span> 生成证书</span><br><span class="line">openssl req -new -x509 -key client.key -out client.pem -days 3650</span><br></pre></td></tr></table></figure>
-<h2 id="证书的使用"><a href="#证书的使用" class="headerlink" title="证书的使用"></a>证书的使用</h2><p>golang的<code>crypto/tls</code>实现了TLS1.2的功能，<code>crypto/x509</code>实现了证书管理的功能</p>
-<ul>
-<li>TCP服务器</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cert, err := tls.LoadX509KeyPair(<span class="string">"server.pem"</span>, <span class="string">"server.key"</span>) <span class="comment">// 获取服务端证书</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    certBytes, err := ioutil.ReadFile(<span class="string">"client.pem"</span>) <span class="comment">// 读取客户端证书</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(<span class="string">"Unable to read cert.pem"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    clientCertPool := x509.NewCertPool()</span><br><span class="line">    ok := clientCertPool.AppendCertsFromPEM(certBytes)</span><br><span class="line">    <span class="keyword">if</span> !ok &#123;</span><br><span class="line">        <span class="built_in">panic</span>(<span class="string">"failed to parse root certificate"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    config := &amp;tls.Config&#123;</span><br><span class="line">        Certificates: []tls.Certificate&#123;cert&#125;,</span><br><span class="line">        ClientAuth:   tls.RequireAndVerifyClientCert, <span class="comment">// 设置需要对客户端身份进行认证</span></span><br><span class="line">        ClientCAs:    clientCertPool, <span class="comment">// 添加客户端证书池</span></span><br><span class="line">    &#125;</span><br><span class="line">    config := &amp;tls.Config&#123;Certificates: []tls.Certificate&#123;cert&#125;&#125; <span class="comment">// 创建tls配置</span></span><br><span class="line">    ln, err := tls.Listen(<span class="string">"tcp"</span>, <span class="string">":443"</span>, config) <span class="comment">// 开启监听</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">defer</span> ln.Close()</span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        conn, err := ln.Accept() <span class="comment">// 建立连接</span></span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Println(err)</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">go</span> handleConn(conn) <span class="comment">// 处理请求</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">handleConn</span><span class="params">(conn net.Conn)</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> conn.Close()</span><br><span class="line">    r := bufio.NewReader(conn)</span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        msg, err := r.ReadString(<span class="string">'\n'</span>)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Println(err)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        log.Println(msg)</span><br><span class="line">        n, err := conn.Write([]<span class="keyword">byte</span>(<span class="string">"world\n"</span>))</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Println(n, err)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>TCP客户端</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cert, err := tls.LoadX509KeyPair(<span class="string">"client.pem"</span>, <span class="string">"client.key"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    certBytes, err := ioutil.ReadFile(<span class="string">"client.pem"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(<span class="string">"Unable to read cert.pem"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    clientCertPool := x509.NewCertPool()</span><br><span class="line">    ok := clientCertPool.AppendCertsFromPEM(certBytes)</span><br><span class="line">    <span class="keyword">if</span> !ok &#123;</span><br><span class="line">        <span class="built_in">panic</span>(<span class="string">"failed to parse root certificate"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    conf := &amp;tls.Config&#123;</span><br><span class="line">        RootCAs:            clientCertPool,</span><br><span class="line">        Certificates:       []tls.Certificate&#123;cert&#125;, <span class="comment">// 在tls配置中添加客户端证书信息</span></span><br><span class="line">        InsecureSkipVerify: <span class="literal">true</span>, <span class="comment">// 设置为true，则不会校验服务器证书以及证书中的主机名和服务器主机名是否一致</span></span><br><span class="line">    &#125;</span><br><span class="line">    conn, err := tls.Dial(<span class="string">"tcp"</span>, <span class="string">"127.0.0.1:443"</span>, conf) <span class="comment">// 建立连接</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">defer</span> conn.Close()</span><br><span class="line">    n, err := conn.Write([]<span class="keyword">byte</span>(<span class="string">"hello\n"</span>)) <span class="comment">// 写数据</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(n, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">100</span>)</span><br><span class="line">    n, err = conn.Read(buf) <span class="comment">// 读数据</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(n, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    log.Println(<span class="keyword">string</span>(buf[:n]))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>HTTPs服务器</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    http.HandleFunc(<span class="string">"/hello"</span>, helloServerfunc)</span><br><span class="line">    server := &amp;http.Server&#123;</span><br><span class="line">        Addr: <span class="string">":443"</span>,</span><br><span class="line">        TLSConfig: &amp;tls.Config&#123;</span><br><span class="line">            ClientAuth: tls.RequestClientCert, <span class="comment">// 配置需要对客户端证书进行验证</span></span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;</span><br><span class="line">    err := server.ListenAndServeTLS(<span class="string">"cert/server.pem"</span>, <span class="string">"cert/server.key"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Fatal(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">helloServerfunc</span><span class="params">(rw http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    rw.Header().Set(<span class="string">"Content-Type"</span>, <span class="string">"text/plain"</span>)</span><br><span class="line">    rw.Write([]<span class="keyword">byte</span>(<span class="string">"This is an example server.\n"</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在浏览器中输入<code>https://localhost/hello</code>即可访问</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/15/Golang-container/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/15/Golang-container/" itemprop="url">Golang-container</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-15T17:35:52+08:00">
-                2019-01-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程技术/" itemprop="url" rel="index">
-                    <span itemprop="name">编程技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/01/15/Golang-container/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/01/15/Golang-container/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="container-heap"><a href="#container-heap" class="headerlink" title="container/heap"></a>container/heap</h2><p>实现了堆数据结构: <a href="https://gravity-xin.github.io/2018/11/12/Heap/" target="_blank" rel="noopener">heap</a></p>
-<p>提供了<code>heap.Interface</code>接口，同时提供了<code>Init、Push、Pop、Remove、Fix</code>方法对堆对象进行操作</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Interface 堆对象需要实现的接口</span></span><br><span class="line"><span class="keyword">type</span> Interface <span class="keyword">interface</span> &#123;</span><br><span class="line">    sort.Interface <span class="comment">// 排序接口</span></span><br><span class="line">    Push(x <span class="keyword">interface</span>&#123;&#125;) <span class="comment">// 向堆中加入元素，作为第Len()个元素</span></span><br><span class="line">    Pop() <span class="keyword">interface</span>&#123;&#125;   <span class="comment">// 从堆中删除元素，并返回Len()-1个元素</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Init 对提供的满足heap.Interface接口的对象进行建立最小堆的操作</span></span><br><span class="line"><span class="comment">// 时间复杂度为O(h.Len())</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Init</span><span class="params">(h Interface)</span></span> &#123;</span><br><span class="line">    n := h.Len()</span><br><span class="line">    <span class="keyword">for</span> i := n/<span class="number">2</span> - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i-- &#123;</span><br><span class="line">        down(h, i, n) <span class="comment">// 对堆中的元素下溯，调整堆</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Push 向堆底中增加元素，并通过上溯调整堆</span></span><br><span class="line"><span class="comment">// 时间复杂度O(log(h.Len()))</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Push</span><span class="params">(h Interface, x <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    h.Push(x)</span><br><span class="line">    up(h, h.Len()<span class="number">-1</span>) <span class="comment">// 对堆中元素进行上溯，调整堆</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Pop 从堆顶删除元素，将堆尾元素放入堆顶，并通过下溯调整堆</span></span><br><span class="line"><span class="comment">// 时间复杂度为时间复杂度O(log(h.Len()))</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Pop</span><span class="params">(h Interface)</span> <span class="title">interface</span></span>&#123;&#125; &#123;</span><br><span class="line">    n := h.Len() - <span class="number">1</span></span><br><span class="line">    h.Swap(<span class="number">0</span>, n) <span class="comment">// 将堆尾部元素放入堆顶</span></span><br><span class="line">    down(h, <span class="number">0</span>, n) <span class="comment">// 对堆中元素下溯吗，调整堆</span></span><br><span class="line">    <span class="keyword">return</span> h.Pop()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Remove 从堆中任意位置(数组下标)删除元素</span></span><br><span class="line"><span class="comment">// 时间复杂度为时间复杂度O(log(h.Len()))</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Remove</span><span class="params">(h Interface, i <span class="keyword">int</span>)</span> <span class="title">interface</span></span>&#123;&#125; &#123;</span><br><span class="line">    n := h.Len() - <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> n != i &#123;</span><br><span class="line">        h.Swap(i, n)</span><br><span class="line">        <span class="keyword">if</span> !down(h, i, n) &#123;</span><br><span class="line">            up(h, i)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> h.Pop()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Fix 当位于i的位置的值发生变化后，调整堆</span></span><br><span class="line"><span class="comment">// 时间复杂度为时间复杂度O(log(h.Len()))</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Fix</span><span class="params">(h Interface, i <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> !down(h, i, h.Len()) &#123;</span><br><span class="line">        up(h, i)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>因此，我们只需要实现heap.Interface接口，便可以通过heap包提供的方法对堆进行各种操作</p>
-<p>基于heap实现优先级队列</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// Item 堆中的元素</span></span><br><span class="line"><span class="keyword">type</span> Item <span class="keyword">struct</span> &#123;</span><br><span class="line">    value    <span class="keyword">string</span> <span class="comment">// 元素值</span></span><br><span class="line">    priority <span class="keyword">int</span>    <span class="comment">// 元素的优先级</span></span><br><span class="line">    index    <span class="keyword">int</span>    <span class="comment">// 元素在堆中的索引(数组下标)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PriorityQueue 实现了heap.Interface的堆对象，本质上是一个数组</span></span><br><span class="line"><span class="keyword">type</span> PriorityQueue []*Item</span><br><span class="line"></span><br><span class="line"><span class="comment">// Len 返回PriorityQueue内置数组的长度</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq PriorityQueue)</span> <span class="title">Len</span><span class="params">()</span> <span class="title">int</span></span> &#123; <span class="keyword">return</span> <span class="built_in">len</span>(pq) &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Less 返回PriorityQueue中元素优先级的比较结果</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq PriorityQueue)</span> <span class="title">Less</span><span class="params">(i, j <span class="keyword">int</span>)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> pq[i].priority &gt; pq[j].priority <span class="comment">// 最大堆</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Swap 对PriorityQueue中的任意两个元素进行替换</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq PriorityQueue)</span> <span class="title">Swap</span><span class="params">(i, j <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    pq[i], pq[j] = pq[j], pq[i]</span><br><span class="line">    pq[i].index = i <span class="comment">// 更新元素索引</span></span><br><span class="line">    pq[j].index = j</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Push 向PriorityQueue添加元素，放入数组末尾</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq *PriorityQueue)</span> <span class="title">Push</span><span class="params">(x <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    n := <span class="built_in">len</span>(*pq)</span><br><span class="line">    item := x.(*Item)</span><br><span class="line">    item.index = n</span><br><span class="line">    *pq = <span class="built_in">append</span>(*pq, item)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Pop 从PriorityQueue删除元素，删除数组尾部元素</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq *PriorityQueue)</span> <span class="title">Pop</span><span class="params">()</span> <span class="title">interface</span></span>&#123;&#125; &#123;</span><br><span class="line">    old := *pq</span><br><span class="line">    n := <span class="built_in">len</span>(old)</span><br><span class="line">    item := old[n<span class="number">-1</span>]</span><br><span class="line">    item.index = <span class="number">-1</span></span><br><span class="line">    *pq = old[<span class="number">0</span> : n<span class="number">-1</span>]</span><br><span class="line">    <span class="keyword">return</span> item</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过heap.Fix方法处理堆中元素优先级变化的情况</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq *PriorityQueue)</span> <span class="title">update</span><span class="params">(item *Item, value <span class="keyword">string</span>, priority <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    item.value = value</span><br><span class="line">    item.priority = priority</span><br><span class="line">    heap.Fix(pq, item.index)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="container-list"><a href="#container-list" class="headerlink" title="container/list"></a>container/list</h2><p>实现了双向链表的数据结构</p>
-<p>提供了<code>list.New()</code>方法来创建双向链表，同时链表还提供了<code>Init、Back、Front、InsertAfter、InsertFront、Len</code>等链表操作方法</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Element 双向链表中的元素</span></span><br><span class="line"><span class="keyword">type</span> Element <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="comment">// 当前元素的前一个和后一个元素 next.Front()=prev.Back()=e</span></span><br><span class="line">    <span class="comment">// 实际是一个环</span></span><br><span class="line">    next, prev *Element</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 当前元素所属的链表对象</span></span><br><span class="line">    list *List</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 当前元素存储的实际值</span></span><br><span class="line">    Value <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Next 返回元素在链表中的下一个元素或者返回nil</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(e *Element)</span> <span class="title">Next</span><span class="params">()</span> *<span class="title">Element</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> p := e.next; e.list != <span class="literal">nil</span> &amp;&amp; p != &amp;e.list.root &#123;</span><br><span class="line">        <span class="keyword">return</span> p</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Prev 返回元素在链表中的前一个元素或者返回nil</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(e *Element)</span> <span class="title">Prev</span><span class="params">()</span> *<span class="title">Element</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> p := e.prev; e.list != <span class="literal">nil</span> &amp;&amp; p != &amp;e.list.root &#123;</span><br><span class="line">        <span class="keyword">return</span> p</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// List 双向链表</span></span><br><span class="line"><span class="keyword">type</span> List <span class="keyword">struct</span> &#123;</span><br><span class="line">    root Element <span class="comment">// root元素，作为哨兵 root.prev链表尾部元素 root.next链表头部元素</span></span><br><span class="line">    <span class="built_in">len</span>  <span class="keyword">int</span>     <span class="comment">// 链表长度，不包含root元素</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Init 初始化或者清空链表</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Init</span><span class="params">()</span> *<span class="title">List</span></span> &#123;</span><br><span class="line">    l.root.next = &amp;l.root</span><br><span class="line">    l.root.prev = &amp;l.root</span><br><span class="line">    l.<span class="built_in">len</span> = <span class="number">0</span></span><br><span class="line">    <span class="keyword">return</span> l</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// New 返回一个已初始化的链表对象</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">()</span> *<span class="title">List</span></span> &#123; <span class="keyword">return</span> <span class="built_in">new</span>(List).Init() &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Len 返回链表的长度</span></span><br><span class="line"><span class="comment">// 时间复杂度是O(1)</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Len</span><span class="params">()</span> <span class="title">int</span></span> &#123; <span class="keyword">return</span> l.<span class="built_in">len</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Front 返回链表的头部元素，如果链表为空则返回nil</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Front</span><span class="params">()</span> *<span class="title">Element</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> l.<span class="built_in">len</span> == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l.root.next</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Back 返回链表的尾部元素，如果链表为空则返回nil</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Back</span><span class="params">()</span> *<span class="title">Element</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> l.<span class="built_in">len</span> == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l.root.prev</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Remove 从链表中删除元素e，返回元素e中的值</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Remove</span><span class="params">(e *Element)</span> <span class="title">interface</span></span>&#123;&#125; &#123;</span><br><span class="line">    <span class="keyword">if</span> e.list == l &#123;</span><br><span class="line">        l.remove(e)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> e.Value</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PushFront 在链表头部插入值</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">PushFront</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;)</span> *<span class="title">Element</span></span> &#123;</span><br><span class="line">    l.lazyInit()</span><br><span class="line">    <span class="keyword">return</span> l.insertValue(v, &amp;l.root)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PushBack 在链表尾部插入值</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">PushBack</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;)</span> *<span class="title">Element</span></span> &#123;</span><br><span class="line">    l.lazyInit()</span><br><span class="line">    <span class="keyword">return</span> l.insertValue(v, l.root.prev)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// InsertBefore 在元素mark之前插入值</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">InsertBefore</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;, mark *Element)</span> *<span class="title">Element</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> mark.list != l &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l.insertValue(v, mark.prev)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// InsertAfter 在元素mark之后插入值</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">InsertAfter</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;, mark *Element)</span> *<span class="title">Element</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> mark.list != l &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l.insertValue(v, mark)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MoveToFront 将链表中的某个元素插入到链表头部</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">MoveToFront</span><span class="params">(e *Element)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> e.list != l || l.root.next == e &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    l.insert(l.remove(e), &amp;l.root)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MoveToBack 将链表中的某个元素插入到链表尾部</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">MoveToBack</span><span class="params">(e *Element)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> e.list != l || l.root.prev == e &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// see comment in List.Remove about initialization of l</span></span><br><span class="line">    l.insert(l.remove(e), l.root.prev)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MoveBefore 将链表中的元素插入到元素mark之前</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">MoveBefore</span><span class="params">(e, mark *Element)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> e.list != l || e == mark || mark.list != l &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    l.insert(l.remove(e), mark.prev)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MoveAfter 将链表中的元素插入到元素mark之后</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">MoveAfter</span><span class="params">(e, mark *Element)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> e.list != l || e == mark || mark.list != l &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    l.insert(l.remove(e), mark)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PushBackList 将另一个链表中的元素依次插入到当前链表的尾部</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">PushBackList</span><span class="params">(other *List)</span></span> &#123;</span><br><span class="line">    l.lazyInit()</span><br><span class="line">    <span class="keyword">for</span> i, e := other.Len(), other.Front(); i &gt; <span class="number">0</span>; i, e = i<span class="number">-1</span>, e.Next() &#123; <span class="comment">// 对链表进行遍历</span></span><br><span class="line">        l.insertValue(e.Value, l.root.prev)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PushFrontList 将另一个链表中的元素依次插入到当前链表的头部</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">PushFrontList</span><span class="params">(other *List)</span></span> &#123;</span><br><span class="line">    l.lazyInit()</span><br><span class="line">    <span class="keyword">for</span> i, e := other.Len(), other.Back(); i &gt; <span class="number">0</span>; i, e = i<span class="number">-1</span>, e.Prev() &#123;</span><br><span class="line">        l.insertValue(e.Value, &amp;l.root)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="container-ring"><a href="#container-ring" class="headerlink" title="container/ring"></a>container/ring</h2><p>实现了环形链表的数据结构</p>
-<p>提供了<code>ring.New()</code>来创建环形链表，同时链表还提供了<code>Next、Prev、Move</code>等方法对链表进行操作</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Ring 环形链表元素，同时也是环形链表对象</span></span><br><span class="line"><span class="comment">// 环形链表没有头部或尾部元素，可以从环中任一个元素开始对整个环进行遍历</span></span><br><span class="line"><span class="keyword">type</span> Ring <span class="keyword">struct</span> &#123;</span><br><span class="line">    next, prev *Ring</span><br><span class="line">    Value      <span class="keyword">interface</span>&#123;&#125; <span class="comment">// 元素的具体值</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Next 获取环中当前元素的下一个元素</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Ring)</span> <span class="title">Next</span><span class="params">()</span> *<span class="title">Ring</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> r.next == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> r.init()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> r.next</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Prev 获取环中当前元素的前一个元素</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Ring)</span> <span class="title">Prev</span><span class="params">()</span> *<span class="title">Ring</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> r.next == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> r.init()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> r.prev</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Move 返回环形链表中后面 (n &gt; 0) 或者前面 (n &lt; 0) 第 n % r.Len() 个元素</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Ring)</span> <span class="title">Move</span><span class="params">(n <span class="keyword">int</span>)</span> *<span class="title">Ring</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> r.next == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> r.init()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">switch</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> n &lt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">for</span> ; n &lt; <span class="number">0</span>; n++ &#123;</span><br><span class="line">            r = r.prev</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">case</span> n &gt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">for</span> ; n &gt; <span class="number">0</span>; n-- &#123;</span><br><span class="line">            r = r.next</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> r</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// New 创建包含n个元素的环形链表</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">(n <span class="keyword">int</span>)</span> *<span class="title">Ring</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> n &lt;= <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    r := <span class="built_in">new</span>(Ring)</span><br><span class="line">    p := r</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span>; i &lt; n; i++ &#123;</span><br><span class="line">        p.next = &amp;Ring&#123;prev: p&#125;</span><br><span class="line">        p = p.next</span><br><span class="line">    &#125;</span><br><span class="line">    p.next = r <span class="comment">// 首尾相连</span></span><br><span class="line">    r.prev = p</span><br><span class="line">    <span class="keyword">return</span> r</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Link 将环形链表r和s相连接</span></span><br><span class="line"><span class="comment">// 如果r和s为同一个环形链表，则删除r和s中之间的元素，并返回被删除的元素构成的子环形链表</span></span><br><span class="line"><span class="comment">// 如果r和s不为同一个环形链表，则创建一个新的环形链表使得 r.Next() = s</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Ring)</span> <span class="title">Link</span><span class="params">(s *Ring)</span> *<span class="title">Ring</span></span> &#123;</span><br><span class="line">    n := r.Next()</span><br><span class="line">    <span class="keyword">if</span> s != <span class="literal">nil</span> &#123;</span><br><span class="line">        p := s.Prev()</span><br><span class="line">        <span class="comment">// Note: Cannot use multiple assignment because</span></span><br><span class="line">        <span class="comment">// evaluation order of LHS is not specified.</span></span><br><span class="line">        r.next = s</span><br><span class="line">        s.prev = r</span><br><span class="line">        n.prev = p</span><br><span class="line">        p.next = n</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> n</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Unlink 删除环形链表中 n % r.Len() 个元素,从r.Next()开始，返回的是被删除的环形链表</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Ring)</span> <span class="title">Unlink</span><span class="params">(n <span class="keyword">int</span>)</span> *<span class="title">Ring</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> n &lt;= <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> r.Link(r.Move(n + <span class="number">1</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Len 返回环形链表的长度</span></span><br><span class="line"><span class="comment">// 时间复杂度o(n)</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Ring)</span> <span class="title">Len</span><span class="params">()</span> <span class="title">int</span></span> &#123;</span><br><span class="line">    n := <span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> r != <span class="literal">nil</span> &#123;</span><br><span class="line">        n = <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> p := r.Next(); p != r; p = p.next &#123;</span><br><span class="line">            n++</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> n</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Do 向前遍历环形链表的元素，并元素值执行f函数操作</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Ring)</span> <span class="title">Do</span><span class="params">(f <span class="keyword">func</span>(<span class="keyword">interface</span>&#123;&#125;)</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> r != <span class="literal">nil</span> &#123;</span><br><span class="line">        f(r.Value)</span><br><span class="line">        <span class="keyword">for</span> p := r.Next(); p != r; p = p.next &#123;</span><br><span class="line">            f(p.Value)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2367,7 +2134,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">89</span>
+                  <span class="site-state-item-count">97</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2389,7 +2156,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">162</span>
+                  <span class="site-state-item-count">169</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

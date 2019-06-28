@@ -249,6 +249,1955 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/18/MongoDB入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/18/MongoDB入门/" itemprop="url">MongoDB入门</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-18T17:53:36+08:00">
+                2019-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/18/MongoDB入门/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/04/18/MongoDB入门/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>BSON结构的、面向文档的NoSQL数据库</p>
+<h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ul>
+<li>高性能</li>
+<li>丰富的查询形式</li>
+<li>基于ReplicaSet的高可用</li>
+<li>基于Sharding的水平扩展</li>
+<li>支持多个存储引擎</li>
+</ul>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
+<li><p>DataBase: 数据库，包含很多Collection</p>
+</li>
+<li><p>Collection: 数据集合，包含很多Document</p>
+</li>
+<li><p>Document: BSON格式的文档，是可以操作的最小单位</p>
+<ul>
+<li>包含多个字段，且可以嵌套</li>
+<li><code>_id</code>字段作为Document的默认主键，并为其添加唯一索引</li>
+<li>使用<code>field1.field2</code>来获取嵌套字段值</li>
+<li>使用<code>field1.index</code>来获取数组字段的某个元素值</li>
+</ul>
+</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><ul>
+<li><p>启动参数</p>
+<ul>
+<li><code>--config</code>或<code>-f</code>: 配置文件路径</li>
+<li><code>--logpath</code>: 日志文件路径</li>
+<li><code>--dbpath</code>: 数据存储路径</li>
+<li><code>--auth</code>: 启动用户认证</li>
+<li><code>--port</code>: 监听的端口号</li>
+</ul>
+</li>
+<li><p>Docker</p>
+<ul>
+<li><code>docker container run -d -p 27017:27017 -v mongo_data:/data/db --name MyMongo mongo</code></li>
+</ul>
+</li>
+<li><p>Kubernetes: <a href="https://docs.mongodb.com/kubernetes-operator/stable/tutorial/install-k8s-operator/" target="_blank" rel="noopener">MongoDB</a></p>
+</li>
+</ul>
+<h2 id="Shell使用"><a href="#Shell使用" class="headerlink" title="Shell使用"></a>Shell使用</h2><ul>
+<li>使用<code>mongo --username --password --authenticationDatabase --host --port</code>连接MongoDB数据库并进入Shell</li>
+<li>常用命令<ul>
+<li>help: 查看帮助</li>
+<li>show dbs: 查看系统中的Database</li>
+<li>use dbName: 使用某一个Database</li>
+<li>db: 查看当前使用的Database</li>
+<li>db.colName.xxx: 对某个Database的某个Collection进行CURD等操作</li>
+</ul>
+</li>
+</ul>
+<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><ul>
+<li>插入: 如果插入的Document没有<code>_id</code>字段，系统会自动创建该字段<ul>
+<li><code>insertOne</code></li>
+<li><code>insertMany</code></li>
+</ul>
+</li>
+<li>读取<ul>
+<li><code>find</code><ul>
+<li>如果没有提供查询条件，默认列出所有Document</li>
+<li><code>find({&quot;field1&quot;: &quot;value1&quot;})</code>，列出字段field1值为value1的Document</li>
+<li><code>find({&quot;field1&quot;: {&quot;$in&quot;: [&quot;value1&quot;, &quot;value2&quot;]}})</code>，列出字段field1值为value1或value2的Document</li>
+<li><code>find({&quot;field1&quot;: &quot;value1&quot;}, {&quot;field2&quot;: &quot;value2&quot;})</code>，列出同时满足多个条件Document</li>
+<li><code>find({&quot;$or&quot;:[{&quot;field1&quot;: &quot;value1&quot;}, {&quot;field2&quot;: &quot;value2&quot;}]})</code>，列出至少满足一个条件Document</li>
+<li><code>find({&quot;field1&quot;: &quot;value1&quot;}, {&quot;$or&quot;:[{&quot;field2&quot;: &quot;value2&quot;}, {&quot;field3&quot;: &quot;value3&quot;}]})</code>，列出满足多个条件的Document</li>
+<li><code>find({&quot;field1&quot;: {&quot;$regex&quot;: &quot;value1&quot;}})</code>，列出满足正则表达式条件的Document</li>
+<li><code>find({&quot;field1.field2&quot;: &quot;value1&quot;})</code>，列出嵌套字段满足条件的Document</li>
+<li><code>find({&quot;arrayField&quot;: {&quot;$all&quot;: [&quot;item1&quot;, &quot;item2&quot;]}})</code>，列出满足数组字段条件的Document</li>
+<li><code>find({&quot;arrayField&quot;: &quot;item1&quot;)</code>，列出数组字段元素中至少包含等于该字段值的Document</li>
+<li><code>find({&quot;arrayField&quot;: {&quot;$gt&quot;: &quot;item1&quot;})</code>，列出数组字段元素中至少包含一个满足条件的Document</li>
+<li><code>find({&quot;arrayField.0&quot;: {&quot;$gt&quot;: &quot;item1&quot;})</code>，列出数组字段中第一个元素中满足条件的Document</li>
+<li><code>find({&quot;arrayField&quot;: {&quot;$size&quot;: 3})</code>，列出数组字段长度为3的Document</li>
+<li>其它常用的操作符包括: <code>$eq</code>,<code>$ne</code>,<code>$nin</code>,<code>$lt</code>,<code>$gt</code>,<code>$lte</code>,<code>$gte</code> <a href="https://docs.mongodb.com/manual/reference/operator/query/" target="_blank" rel="noopener">“Query Operators”</a></li>
+<li><code>find({&quot;field1&quot;: &quot;value1&quot;}, {&quot;field1&quot;: 1, &quot;field2&quot;: 1, &quot;field3.field4&quot;: 1})</code>: 设置查询返回的Document字段列表，默认返回所有字段</li>
+<li><code>find({&quot;field1&quot;: &quot;value1&quot;}, {&quot;field1&quot;: 0, &quot;field2&quot;: 0})</code>: 设置查询不返回的Document字段列表</li>
+<li><code>find({&quot;field1&quot;: {&quot;$type&quot;: 10})</code>: 列出字段类型满足条件的Document <a href="https://docs.mongodb.com/manual/reference/bson-types/" target="_blank" rel="noopener">“BSON Types”</a></li>
+<li><code>find({&quot;field1&quot;: {&quot;$exists&quot;: false})</code>: 列出该字段不存在的Document</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>更新: 更新参数格式为<code>&lt;filter&gt;, &lt;update&gt;, &lt;options&gt;</code>，通过filter提供查询条件，对满足条件的Document进行更新<ul>
+<li><code>updateOne</code></li>
+<li><code>updateMany</code></li>
+<li><code>replaceOne</code></li>
+<li>更新常用的操作符包括<code>$set</code> <a href="https://docs.mongodb.com/manual/reference/operator/update/" target="_blank" rel="noopener">“Update Operators”</a></li>
+</ul>
+</li>
+<li>删除: 与读取操作类似，需要提供查询条件，然后删除满足条件的Document<ul>
+<li><code>deleteOne</code></li>
+<li><code>deleteMany</code></li>
+</ul>
+</li>
+<li>BulkWrite操作: 提供了对单个文档的批量操作功能</li>
+<li>MongoDB VS SQL: <a href="https://docs.mongodb.com/manual/reference/sql-comparison/" target="_blank" rel="noopener">“Comparison”</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/16/Kubernetes中的Dashboard/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/16/Kubernetes中的Dashboard/" itemprop="url">Kubernetes中的Dashboard</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-16T16:34:02+08:00">
+                2019-04-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/16/Kubernetes中的Dashboard/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/04/16/Kubernetes中的Dashboard/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><ul>
+<li><code>kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml</code></li>
+<li>将Dashboard的Service配置修改为NodePort类型，从而可以通过NodeIP进行访问</li>
+</ul>
+<h2 id="登录"><a href="#登录" class="headerlink" title="登录"></a>登录</h2><p>Dashboard以一个Pod的形式运行，它通过与API Server交互从而能够对Kubernetes集群的资源进行管理</p>
+<p>因此必须给Dashboard提供一个ServiceAccount，从而才能访问API Server</p>
+<ul>
+<li>基于Token:<ul>
+<li>创建一个ServiceAccount，通过ClusterRoleBinding为其赋予权限</li>
+<li>通过<code>kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk &#39;{print $1}&#39;)</code>获取登录的Token</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ServiceAccount</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">admin-user</span></span><br><span class="line"><span class="attr">  namespace:</span> <span class="string">kube-system</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">rbac.authorization.k8s.io/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ClusterRoleBinding</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">admin-user</span></span><br><span class="line"><span class="attr">roleRef:</span></span><br><span class="line"><span class="attr">  apiGroup:</span> <span class="string">rbac.authorization.k8s.io</span></span><br><span class="line"><span class="attr">  kind:</span> <span class="string">ClusterRole</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">cluster-admin</span></span><br><span class="line"><span class="attr">subjects:</span></span><br><span class="line"><span class="attr">- kind:</span> <span class="string">ServiceAccount</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">admin-user</span></span><br><span class="line"><span class="attr">  namespace:</span> <span class="string">kube-system</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>基于Kubeconfig文件:<ul>
+<li>由于自带的Kubeconfig是UserAccount，而Dashboard必须使用ServiceAccount来登录</li>
+<li>同上，创建一个ServiceAccount，通过ClusterRoleBinding为其赋予权限</li>
+<li>通过<code>kubectl config set-credentials</code>将ServiceAccount生成Kubeconfig文件</li>
+<li>通过<code>kubectl config set-context</code>将ServiceAccount和集群绑定</li>
+<li>通过<code>kubectl config use-context</code>启用该ServiceAccount，此时该Kubeconfig文件可以被用来登录Dashboard</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/15/Hadoop入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/15/Hadoop入门/" itemprop="url">Hadoop入门</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-15T15:03:45+08:00">
+                2019-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/15/Hadoop入门/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/04/15/Hadoop入门/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Hadoop具有高容错、高可靠性和高扩展性的特点，特别适合一次写入、多次读取的场景</p>
+<h2 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h2><ul>
+<li>HDFS: 分布式文件存储</li>
+<li>YARN: 分布式资源管理</li>
+<li>MapReduce: 分布式计算</li>
+<li>Others: 利用YARN的资源管理功能实现其它的数据处理</li>
+</ul>
+<p>每一个组件内部都采用Master-Worker架构</p>
+<p><img src="/images/Hadoop之整体结构.png" alt="img"></p>
+<h2 id="HDFS"><a href="#HDFS" class="headerlink" title="HDFS"></a>HDFS</h2><p>Hadoop Distributed File System，分布式文件系统</p>
+<h3 id="基本组件"><a href="#基本组件" class="headerlink" title="基本组件"></a>基本组件</h3><ul>
+<li>Block<ul>
+<li>读写操作的基本单位，类似于磁盘中的页。一般为64/128MB</li>
+<li>一般磁盘传输速率比寻道时间要快，使用较大的存储块可以减少寻道时间</li>
+<li>使用较大的存储块可以减少管理块的开销，因为每一个块都需要在NameNode上有对应的记录</li>
+<li>每一个大文件会被拆分为一个一个的Block，然后存储到不同的机器中。如果文件大小小于单个Block，那么实际占用空间为该文件大小</li>
+<li>每一个Block都会被复制到多台机器中，默认是复制3份</li>
+</ul>
+</li>
+<li>NameNode<ul>
+<li>存储文件的元数据信息metadata。运行时将元数据都保存在内存中，因此HDFS可存储的文件数受限于NameNode节点的内存大小</li>
+<li>一个Block在NameNode中对应一条记录(约150Byte)，如果有大量的小文件时，会消耗大量内存；MapReduce任务在处理大量小文件时会产生大量任务，导致线程管理开销过大。因此Hadoop建议存储大文件</li>
+<li>NameNode中不对Block的元数据信息进行持久化，而是由DataNode在注册时进行上报和运行时维护；NameNode在重启后重建DataNode中的Block信息</li>
+<li>NameNode失效则整体HDFS失效，所以要保证NameNode的高可用</li>
+</ul>
+</li>
+<li>Secondary NameNode<ul>
+<li>定时与NameNode进行数据同步，当NameNode失效时需要手动将其NameNode地址设置为Secondary NameNode</li>
+</ul>
+</li>
+<li>DataNode<ul>
+<li>保存具体的Block数据</li>
+<li>负责数据的读写、复制等操作</li>
+<li>在启动时向NameNode报告当前存储的Block信息，Block变更后定时报告变更信息</li>
+<li>在DataNode之间进行Block的复制，保证数据的冗余和安全</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Hadoop之HDFS结构.png" alt="img"></p>
+<h3 id="写入操作"><a href="#写入操作" class="headerlink" title="写入操作"></a>写入操作</h3><ul>
+<li>Step1: 客户端将文件写入本地磁盘的临时文件中</li>
+<li>Step2: 当临时文件大小达到Block大小时，HDFS Client通知NameNode，申请写入文件</li>
+<li>Step3: NameNode在HDFS的文件系统中创建Block元数据，并将BlockID和要写入的DataNode列表返回给HDFS Client</li>
+<li>Step4/5: HDFS收到该信息后，将临时文件写入DataNodes<ul>
+<li>HDFS Client将文件写入到第一个DataNode中(一般以4KB为单位进行传输)</li>
+<li>第一个DataNode接收完成后，将数据写入本地磁盘同时也传输给第二个DataNode</li>
+<li>以此类推，以Pipeline的方式在DataNode间进行数据复制</li>
+<li>每一个DataNode在接收完成后，给前一个DataNode发送确认信号；最终由第一个DataNode向HDFS Client发送确认信号</li>
+<li>每一个Block都会有一个检验码(CheckSum)，在读文件的时候保证数据完整性</li>
+</ul>
+</li>
+<li>Step6: HDFS Client收到确认信号后，向NameNode发送确认信息，此时文件成功写入HDFS<ul>
+<li>如果某个DataNode写入失败，数据会继续写入到其他DataNode。最终NameNode会重新选择一个DataNode进行数据复制</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Hadoop之HDFS写入.png" alt="img"></p>
+<h3 id="读取操作"><a href="#读取操作" class="headerlink" title="读取操作"></a>读取操作</h3><ul>
+<li>Step1: 客户端向NameNode发送读取请求</li>
+<li>Step2: NameNode向HDFS Client返回文件的所有Block和Block所在的DataNode(包括复制DataNode)信息</li>
+<li>Step3: HDFS Client从这些DataNode中读取数据，如果读取失败，则从复制节点中读取</li>
+</ul>
+<p><img src="/images/Hadoop之HDFS读取.png" alt="img"></p>
+<h3 id="可靠性"><a href="#可靠性" class="headerlink" title="可靠性"></a>可靠性</h3><ul>
+<li>DataNode可以失效: DataNode和NameNode之间通过定时心跳进行通信。如果一段时间内NameNode没有收到DataNode心跳信息，则认为其失效，此时NameNode将该DataNode中的Block数据复制到其他的DataNode中</li>
+<li>Block可以失效: 当写入或者硬盘出现问题导致Block数据失效时，可以通过从其他的DataNode进行读取并复制</li>
+<li>NameNode不可以失效: 当NameNode失效时，整个HDFS失效</li>
+</ul>
+<h2 id="YARN"><a href="#YARN" class="headerlink" title="YARN"></a>YARN</h2><p>是一种新的MapReduce框架</p>
+<h3 id="原有的MapReduce结构"><a href="#原有的MapReduce结构" class="headerlink" title="原有的MapReduce结构"></a>原有的MapReduce结构</h3><ul>
+<li>JobTracker: 负责资源管理，跟踪资源消耗情况和资源可用性。作业生命周期管理，包括作业任务调度，任务进度跟踪，任务容错机制等</li>
+<li><p>TaskTracker: 加载和关闭具体的任务，定时报告任务的状态</p>
+</li>
+<li><p>存在问题: 单点性能瓶颈和资源利用率底下</p>
+<ul>
+<li>JobTracker是MapReduce任务的集中处理节点，存在单点故障问题</li>
+<li>JobTracker负担过重，造成过多资源消耗。当MapReduce的Job非常多时，会造成很大的内存开销，成为系统性能瓶颈</li>
+<li>TaskTracker以MapReduce Task的数目作为资源表示太过简单，没有考虑到CPU/内存等占用情况，使得TaskTracker中容易出现OOM</li>
+<li>TaskTracker将资源强制划分为Map Task Slot和Reduce Task Slot，当系统中只有一种Task时会造成资源的浪费</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Hadoop之旧MapReduce结构.jpg" alt="img"></p>
+<h3 id="YARN结构"><a href="#YARN结构" class="headerlink" title="YARN结构"></a>YARN结构</h3><p>将JobTracker资源管理和任务调度与监控的职责拆分为两个独立的进程: 全局资源管理和单个Job的管理</p>
+<ul>
+<li>ResourceManager: 全局资源管理与任务调度</li>
+<li>NodeManager: 单个节点的资源管理与监控</li>
+<li>ApplicationMaster: 单个Job的资源管理和任务监控</li>
+<li>Container: 资源申请的单位和任务运行的容器</li>
+</ul>
+<p><img src="/images/Hadoop之YARN结构.png" alt="img"></p>
+<p><img src="/images/Hadoop之YARN物理结构.png" alt="img"></p>
+<h3 id="新旧结构对比"><a href="#新旧结构对比" class="headerlink" title="新旧结构对比"></a>新旧结构对比</h3><p>在YARN结构下形成了一个通用的资源管理平台和一个通用的应用计算平台，避免了旧结构下的单点问题和资源利用率低下的问题，同时也让其上运行的应用不再局限于MapReduce形式</p>
+<p><img src="/images/Hadoop之结构对比.png" alt="img"></p>
+<h3 id="YARN运行流程"><a href="#YARN运行流程" class="headerlink" title="YARN运行流程"></a>YARN运行流程</h3><ul>
+<li><p>Step1: 提交Job</p>
+<ul>
+<li>从ResourceManager中获取一个Application ID</li>
+<li>检查Job输出配置，计算Job输入Block</li>
+<li>将Job资源(Jar包、配置文件、Block信息等)上传到HDFS</li>
+</ul>
+</li>
+<li><p>Step2: 初始化Job</p>
+<ul>
+<li>ResourceManager将Job递交给Scheduler</li>
+<li>Scheduler根据调度算法将为Job分配一个Container，同时ResourceManager创建一个ApplicationMaster并交给NodeManager管理</li>
+<li>ApplicationMaster获取Job的Block信息，为每一个Block创建一个MapTask和ReduceTask，同时创建一系列监控进程来跟踪Job的进度和状态</li>
+</ul>
+</li>
+<li><p>Step3: 指派Task</p>
+<ul>
+<li>ApplicationMaster向ResourceManager申请分配Container资源，ResourceManager一般根据数据本地化原理来进行资源分配</li>
+</ul>
+</li>
+<li><p>Step4: 执行Task</p>
+<ul>
+<li>ApplicationMaster根据ResourceManager的资源分配情况在对应的NodeManager中启动Container来运行Task</li>
+<li>在Container中，从HDFS上获取Task运行所需要的资源(Jar包，配置文件等)，然后运行该Task</li>
+</ul>
+</li>
+<li><p>Step5: 上报Task状态和进度</p>
+<ul>
+<li>在Container中，定时将Task的进度和状态上报给ApplicationMaster</li>
+<li>Client定时向ApplicationMaster获取整个Job的进度和状态</li>
+</ul>
+</li>
+<li><p>Step: 完成Job</p>
+<ul>
+<li>Client定时检查整个Job是否完成</li>
+<li>在作业完成后进行资源的清理操作</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Hadoop之YARN运行流程1.png" alt="img"></p>
+<p><img src="/images/Hadoop之YARN运行流程2.png" alt="img"></p>
+<h3 id="ResourceManager"><a href="#ResourceManager" class="headerlink" title="ResourceManager"></a>ResourceManager</h3><p>全局资源管理与任务调度，将整个集群看做计算资源池，只关注资源分配，不负责应用的运行和容错</p>
+<ul>
+<li><p>资源管理</p>
+<ul>
+<li>在旧结构中，每一个Node分为一个个的MapSlot和ReduceSlot；在YARN中是一个个Container，每个Container可以根据需要运行ApplicationMaster、Map、Reduce或者任意其他的程序</li>
+<li>在旧结构中，计算资源是静态分配的；在YARN中，Container是动态分配的，资源利用率更高</li>
+<li>Container是计算资源申请和分配的单位，申请格式 <code>resource-name, priority, resource-requirement, number-of-containers</code><ul>
+<li>resource-name: 主机名、机架名或*（代表任意机器）</li>
+<li>resource-requirement: 目前只支持CPU和内存</li>
+</ul>
+</li>
+<li>当Client提交Job到ResourceManager时，首先ResourceManager在某个NodeManager上分配一个Container来运行ApplicationMaster，ApplicationMaster再根据Job实际需要向ResourceManager申请运行Task的Container</li>
+</ul>
+</li>
+<li><p>任务调度</p>
+<ul>
+<li>Scheduler根据集群资源的使用情况和资源申请的需求来合理分配计算资源</li>
+<li>Scheduler在分配计算资源时，会通过考虑数据本地化减少数据移动，提高Job的运行效率</li>
+<li>Scheduler支持在特定的机器上申请特定的资源</li>
+</ul>
+</li>
+<li><p>具体模块</p>
+<ul>
+<li>Client Service: Application提交、终止、输出信息（应用、队列、集群等的状态信息）</li>
+<li>Administration Service: 队列、节点、Client权限管理</li>
+<li>ApplicationMasterService: 注册、终止ApplicationMaster, 获取ApplicationMaster的资源申请或取消的请求，并将其异步地传给Scheduler, 单线程处理</li>
+<li>ApplicationMaster Liveliness Monitor: 接收ApplicationMaster的心跳消息，如果某个ApplicationMaster在一定时间内没有发送心跳，则被任务失效，其资源将会被回收，然后ResourceManager会重新分配一个ApplicationMaster运行该Application（默认尝试2次）</li>
+<li>Resource Tracker Service: 注册节点, 接收各注册节点的心跳消息</li>
+<li>NodeManagers Liveliness Monitor: 监控每个节点的心跳消息，如果长时间没有收到心跳消息，则认为该节点无效, 同时所有在该节点上的Container都标记成无效，也不会调度任务到该节点运行</li>
+<li>ApplicationManager: 管理Application，记录和管理已完成Application</li>
+<li>ApplicationMaster Launcher: 一个Application提交后，负责与NodeManager交互，分配Container并加载ApplicationMaster，也负责终止或销毁</li>
+<li>YarnScheduler: 资源调度分配， 有FIFO(with Priority)，Fair，Capacity方式</li>
+<li>ContainerAllocationExpirer: 管理已分配但没有启用的Container，超过一定时间则将其回收</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Hadoop之YARN-ResourceManager.png" alt="img"></p>
+<h3 id="NodeManager"><a href="#NodeManager" class="headerlink" title="NodeManager"></a>NodeManager</h3><ul>
+<li><p>Node中的Container管理和监控</p>
+<ul>
+<li>启动时向ResourceManager注册并定时发送心跳</li>
+<li>监视Container的运行和资源使用情况，维护Container的生命周期</li>
+<li>启动和停止Container，管理Task运行时的依赖(从HDFS中将Jar包、配置文件等拷贝到本地)</li>
+</ul>
+</li>
+<li><p>具体模块</p>
+<ul>
+<li>NodeStatusUpdater: 启动时向ResourceManager注册，报告该节点的可用资源情况，通信的端口和后续状态的维护</li>
+<li>ContainerManager: 接收RPC请求(启动停止Container)，资源本地化(下载应用需要的资源到本地，根据需要共享这些资源）<ul>
+<li>PUBLIC: /filecache</li>
+<li>PRIVATE: /usercache//filecache</li>
+<li>APPLICATION: /usercache//appcache//（在程序完成后会被删除）</li>
+</ul>
+</li>
+<li>ContainersLauncher: 加载或终止Container</li>
+<li>ContainerMonitor: 监控Container的运行和资源使用情况</li>
+<li>ContainerExecutor: 和底层操作系统交互，加载要运行的程序</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Hadoop之YARN-NodeManager.png" alt="img"></p>
+<h3 id="ApplicationMaster"><a href="#ApplicationMaster" class="headerlink" title="ApplicationMaster"></a>ApplicationMaster</h3><ul>
+<li>单个Job的资源管理和任务监控<ul>
+<li>计算Application的计算资源需求，可以静态或动态计算<ul>
+<li>静态: Client在提交Job时指定</li>
+<li>动态: ApplicationMaster根据Job输入Block数量来决定MapTask和ReduceTask的数量，一个Task占用一个Container</li>
+</ul>
+</li>
+<li>根据数据本地化向ResourceManager申请对应位置的Node资源</li>
+<li>与NodeManager交互实现Task的运行和Task状态与进度的监控</li>
+<li>向ResourceManager包括Job的状态和进度</li>
+<li>负责Job运行时的容错</li>
+</ul>
+</li>
+</ul>
+<h3 id="Container"><a href="#Container" class="headerlink" title="Container"></a>Container</h3><ul>
+<li>集群中基本的资源申请和分配单位</li>
+<li>可以运行任意程序，不局限为Jar包</li>
+<li>一个Node中可以包含多个Container</li>
+<li>ApplicationMaster根据Job的实际需要，动态申请和释放Container资源</li>
+</ul>
+<h2 id="MapReduce"><a href="#MapReduce" class="headerlink" title="MapReduce"></a>MapReduce</h2><p>一种分布式的计算方式</p>
+<p>基本流程: <img src="/images/Hadoop之MapReduce基本流程.png" alt="img"></p>
+<p>详细流程: <img src="/images/Hadoop之MapReduce详细流程.png" alt="img"></p>
+<p>跨节点流程: <img src="/images/Hadoop之MapReduce跨节点流程.png" alt="img"></p>
+<p>具体过程:</p>
+<ul>
+<li><p>读数据: 通过InputFormat决定读取的数据类型，然后拆分为一个个的InputSplit，每一个InputSplit被RecordReader读取并传递给Map进行处理</p>
+<ul>
+<li>InputFormat: 决定读取数据的格式，可以为文件或数据库</li>
+<li>InputSplit: 代表数据的逻辑分片，内部包含数据的Location信息，方便利用数据本地化来申请Container资源 <strong>通常一个InputSplit就是一个Block</strong></li>
+<li>RecordReader: 读取InputSplit，并交给一个Map来处理</li>
+</ul>
+</li>
+<li><p>Map: 读取InputSplit中的每一个KV对并进行处理</p>
+</li>
+<li><p>Shuffle: 对Map的结果进行压缩、按Key进行分区、排序等操作，然后传递给Reduce</p>
+</li>
+<li><p>Reduce: 对Shuffle的结果进行处理，最终将Reduce的结果写入HDFS中</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/02/Kubernetes中的认证和授权/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/02/Kubernetes中的认证和授权/" itemprop="url">Kubernetes中的RBAC和ServiceAccount</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-02T19:20:07+08:00">
+                2019-04-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/02/Kubernetes中的认证和授权/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/04/02/Kubernetes中的认证和授权/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>API Server是集群资源操作的入口</p>
+<ul>
+<li>集群外部的用户可以通过kubectl、http或https接口向其发送操作资源的请求 <strong>kubectl本质上也是发起http请求</strong></li>
+<li>集群内部的Pod，如DNS、Dashboard等，也会访问API Server实现资源的操作。此时API Server使用Service进行暴露，从而能够被集群中的Pod访问</li>
+</ul>
+<p>API Server对外部请求的校验包含三个部分:</p>
+<ul>
+<li><code>认证</code>: 确保为合法用户，可以是UserAccount或ServiceAccount，具体实现包括基于Token的令牌认证、基于证书的SSL认证等</li>
+<li><code>权限检查</code>: 确保用户对资源的操作可以被执行，具体实现包括ABAC、RBAC、WebHook等</li>
+<li><code>准入控制</code>: 确保该操作对应的后续相关安全检查可以通过</li>
+</ul>
+<p>这三个组件都是模块化设计的，在集群中可以有多个插件来实现。当系统中的认证、权限检查或准入控制分别存在多个插件时，用户只需要通过任意一种插件的校验即可</p>
+<h2 id="账号认证"><a href="#账号认证" class="headerlink" title="账号认证"></a>账号认证</h2><h3 id="User-Account（用户账号）"><a href="#User-Account（用户账号）" class="headerlink" title="User Account（用户账号）"></a>User Account（用户账号）</h3><p>当使用<code>kubectl</code>时，会使用kubeconfig文件提供的用户账号信息来访问多个集群的API Server，其文件内容为</p>
+<ul>
+<li><code>clusters</code>: 集群信息</li>
+<li><code>users</code>: 用户账号信息</li>
+<li><code>contexts</code>: 用户账号和集群的对应关系信息</li>
+</ul>
+<p>可以使用<code>kubectl config</code>命令来查看和修改kubeconfig文件</p>
+<p>外部用户可以通过HTTP请求的URL格式来确定操作的资源对象</p>
+<p><code>apis/apps/v1/namespaces/default/deployments/myapp-deploy/</code></p>
+<ul>
+<li><code>apps/v1</code>: 资源的API群组和版本，通过<code>kubectl api-versions</code>来查看系统支持的API群组</li>
+<li><code>namespaces/default</code>: 名称空间名称</li>
+<li><code>deployment/myapp-deploy</code>: 资源类型和名称，子资源类型和名称</li>
+</ul>
+<p>通过HTTP方法来确定对资源的操作类型</p>
+<ul>
+<li><code>GET</code>: 查看单个或列出多个资源信息，监视单个或多个资源状态变化</li>
+<li><code>POST</code>: 创建或更新资源信息</li>
+<li><code>PUT</code>: 更新资源信息</li>
+<li><code>DELETE</code>: 删除单个或多个资源</li>
+</ul>
+<p>可以通过<code>kubectl proxy</code>在本地为API Serve提供代理，然后通过curl命令操作集群资源</p>
+<h3 id="Service-Account（服务账号）"><a href="#Service-Account（服务账号）" class="headerlink" title="Service Account（服务账号）"></a>Service Account（服务账号）</h3><p>该资源属于Namespace，可以看做是一个用token表示、用于访问APIServer的服务账号。它用来保证集群中的Pod对API Server的访问</p>
+<p>在Pod<code>spec.serviceAccountName</code>中指定使用的ServiceAccount资源名称。如果不指定，每一个Pod默认使用名称为<code>default</code>的ServiceAccount，该账号只具备通过API Server访问自身信息的权限</p>
+<p>ServiceAccount的token信息使用Secret存储卷来存储。当Pod启动时，其使用的ServiceAccount资源对应的Secret存储卷会被挂载到Pod中</p>
+<p>创建ServiceAccount资源：</p>
+<ul>
+<li>通过<code>secrets</code>定义关联的Secret存储卷</li>
+<li>通过<code>imagePullSecrets</code>定义拉取镜像的私有Registry认证配置</li>
+</ul>
+<h2 id="权限检查"><a href="#权限检查" class="headerlink" title="权限检查"></a>权限检查</h2><p>使用RBAC来对用户的资源操作进行权限检查，所谓的权限就是指<strong>对某种资源是否具备某种操作的资格</strong></p>
+<h3 id="Role和ClusterRole-角色定义"><a href="#Role和ClusterRole-角色定义" class="headerlink" title="Role和ClusterRole(角色定义)"></a>Role和ClusterRole(角色定义)</h3><p>Role: 属于某个Namespace，表示某一Namespace中的角色。其中包含的权限对应的是该Namespace中的资源<br>ClusterRole: 不属于某个Namespace，而是属于集群。其中包含的资源可以为集群范围内的资源</p>
+<p>Role和ClusterRole都是K8S资源对象，可以通过<code>rules</code>字段来定义角色的权限</p>
+<ul>
+<li><code>apiGroups</code>: 规定资源所属的API群组和版本</li>
+<li><code>nonResourceURLs</code>: 规定对非资源对象的URL请求</li>
+<li><code>resourceNames</code>: 规定具体的资源名称</li>
+<li><code>resources</code>: 规定资源类型列表</li>
+<li><code>verbs</code>: 规定对资源的操作，如”get”, “list”, “watch”, “create”, “update”, “patch”, “delete”</li>
+</ul>
+<h3 id="RoleBinding和ClusterRoleBinding-角色绑定"><a href="#RoleBinding和ClusterRoleBinding-角色绑定" class="headerlink" title="RoleBinding和ClusterRoleBinding(角色绑定)"></a>RoleBinding和ClusterRoleBinding(角色绑定)</h3><p>一般是使用RoleBinding将Role和用户进行绑定，使用ClusterRoleBinding将ClusterRole和用户进行绑定</p>
+<p>使用RoleBinding将ClusterRole和用户进行绑定时，资源访问权限仍然局限在RoleBinding所在的Namespace中 <strong>在不同的命名空间中复用通用角色</strong></p>
+<p>无法使用ClusterRoleBinding将Role和用户进行绑定</p>
+<p>RoleBinding和ClusterRoleBinding都是K8S资源对象，可以通过<code>roleRef</code>和<code>subjects</code>来定义</p>
+<ul>
+<li><code>roleRef</code>: 规定使用的角色<ul>
+<li><code>apiGroup</code>: 该角色所属于的API群组</li>
+<li><code>kind</code>: 该角色的类型 Role或ClusterRole</li>
+<li><code>name</code>: 角色的名称</li>
+</ul>
+</li>
+<li><code>subjects</code>: 规定被绑定的用户<ul>
+<li><code>apiGroup</code>: 该用户所属于的API群组</li>
+<li><code>kind</code>: 该用户的类型 User、Group或ServiceAccount</li>
+<li><code>name</code>: 用户的名称</li>
+<li><code>namespace</code>: 当用户为ServiceAccount类型时，ServiceAccount所在的Namespace</li>
+</ul>
+</li>
+</ul>
+<p>K8S中默认有名称为<code>admin</code>的ClusterRole，可以看做是管理员权限，可以通过RoleBinding将其与用户绑定，从而让用户具备某个Namespace下的管理员权限<br>K8S中默认有名称为<code>cluster-admin</code>的ClusterRole，该权限为对任意资源可进行任意操作，权限最大 <strong>Role、ClusterRole、RoleBinding和ClusterRoleBinding都是集群资源，可以通过kubectl来操作这些资源也是因为kubeconfig中的用户具备这样的权限</strong><br>K8S中默认有名称为<code>cluster-admin</code>的ClusterRoleb，将<code>cluster-admin</code>的ClusterRole绑定到了名称为<code>system:masters</code>的Group</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/22/Golang经典库-Casbin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/22/Golang经典库-Casbin/" itemprop="url">Golang经典库-Casbin</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-22T16:50:58+08:00">
+                2019-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程技术/" itemprop="url" rel="index">
+                    <span itemprop="name">编程技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/22/Golang经典库-Casbin/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/22/Golang经典库-Casbin/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><ul>
+<li>Model:权限控制模型，抽象为PERM(Policy Effect Request Matcher)<ul>
+<li>Request: 权限请求的格式<ul>
+<li>默认的权限请求格式: Subject Object Action<br>Subject: 访问的主体，一般为用户<br>Object: 被访问的资源<br>Action: 对资源进行的操作</li>
+<li>选择合适的权限控制模型: <a href="https://casbin.org/editor/" target="_blank" rel="noopener">Online</a><ul>
+<li>支持的权限控制模型:<ul>
+<li>ACL</li>
+<li>ACL with superuser</li>
+<li>ACL without users</li>
+<li>ACL without resources</li>
+<li>RBAC</li>
+<li>RBAC with resource roles</li>
+<li>RBAC with domains/tenants</li>
+<li>ABAC</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Policy: 权限控制策略的格式，可以被持久化到外部存储设备中，如mysql、mongodb等<ul>
+<li>p: Policy定义</li>
+<li>g: 角色定义</li>
+</ul>
+</li>
+<li>Matcher: 定义Request和Policy之间是如何匹配的，使用p.eft表示对于当前的Request，该Policy与其是否匹配</li>
+<li>Effect: 当某个Request对应多个Policy时，判断该请求是否能通过校验</li>
+<li>Role: 可选，当使用RBAC时，定义不同的角色组，比如用户角色组，资源角色组，用户角色+租户组等</li>
+</ul>
+</li>
+</ul>
+<p>Casbin进行权限校验的流程:<img src="/images/Casbin之PERM权限控制模型.png" alt="img"></p>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>Model定义:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Model represents the whole access control model.</span></span><br><span class="line"><span class="keyword">type</span> Model <span class="keyword">map</span>[<span class="keyword">string</span>]AssertionMap</span><br><span class="line"></span><br><span class="line"><span class="comment">// AssertionMap is the collection of assertions, can be "r", "p", "g", "e", "m".</span></span><br><span class="line"><span class="keyword">type</span> AssertionMap <span class="keyword">map</span>[<span class="keyword">string</span>]*Assertion</span><br><span class="line"></span><br><span class="line"><span class="comment">// Assertion represents an expression in a section of the model.</span></span><br><span class="line"><span class="comment">// For example: r = sub, obj, act</span></span><br><span class="line"><span class="keyword">type</span> Assertion <span class="keyword">struct</span> &#123;</span><br><span class="line">  Key    <span class="keyword">string</span></span><br><span class="line">  Value  <span class="keyword">string</span></span><br><span class="line">  Tokens []<span class="keyword">string</span></span><br><span class="line">  Policy [][]<span class="keyword">string</span></span><br><span class="line">  RM     rbac.RoleManager</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Effector is the interface for Casbin effectors.</span></span><br><span class="line"><span class="keyword">type</span> Effector <span class="keyword">interface</span> &#123;</span><br><span class="line">  <span class="comment">// MergeEffects merges all matching results collected by the enforcer into a single decision.</span></span><br><span class="line">  MergeEffects(expr <span class="keyword">string</span>, effects []Effect, results []<span class="keyword">float64</span>) (<span class="keyword">bool</span>, error)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Role定义:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// RoleManager provides interface to define the operations for managing roles.</span></span><br><span class="line"><span class="keyword">type</span> RoleManager <span class="keyword">interface</span> &#123;</span><br><span class="line">  <span class="comment">// Clear clears all stored data and resets the role manager to the initial state.</span></span><br><span class="line">  Clear() error</span><br><span class="line">  <span class="comment">// AddLink adds the inheritance link between two roles. role: name1 and role: name2.</span></span><br><span class="line">  <span class="comment">// domain is a prefix to the roles (can be used for other purposes).</span></span><br><span class="line">  AddLink(name1 <span class="keyword">string</span>, name2 <span class="keyword">string</span>, domain ...<span class="keyword">string</span>) error</span><br><span class="line">  <span class="comment">// DeleteLink deletes the inheritance link between two roles. role: name1 and role: name2.</span></span><br><span class="line">  <span class="comment">// domain is a prefix to the roles (can be used for other purposes).</span></span><br><span class="line">  DeleteLink(name1 <span class="keyword">string</span>, name2 <span class="keyword">string</span>, domain ...<span class="keyword">string</span>) error</span><br><span class="line">  <span class="comment">// HasLink determines whether a link exists between two roles. role: name1 inherits role: name2.</span></span><br><span class="line">  <span class="comment">// domain is a prefix to the roles (can be used for other purposes).</span></span><br><span class="line">  HasLink(name1 <span class="keyword">string</span>, name2 <span class="keyword">string</span>, domain ...<span class="keyword">string</span>) (<span class="keyword">bool</span>, error)</span><br><span class="line">  <span class="comment">// GetRoles gets the roles that a user inherits.</span></span><br><span class="line">  <span class="comment">// domain is a prefix to the roles (can be used for other purposes).</span></span><br><span class="line">  GetRoles(name <span class="keyword">string</span>, domain ...<span class="keyword">string</span>) ([]<span class="keyword">string</span>, error)</span><br><span class="line">  <span class="comment">// GetUsers gets the users that inherits a role.</span></span><br><span class="line">  <span class="comment">// domain is a prefix to the users (can be used for other purposes).</span></span><br><span class="line">  GetUsers(name <span class="keyword">string</span>, domain ...<span class="keyword">string</span>) ([]<span class="keyword">string</span>, error)</span><br><span class="line">  <span class="comment">// PrintRoles prints all the roles to log.</span></span><br><span class="line">  PrintRoles() error</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Adapter定义</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Adapter is the interface for Casbin adapters.</span></span><br><span class="line"><span class="keyword">type</span> Adapter <span class="keyword">interface</span> &#123;</span><br><span class="line">  <span class="comment">// LoadPolicy loads all policy rules from the storage.</span></span><br><span class="line">  LoadPolicy(model model.Model) error</span><br><span class="line">  <span class="comment">// SavePolicy saves all policy rules to the storage.</span></span><br><span class="line">  SavePolicy(model model.Model) error</span><br><span class="line"></span><br><span class="line">  <span class="comment">// AddPolicy adds a policy rule to the storage.</span></span><br><span class="line">  <span class="comment">// This is part of the Auto-Save feature.</span></span><br><span class="line">  AddPolicy(sec <span class="keyword">string</span>, ptype <span class="keyword">string</span>, rule []<span class="keyword">string</span>) error</span><br><span class="line">  <span class="comment">// RemovePolicy removes a policy rule from the storage.</span></span><br><span class="line">  <span class="comment">// This is part of the Auto-Save feature.</span></span><br><span class="line">  RemovePolicy(sec <span class="keyword">string</span>, ptype <span class="keyword">string</span>, rule []<span class="keyword">string</span>) error</span><br><span class="line">  <span class="comment">// RemoveFilteredPolicy removes policy rules that match the filter from the storage.</span></span><br><span class="line">  <span class="comment">// This is part of the Auto-Save feature.</span></span><br><span class="line">  RemoveFilteredPolicy(sec <span class="keyword">string</span>, ptype <span class="keyword">string</span>, fieldIndex <span class="keyword">int</span>, fieldValues ...<span class="keyword">string</span>) error</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Watcher定义:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Watcher is the interface for Casbin watchers.</span></span><br><span class="line"><span class="keyword">type</span> Watcher <span class="keyword">interface</span> &#123;</span><br><span class="line">  <span class="comment">// SetUpdateCallback sets the callback function that the watcher will call</span></span><br><span class="line">  <span class="comment">// when the policy in DB has been changed by other instances.</span></span><br><span class="line">  <span class="comment">// A classic callback is Enforcer.LoadPolicy().</span></span><br><span class="line">  SetUpdateCallback(<span class="function"><span class="keyword">func</span><span class="params">(<span class="keyword">string</span>)</span>) <span class="title">error</span></span></span><br><span class="line"><span class="function">  // <span class="title">Update</span> <span class="title">calls</span> <span class="title">the</span> <span class="title">update</span> <span class="title">callback</span> <span class="title">of</span> <span class="title">other</span> <span class="title">instances</span> <span class="title">to</span> <span class="title">synchronize</span> <span class="title">their</span> <span class="title">policy</span>.</span></span><br><span class="line"><span class="function">  // <span class="title">It</span> <span class="title">is</span> <span class="title">usually</span> <span class="title">called</span> <span class="title">after</span> <span class="title">changing</span> <span class="title">the</span> <span class="title">policy</span> <span class="title">in</span> <span class="title">DB</span>, <span class="title">like</span> <span class="title">Enforcer</span>.<span class="title">SavePolicy</span><span class="params">()</span>,</span></span><br><span class="line"><span class="function">  // <span class="title">Enforcer</span>.<span class="title">AddPolicy</span><span class="params">()</span>, <span class="title">Enforcer</span>.<span class="title">RemovePolicy</span><span class="params">()</span>, <span class="title">etc</span>.</span></span><br><span class="line"><span class="function">  <span class="title">Update</span><span class="params">()</span> <span class="title">error</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>Enforcer定义:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Enforcer is the main interface for authorization enforcement and policy management.</span></span><br><span class="line"><span class="keyword">type</span> Enforcer <span class="keyword">struct</span> &#123;</span><br><span class="line">  modelPath <span class="keyword">string</span></span><br><span class="line">  model     model.Model</span><br><span class="line">  fm        model.FunctionMap</span><br><span class="line">  eft       effect.Effector</span><br><span class="line"></span><br><span class="line">  adapter persist.Adapter</span><br><span class="line">  watcher persist.Watcher</span><br><span class="line">  rm      rbac.RoleManager</span><br><span class="line"></span><br><span class="line">  enabled            <span class="keyword">bool</span></span><br><span class="line">  autoSave           <span class="keyword">bool</span></span><br><span class="line">  autoBuildRoleLinks <span class="keyword">bool</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/22/Kubernetes中的存储机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/22/Kubernetes中的存储机制/" itemprop="url">Kubernetes中的存储机制</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-22T10:08:15+08:00">
+                2019-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/22/Kubernetes中的存储机制/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/22/Kubernetes中的存储机制/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Docker中提供了存储卷的方式来实现容器内数据持久化的功能，本质是将宿主机上的文件和容器中的文件进行绑定</p>
+<p>在K8S中，Pod是可被调度的最小单元，有可能会被调度到不同的Node节点上运行，因此Docker中提供的这种方式无法满足Pod在跨节点调度时的数据持久化功能</p>
+<p>为了给Pod提供跨Node节点的数据持久化机制，需要将传统网络存储、分布式存储或云存储挂载到Node节点上，然后将存储卷和Node节点上的挂载目录进行绑定</p>
+<p>在K8S的Pod的容器中使用存储卷的步骤:</p>
+<ul>
+<li>在Pod资源定义中使用<code>volumes</code>来定义Pod需要的存储卷<ul>
+<li>使用节点本地存储，只可以在Node节点本地使用<ul>
+<li><code>emptyDir</code>: 可以被Pod访问的临时空间，可以基于磁盘或内存。当Pod删除时，该存储卷也会被删除，即该数据卷的生命周期和Pod相同<ul>
+<li><code>medium</code>: 定义存储卷的存储方式。为空表示使用磁盘存储，Memory表示使用内存存储</li>
+<li><code>sizeLimit</code>: 定义存储卷的容量</li>
+</ul>
+</li>
+<li><code>hostPath</code>: 使用Node节点上的文件路径作为存储卷。当Pod删除时，该存储卷不会被删除，可以看作是Node节点级别的持久化机制  <strong>Docker上的存储卷机制</strong><ul>
+<li><code>path</code>: Node节点上的路径</li>
+<li><code>type</code>: 数据卷的类型<ul>
+<li><code>DirectoryOrCreate</code>: 路径为目录，如果目录不存在则自动创建</li>
+<li><code>Directory</code>: 路径为目录，如果目录不存在则报错</li>
+<li><code>FileOrCreate</code>: 路径为文件，如果目录不存在则自动创建</li>
+<li><code>File</code>: 路径为文件，如果目录不存在则报错</li>
+<li><code>Socket</code>: 路径为Unix Socket文件，如果不存在则报错ß</li>
+<li><code>CharDevice</code>: 路径为字符设备，如果目录不存在则报错</li>
+<li><code>BlockDevice</code>: 路径为块设备，如果目录不存在则报错</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>configMap</code>: 使用ConfigMap来创建存储卷。主要目的不是给Pod提供存储空间，而是向Pod中提供配置信息<ul>
+<li><code>defaultMode</code>: 配置文件的默认权限</li>
+<li><code>items</code>: 指定从ConfigMap中要挂载的键列表</li>
+<li><code>name</code>: 使用的ConfigMap资源名称</li>
+<li><code>optional</code>: 设置对应的ConfigMap和其中的Key是否必须被定义</li>
+</ul>
+</li>
+<li><code>secret</code>: 使用Secret来创建存储卷。主要目的不是给Pod提供存储空间，而是向Pod中提供配置信息<ul>
+<li><code>defaultMode</code>: 配置文件的默认权限</li>
+<li><code>items</code>: 指定要提供的配置键列表</li>
+<li><code>secretName</code>: 使用的Secret资源名称</li>
+<li><code>optional</code>: 设置对应的Secret和其中的配置是否必须被定义</li>
+</ul>
+</li>
+<li><code>downwardAPI</code>: 使得一些向下API可以被Pod使用。挂载一个目录，并将请求的数据写入到纯文本文件中</li>
+</ul>
+</li>
+<li>使用传统网络存储、分布式存储或云存储等，可以跨Node节点使用，是真正的持久化。可以直接根据底层存储方式来指定Pod使用的存储卷，如ceph、glusterfs等，也可以通过PV对底层存储进行抽象，通过PVC向PV申请Pod使用的存储卷<ul>
+<li><code>awsElasticBlockStore</code>: AWS云存储</li>
+<li><code>azureDisk</code>: Azure云存储</li>
+<li><code>azureFile</code>: Azure云存储</li>
+<li><code>cephfs</code>: Ceph分布式存储</li>
+<li><code>cinder</code>: OpenStack云存储</li>
+<li><code>fc</code>: SAN网络存储</li>
+<li><code>flexVolume</code>: 存储服务</li>
+<li><code>flocker</code>: 存储服务</li>
+<li><code>gcePersistentDisk</code>: Google云存储</li>
+<li><code>gitRepo</code>: git仓库<ul>
+<li>建立在emptyDir之上，只是数据卷中的数据初始化为git仓库中的数据</li>
+<li>git仓库和数据卷中的数据不会自动同步，即不会自动执行git pull和git push的操作</li>
+</ul>
+</li>
+<li><code>glusterfs</code>: glusterfs分布式存储</li>
+<li><code>iscsi</code>: SAN网络存储</li>
+<li><code>nfs</code>: NFS网络存储<ul>
+<li><code>path</code>: NFS服务器上的导出路径</li>
+<li><code>readOnly</code>: 对NFS上的文件是否仅可读</li>
+<li><code>server</code>: NFS服务器地址</li>
+</ul>
+</li>
+<li><code>persistentVolumeClaim</code>: 使用PVC向PV申请存储资源<ul>
+<li><code>claimName</code>: PVC资源名称</li>
+<li><code>readOnly</code>: 申请的存储资源是否仅可读</li>
+</ul>
+</li>
+<li><code>photonPersistentDisk</code></li>
+<li><code>portworxVolume</code></li>
+<li><code>projected</code>: 将几个现有的存储卷映射到同一个目录中</li>
+<li><code>quobyte</code></li>
+<li><code>rbd</code>: Ceph分布式块存储</li>
+<li><code>scaleIO</code></li>
+<li><code>storageos</code>: 存储操作系统，封装了多个云存储</li>
+<li><code>vsphereVolume</code>: vSphere云存储</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在Pod资源的容器定义中使用<code>volumeMounts</code>定义容器中存储卷的挂载方式<ul>
+<li><code>mountPath</code>: 存储卷在容器中的挂载路径</li>
+<li><code>mountPropagation</code>: 挂载的存储卷的传播方式 None HostToContainer BiDirection</li>
+<li><code>name</code>: 挂载的存储卷的名称</li>
+<li><code>readOnly</code>: 存储卷是否只可读</li>
+<li><code>subPath</code>: 从存储卷中进行挂载的子目录</li>
+</ul>
+</li>
+</ul>
+<h2 id="ConfigMap"><a href="#ConfigMap" class="headerlink" title="ConfigMap"></a>ConfigMap</h2><p>ConfigMap是Namespace级别的资源，可以被同一个Namespace中的Pod使用</p>
+<p>提供了从外部向Pod提供配置信息的功能，且这些信息是明文存储的，可以将Pod和其运行时使用的配置进行分离</p>
+<p>使用方式:</p>
+<ul>
+<li>设置Pod的容器中环境变量的值，基于<code>spec.containers.env</code>字段；基于<code>spec.containers.args</code>字段来引用环境变量，还可以设置Pod的容器中的命令行参数  <strong>通过环境变量来引用ConfigMap时仅仅在容器创建时注入配置，当ConfigMap中的配置发生变化时，容器中的环境变量值不会随之动态改变</strong></li>
+<li>在Pod中使用其创建存储卷，将ConfigMap中的配置变为一个个的文件，然后被Pod中的容器挂载和使用  <strong>通过存储卷来引用ConfigMap时，当ConfigMap中的配置发生变化时，容器中的配置文件会动态改变</strong></li>
+</ul>
+<p>spec字段:</p>
+<ul>
+<li><code>binaryData</code>: 键值对，值为二进制的数据</li>
+<li><code>data</code>: 键值对，值为UTF-8编码的数据</li>
+</ul>
+<p>也可以通过<code>kubectl create configmap</code>命令从配置文件或键值对中创建</p>
+<h2 id="Secret"><a href="#Secret" class="headerlink" title="Secret"></a>Secret</h2><p>Secret是Namespace级别的资源，可以被同一个Namespace中的Pod使用</p>
+<p>提供了从外部向Pod提供配置信息的功能，且这些信息使用Base64编码存储的，可以将Pod和其运行时使用的配置进行分离</p>
+<p>使用方式: 和ConfigMap类似</p>
+<p>spec字段:</p>
+<ul>
+<li><code>data</code>: 键值对，值为任意类型，将会使用Base64进行编码</li>
+<li><code>stringData</code>在: 键值对，值为字符串类型，将会使用Base64进行编码</li>
+<li><code>type</code>: 类型</li>
+</ul>
+<p>也可以通过<code>kubectl create secret</code>命令从配置文件或键值对来创建</p>
+<ul>
+<li>docker-registry: 私有Docker Registry的访问配置</li>
+<li>generic: 通用类型，比如密码</li>
+<li>tls: TLS配置，私钥和证书</li>
+</ul>
+<h2 id="PersistentVolume-PersistentVolumeClaim"><a href="#PersistentVolume-PersistentVolumeClaim" class="headerlink" title="PersistentVolume/PersistentVolumeClaim"></a>PersistentVolume/PersistentVolumeClaim</h2><p>通过PV对集群中的各种存储系统进行封装，Pod通过PVC从PV中申请存储资源，这样便实现了Pod和存储系统的解耦</p>
+<p>底层存储系统和PV是一对多的绑定关系</p>
+<p>PV和PVC是一对一的绑定关系</p>
+<p>PVC和Pod是一对多的绑定关系</p>
+<p>PV含有两种创建方式: 静态创建和基于StorageClass动态创建。对于后者来说，PV不再直接向底层存储系统申请存储资源，而是通过StorageClass按需申请</p>
+<p>StorageClass也是集群资源，不属于任何Namespace。用于对底层存储系统进行分类，比如按照读写速度、容量大小、收费模式等</p>
+<p>StorageClass要求底层存储系统具备Restful风格的请求接口，它将使用该接口来进行底层存储系统的存储资源申请、释放等操作</p>
+<p><img src="/images/Kubernetes之PV和PVC.png" alt="img"></p>
+<p><img src="/images/Kubernetes之PV和PVC的使用.png" alt="img"></p>
+<p><img src="/images/Kubernetes之StorageClass.png" alt="img"></p>
+<h3 id="PV的spec字段"><a href="#PV的spec字段" class="headerlink" title="PV的spec字段"></a>PV的spec字段</h3><p>PV是集群级别的资源，不属于任何Namespace</p>
+<p>对集群中的各类存储系统进行管理，同时向PVC提供存储资源的访问入口</p>
+<ul>
+<li>使用的底层存储系统配置: 网络存储、分布式存储、云存储等等，与直接在Pod中定义存储卷类似</li>
+<li><code>accessModes</code>: PV可以被Node节点的挂载方式和使用方式 <strong>还需要保证底层的存储系统支持该模式</strong><ul>
+<li><code>ReadWriteOnce</code>: 只可以被单个节点挂载，且可读可写</li>
+<li><code>ReadOnlyMany</code>: 可以被多个节点挂载，且只读</li>
+<li><code>ReadWriteMany</code>: 可以被多个节点挂载，且可读可写</li>
+</ul>
+</li>
+<li><code>capacity</code>: 存储资源容量设置</li>
+<li><code>claimRef</code>: PV和PVC之间进行绑定的配置</li>
+<li><code>mountOptions</code>: 存储资源进行挂载操作时的选项</li>
+<li><code>nodeAffinity</code>: 对PV能够被挂载到的Node节点进行限制</li>
+<li><code>persistentVolumeReclaimPolicy</code>: 当PV和PVC之间分离之后的回收策略<ul>
+<li><code>Retain</code>: 保留PV，保留数据</li>
+<li><code>Delete</code>: 删除PV，清空数据</li>
+<li><code>Recycle</code>: 保留PV，PV可被重新绑定，清空数据</li>
+</ul>
+</li>
+<li><code>storageClassName</code>: PV所属的存储类名称</li>
+<li><code>volumeMode</code>: 存储资源的文件系统类型</li>
+</ul>
+<h3 id="PVC的spec的字段"><a href="#PVC的spec的字段" class="headerlink" title="PVC的spec的字段"></a>PVC的spec的字段</h3><p>PVC是Namespace级别的资源</p>
+<p>对于Pod中需要如何使用存储资源和如何寻找合适的PV进行描述</p>
+<p>当PVC被创建之后，会自动从集群中寻找符合条件的PV资源并进行绑定</p>
+<ul>
+<li><code>accessModes</code>: 规定PV应支持的访问模式</li>
+<li><code>resources</code>: 规定PV中应包含的资源<ul>
+<li><code>limits</code>: 设置最大的PV存储空间</li>
+<li><code>requests</code>: 设置最小的PV存储空间</li>
+</ul>
+</li>
+<li><code>selector</code>: 使用标签选择器来匹配可以被选择的PV资源</li>
+<li><code>storageClassName</code>: 存储类名称</li>
+<li><code>volumeMode</code>: 存储卷的模式，用于和PV进行绑定</li>
+<li><code>volumeName</code>: 存储卷的名称，用于和PV进行绑定</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/20/Kubernetes中的Ingress和IngressController/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/20/Kubernetes中的Ingress和IngressController/" itemprop="url">Kubernetes中的Ingress和IngressController</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-20T23:21:15+08:00">
+                2019-03-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/20/Kubernetes中的Ingress和IngressController/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/20/Kubernetes中的Ingress和IngressController/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Ingress: 为多个Service提供代理，可以根据访问路径或子域名将请求转发到不同的Service中</p>
+<ul>
+<li>Service可以看作是一组Pod的L4级别的代理和负载均衡，因为其基于的iptables和ipvs都是L4级别的机制</li>
+<li>Ingress可以看做是一组Service的L7级别的反向代理和负载均衡，其工作在L7级别</li>
+<li>使用Service可以保证一组Pod使用相同的L4协议，比如TCP、UPD</li>
+<li>使用Ingress可以保证一组Service使用相同的L7协议，比如HTTP、HTTPs</li>
+</ul>
+<p>IngressController: 本质是一个工作在L7的应用服务，它可以对集群中定义的Ingress资源进行管理并实现Ingress的L7代理功能</p>
+<ul>
+<li><p>可以部署为Deployment并使用类型为NodePort的Service对其进行管理；也可以部署为DaemonSet并且共享Node节点网络名称空间</p>
+</li>
+<li><p>当Ingress所管理的Service对应的Pod发生变化时，IngressController会自动更新相应的配置，确保可以正确进行代理，不需要手动修改配置</p>
+</li>
+<li><p>主流的IngressController实现方式</p>
+<ul>
+<li>Nginx</li>
+<li>Traefik</li>
+<li>Envoy<ul>
+<li>Contour</li>
+<li>Istio</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/Kubernetes之Ingress与IngressController.png" alt="img"></p>
+<h2 id="Ingress资源的spec字段"><a href="#Ingress资源的spec字段" class="headerlink" title="Ingress资源的spec字段"></a>Ingress资源的spec字段</h2><ul>
+<li><code>backend</code>: 如果没有找到对应的Service，默认将请求发送到该后端<ul>
+<li><code>serviceName</code>: Service名称</li>
+<li><code>servicePort</code>: Service的端口</li>
+</ul>
+</li>
+<li><code>rules</code>: 设置Ingress与Service的关联规则<ul>
+<li><code>host</code>: 定义域名，需要保证该域名可以被解析到IngressController所在Node节点的IP <strong>虚拟主机</strong></li>
+<li><code>http</code>: 定义URL和Service的关联规则  <strong>URL映射</strong><ul>
+<li><code>paths</code>: 定义将请求映射到对应Service的规则<ul>
+<li><code>path</code>: URL路径</li>
+<li><code>backend</code>: 该URL对应的Service<ul>
+<li><code>serviceName</code>: Service名称</li>
+<li><code>servicePort</code>: Service的端口</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>tls</code>: 当需要向用户使用HTTPs协议时，指定TLS配置；该TLS配置工作在IngressController中，而不是后端的Service对应的Pod中<ul>
+<li><code>hosts</code>: 需要使用TLS配置的域名列表</li>
+<li><code>secretName</code>: Secret资源名称，该资源封装了TLS证书和私钥</li>
+</ul>
+</li>
+</ul>
+<h2 id="Ingress资源的使用"><a href="#Ingress资源的使用" class="headerlink" title="Ingress资源的使用"></a>Ingress资源的使用</h2><ul>
+<li>安装部署IngressController <a href="https://github.com/kubernetes/ingress-nginx/blob/master/docs/deploy/index.md" target="_blank" rel="noopener">Nginx</a></li>
+<li>定义Ingress需要代理的一组Service</li>
+<li>定义Ingress，将一组Service和Ingress进行关联</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/20/Kubernetes中的Service/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/20/Kubernetes中的Service/" itemprop="url">Kubernetes中的Service</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-20T14:20:12+08:00">
+                2019-03-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/20/Kubernetes中的Service/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/20/Kubernetes中的Service/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Service: 是一组Pod的逻辑集合和访问方式的抽象</p>
+<p>当Service或者Pod发生变化时:</p>
+<ul>
+<li>ServiceController会基于云提供商的负载均衡API来创建Serivice的负载均衡器；EndpointController会维护Service对象对应的Pod列表、创建Pod列表对应的Endpoint列表、将Endpoint列表和Service关联  <strong>Service-&gt;Endpoints-&gt;Pods</strong></li>
+<li>每一个Node节点上的kube-proxy会自动改变节点上iptables或ipvs中的规则，从而维护Service对象和一组Pod之间的关系</li>
+</ul>
+<p>kube-proxy对Service的代理有三种模式:</p>
+<ul>
+<li><code>userspace</code>: 运行在用户空间</li>
+</ul>
+<p><img src="/images/Kubernetes之Service的userspace代理.png" alt="img"></p>
+<ul>
+<li><code>iptables</code>: 运行在内核空间</li>
+</ul>
+<p><img src="/images/Kubernetes之Service的iptables代理.png" alt="img"></p>
+<ul>
+<li><code>ipvs</code>: 运行在内核空间 <strong>默认模式</strong></li>
+</ul>
+<p><img src="/images/Kubernetes之Service的ipvs代理.png" alt="img"></p>
+<h2 id="Service资源的spec字段"><a href="#Service资源的spec字段" class="headerlink" title="Service资源的spec字段"></a>Service资源的spec字段</h2><ul>
+<li><code>clusterIP</code>: Service在集群中的地址，一般由系统随机指定，当Service类型不为ExternalName才有用。当用户将其手动指定为None时，Service变为HeadLess Service，对Service名称的DNS解析不再返回clusterIP，而是返回Service管理的一组Pod的IP地址</li>
+<li><code>externalName</code>: 当Service的类型为ExternalName时，Service对应的外部服务地址 <strong>通过DNS将Service名称解析为externalName</strong></li>
+<li><code>ports</code>: Service暴露的端口信息列表<ul>
+<li><code>name</code>: 端口名称</li>
+<li><code>nodePort</code>: 当Service类型为NodePort或LoadBalancer时，Service映射到Node节点上的端口</li>
+<li><code>port</code>: Service对外提供服务的端口</li>
+<li><code>targetPort</code>: Service管理的Pod中容器的端口</li>
+</ul>
+</li>
+<li><code>selector</code>: 标签选择器，用来过滤出自己所管理的Pod</li>
+<li><code>type</code>: Service的类型，NodePort和LoadBalancer提供了将外部流量引入集群内存的能力，ExternalName提供了将内部流量导出到外部服务的能力<ul>
+<li><code>ClusterIP</code>: 使用集群中的私有地址，此时Service只能被Node上的Pod访问</li>
+<li><code>NodePort</code>: 除了使用ClusterIP之外，也将Service的端口映射到每一个Node的端口上。这样便可以在集群外部通过访问Node的端口来访问Pod <strong>比ClusterIP多一层数据转发</strong></li>
+<li><code>LoadBalancer</code>: Service应该部署在公有云上，此时可以使用云提供商的负载均衡API来创建Service的负责均衡器，负载均衡器可以根据需要动态创建多个Service。对负载均衡器的访问可以被转发到相应的Service上 <strong>多了一层负载均衡</strong></li>
+<li><code>ExternalName</code>: 为Pod提供了访问集群外部服务的能力。通过CNAME将某个Service和ExternalName进行绑定，Pod便可以通过访问该Service来访问集群外部的服务 <strong>本质是将Service名称通过DNS解析为集群外部服务的地址</strong></li>
+</ul>
+</li>
+<li><code>sessionAffinity</code>: 对于Service的请求被转发到Service对应的Pod列表时使用的策略<ul>
+<li>ClientIP: 同一个客户端的请求总是被转发到同一个Pod中</li>
+<li>None: 随机选择一个Pod</li>
+</ul>
+</li>
+</ul>
+<h2 id="Service资源的使用"><a href="#Service资源的使用" class="headerlink" title="Service资源的使用"></a>Service资源的使用</h2><p>Service资源被创建后，在集群的DNS中便存在对应的Service资源和对应ClusterIP的记录</p>
+<p>Service资源格式: <code>SVC_NAME.NS_NAME.svc.cluster.local</code></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/20/Kubernetes中的有状态Pod控制器/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -677,1907 +2626,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/19/Kubernetes中的Pod/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/19/Kubernetes中的Pod/" itemprop="url">Kubernetes中的Pod</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-19T13:43:17+08:00">
-                2019-03-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/19/Kubernetes中的Pod/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/19/Kubernetes中的Pod/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Pod: Kubernetes中的最小调度单元，可以包含一个或多个容器</p>
-<h2 id="Pod资源的spec字段"><a href="#Pod资源的spec字段" class="headerlink" title="Pod资源的spec字段"></a>Pod资源的spec字段</h2><ul>
-<li><code>containers</code>: Pod使用的容器列表，一个Pod中可以含有多个容器<ul>
-<li><code>args</code>: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数</li>
-<li><code>command</code>: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中</li>
-<li><code>env</code>: 容器中的环境变量，可以直接指定值，也可以从ConfigMap、Secret等指定值<ul>
-<li><code>name</code>: 环境变量名称</li>
-<li><code>value</code>: 直接指定的环境变量值</li>
-<li><code>valueFrom</code>: 从其他源指定环境变量值<ul>
-<li><code>configMapKeyRef</code>: 从ConfigMap中指定</li>
-<li><code>fieldRef</code>: 从当前Pod字段描述中指定</li>
-<li><code>resourceFieldRef</code>: 从当前容器资源描述中指定</li>
-<li><code>secretKeyRef</code>: 从Secret中指定</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><code>name</code>: 容器名称</li>
-<li><code>image</code>: 容器使用的镜像</li>
-<li><code>imagePullPolicy</code>: 拉取镜像的方式，可选值为Always、Never、IfNotPresent</li>
-<li><code>lifecycle</code>: 设置容器在启动后和结束前的钩子操作，包括ExecAction执行自定义命令、TCPSocketAction向指定的TCP端口发送请求、HTTPGetAction向指定的HTTP服务发送请求<ul>
-<li><code>postStart</code></li>
-<li><code>preStop</code></li>
-</ul>
-</li>
-<li><code>livenessProbe</code>: 容器存活的探测方式，包括ExecAction执行自定义命令、TCPSocketAction向指定的TCP端口发送请求、HTTPGetAction向指定的HTTP服务发送请求</li>
-<li><code>readinessProbe</code>: 容器启动后是否就绪的探测方式，只有当容器就绪之后才会被加入到对应Service的EndPoints中，被外部访问，支持的探测方式和livenessProbe相同</li>
-<li><code>ports</code>: 需要从容器中暴露的端口列表，仅仅是给系统提供关于容器端口使用的信息。如果不指定，并不会阻止容器中的进程使用的端口被暴露</li>
-<li><code>resources</code>: 容器需要使用的系统资源列表</li>
-<li><code>volumeMounts</code>: 存储卷在容器中的挂载点</li>
-</ul>
-</li>
-<li><code>hostIPC</code>: 设置Pod中的容器是否与共享Node节点的IPC名称空间</li>
-<li><code>hostNetwork</code>: 设置Pod中的容器是否与共享Node节点的Network名称空间，此时可以直接访问Node地址来直接访问Pod，而不再需要通过Service将Pod暴露</li>
-<li><code>hostPID</code>: 设置Pod中的容器是否与共享Node节点的PID名称空间</li>
-<li><code>imagePullSecrets</code>: 指定在拉取镜像时访问Registry的配置，和docker-registry类型的Secret资源进行绑定</li>
-<li><code>nodeName</code>: 节点名称，直接指定Pod运行的节点名称</li>
-<li><code>nodeSelector</code>: 节点选择器，被调度器使用，用于选择符合条件的Node节点</li>
-<li><code>initContainers</code>: 串行执行的初始化容器列表，一般用于给主容器初始化系统环境，在主容器启动前退出</li>
-<li><code>restartPolicy</code>: 当容器存活探测失败时Pod的重启策略，Always、OnFailure、Never</li>
-<li><code>tolerations</code>: Pod的容忍度列表，被调度器使用，用于选择符合条件的Node节点</li>
-<li><code>volumes</code>: Pod使用的存储卷列表</li>
-<li><code>terminationGracePeriodSeconds</code>: Pod终止时，会向容器中的进程发送Term信号。在等待设置的时间后，再向容器中的进程发送Kill信号。因此容器响应Term信号的时间应小于该值，从而实现平滑终止</li>
-</ul>
-<h2 id="Pod资源的生命周期"><a href="#Pod资源的生命周期" class="headerlink" title="Pod资源的生命周期"></a>Pod资源的生命周期</h2><ul>
-<li><code>Pending</code>: Pod已被系统接受，但是容器镜像尚未创建。包括Pod调度到节点Node上、通过网络下载镜像的时间</li>
-<li><code>Running</code>: Pod已经和某个Node绑定，并且Pod中的容器都已被创建，至少有一个容器处于启动、运行或重启的状态<ul>
-<li>使用串行执行的初始化容器执行系统环境初始化操作</li>
-<li>启动主容器和其他辅助的容器</li>
-<li>在主容器启动后执行postStart钩子操作</li>
-<li>执行readinessProbe和livenessProbe探测操作，如果存活探测失败则根据restartPolicy规则来决定是否重启Pod</li>
-<li>在主容器结束前执行preStop钩子操作</li>
-</ul>
-</li>
-<li><code>Succeeded</code>: Pod中的容器已经成功终止且不再会被重启</li>
-<li><code>Failed</code>: Pod所有容器已经终止且至少有一个容器是因为失败而终止，即进程以非0状态退出或者被操作系统终止，此时根据restartPolicy规则来决定是否重启Pod</li>
-<li><code>Unknown</code>: 由于某些原因Master暂时无法获取到Pod的状态，比如网络通信失败等</li>
-</ul>
-<p><img src="/images/Kubernetes之Pod生命周期.png" alt="img"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/18/Kubernetes资源定义/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/18/Kubernetes资源定义/" itemprop="url">Kubernetes资源定义</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-18T13:44:40+08:00">
-                2019-03-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/18/Kubernetes资源定义/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/18/Kubernetes资源定义/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在K8S中，使用<code>.yaml</code>配置文件对集群中的资源进行定义</p>
-<h2 id="核心资源类型"><a href="#核心资源类型" class="headerlink" title="核心资源类型"></a>核心资源类型</h2><ul>
-<li>工作负载型<ul>
-<li>Pod: 可以被创建、调度和管理的原子单元</li>
-<li>Pod控制器<ul>
-<li>ReplicaSet</li>
-<li>Deployment</li>
-<li>StatefulSet</li>
-<li>DaemonSet</li>
-<li>Job</li>
-<li>CronJob</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>服务发现和负载均衡型<ul>
-<li>Service</li>
-<li>Ingress</li>
-</ul>
-</li>
-<li>配置与存储型<ul>
-<li>ConfigMap</li>
-<li>Secret</li>
-<li>PersistentVolumeClaim</li>
-</ul>
-</li>
-<li>集群型: 前三者都属于某个名称空间，而集群型资源不属于任何的名称空间<ul>
-<li>Namespace</li>
-<li>Node</li>
-<li>Role</li>
-<li>RoleBinding</li>
-<li>ClusterRole</li>
-<li>ClusterRoleBinding</li>
-<li>PersistentVolume</li>
-</ul>
-</li>
-<li>元数据型资源<ul>
-<li>HorizontalPodAutoscaler: HPA</li>
-<li>PodTemplate</li>
-<li>LimitRange</li>
-</ul>
-</li>
-</ul>
-<h2 id="资源定义方式"><a href="#资源定义方式" class="headerlink" title="资源定义方式"></a>资源定义方式</h2><p>使用<code>kubectl get --output yaml</code>来查看集群资源的描述</p>
-<p>集群中的资源描述文件包含下列字段:</p>
-<ul>
-<li><code>apiVersion</code>: 资源所属的K8S API的群组</li>
-<li><code>kind</code>: 对象资源类型</li>
-<li><code>metadata</code>: 对象的元数据<ul>
-<li><code>name</code>: 对象名称</li>
-<li><code>namespace</code>: 对象所属的集群名称空间</li>
-<li><code>uid</code>: 对象唯一标识</li>
-<li><code>labels</code>: 对象的标签</li>
-<li><code>annotations</code>: 对象的注解</li>
-</ul>
-</li>
-<li><code>spec</code>: 对象应该满足的要求。不同类型的资源，该字段中包含的下级字段是有区别的 <strong>K8S的核心就是通过控制器保证资源对象总是在期望的状态</strong></li>
-<li><code>status</code>: 对象实际的运行状态，该字段由集群进行维护，而不是用户自己定义</li>
-</ul>
-<p>使用<code>kubectl explain</code>来查看集群资源的定义方式，如<code>kubectl explain pod</code>, <code>kubectl explain pod.spec</code>等</p>
-<p>使用<code>kubectl apply -f FILENAME</code>将资源定义文件提交到集群中，可以是创建资源或者更新资源</p>
-<p>使用<code>kubectl delete -f FILENAME</code>来删除该资源</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/13/算法-Sort/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/13/算法-Sort/" itemprop="url">算法-Sort</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-13T10:00:20+08:00">
-                2019-03-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程技术/" itemprop="url" rel="index">
-                    <span itemprop="name">编程技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/13/算法-Sort/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/13/算法-Sort/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="算法概述"><a href="#算法概述" class="headerlink" title="算法概述"></a>算法概述</h2><p>可以分为两大类</p>
-<ul>
-<li>比较类: 通过比较来决定元素间的相对次序，时间复杂度不能突破O(nlogn)，也称为非线性时间排序<ul>
-<li>交换<ul>
-<li>冒泡排序</li>
-<li>快速排序</li>
-</ul>
-</li>
-<li>插入<ul>
-<li>插入排序</li>
-<li>希尔排序</li>
-</ul>
-</li>
-<li>选择<ul>
-<li>选择排序</li>
-<li>堆排序</li>
-</ul>
-</li>
-<li>归并<ul>
-<li>二路归并排序</li>
-<li>多路归并排序</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>非比较类: 不通过比较来决定元素间的相对次数，时间复杂度可以突破O(nlogn)，以线性时间运行，也称为线性时间排序<ul>
-<li>计数排序</li>
-<li>桶排序</li>
-<li>基数排序</li>
-</ul>
-</li>
-</ul>
-<p>时间复杂度</p>
-<table>
-<thead>
-<tr>
-<th>排序方法</th>
-<th>平均时间复杂度</th>
-<th>最坏时间复杂度</th>
-<th>最好时间复杂度</th>
-<th>空间复杂度</th>
-<th>稳定性</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>冒泡排序</td>
-<td>O(n^2)</td>
-<td>O(n^2)</td>
-<td>O(n)</td>
-<td>O(1)</td>
-<td>稳定</td>
-</tr>
-<tr>
-<td>快速排序</td>
-<td>O(nlogn)</td>
-<td>O(n^2)</td>
-<td>O(nlogn)</td>
-<td>O(nlogn)</td>
-<td>不稳定</td>
-</tr>
-<tr>
-<td>插入排序</td>
-<td>O(n^2)</td>
-<td>O(n^2)</td>
-<td>O(n)</td>
-<td>O(1)</td>
-<td>稳定</td>
-</tr>
-<tr>
-<td>希尔排序</td>
-<td>O(n^1.3)</td>
-<td>O(n^2)</td>
-<td>O(n)</td>
-<td>O(1)</td>
-<td>不稳定</td>
-</tr>
-<tr>
-<td>选择排序</td>
-<td>O(n^2)</td>
-<td>O(n^2)</td>
-<td>O(n^2)</td>
-<td>O(1)</td>
-<td>不稳定</td>
-</tr>
-<tr>
-<td>堆排序</td>
-<td>O(nlogn)</td>
-<td>O(nlogn)</td>
-<td>O(nlogn)</td>
-<td>O(1)</td>
-<td>不稳定</td>
-</tr>
-<tr>
-<td>归并排序</td>
-<td>O(nlogn)</td>
-<td>O(nlogn)</td>
-<td>O(nlogn)</td>
-<td>O(n)</td>
-<td>稳定</td>
-</tr>
-<tr>
-<td>计数排序</td>
-<td>O(n+k)</td>
-<td>O(n+k)</td>
-<td>O(n+k)</td>
-<td>O(n+k)</td>
-<td>稳定</td>
-</tr>
-<tr>
-<td>桶排序</td>
-<td>O(n+k)</td>
-<td>O(n^2)</td>
-<td>O(n)</td>
-<td>O(n+k)</td>
-<td>稳定</td>
-</tr>
-<tr>
-<td>基数排序</td>
-<td>O(n*k)</td>
-<td>O(n*k)</td>
-<td>O(n*k)</td>
-<td>O(n+k)</td>
-<td>稳定</td>
-</tr>
-</tbody>
-</table>
-<h2 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h2><p>n: 待排序的序列长度</p>
-<ul>
-<li>冒泡排序(Bubble Sort)<ul>
-<li>遍历一遍序列，依次比较相邻的两个元素，如果它们次序错误则将其进行交换，这样末尾的元素为最大</li>
-<li>除了最后一个元素之外，重复进行上述步骤</li>
-<li>当一次遍历中未发生交换操作或者遍历了n次后，整个序列有序</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之冒泡排序.gif" alt="img"></p>
-<ul>
-<li>快速排序(Quick Sort): <code>递归分治法的思想</code><ul>
-<li>选择序列中的第一个元素作为基准</li>
-<li>进行分区操作，即遍历一遍序列，将所有元素小于该基准的放在基准前面，大于该基准的放在基准后面，此时该基准元素位于序列中正确的排序位置</li>
-<li>分别对基准元素前面和后面的子序列进行同样的操作，直到整个序列有序</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之快速排序.gif" alt="img"></p>
-<ul>
-<li>插入排序(Insertion Sort)<ul>
-<li>将序列上的第一个元素看做已经有序</li>
-<li>取出序列中的第二个元素作为待加入元素，在已有序的子序列中从后向前遍历</li>
-<li>如果子序列中的元素较大，则将其向后移位，直到待加入元素已经插入到正确位置，形成一个有序的子序列</li>
-<li>重复上述操作，直到整个序列有序</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之插入排序.gif" alt="img"></p>
-<ul>
-<li>希尔排序(Shell Sort): <code>对插入排序的改进，通过设置不同的增量依次进行插入排序，也叫缩小增量排序</code><ul>
-<li>选择一个增量序列t1,t2,……,tk，其中ti&gt;ti+1, tk=1</li>
-<li>对于每一个增量ti，将序列分割为ti个子序列，对各个子序列分别进行插入排序</li>
-<li>当增量为1时，其实是将整个序列作为一个子序列进行插入排序</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之希尔排序.gif" alt="img"></p>
-<ul>
-<li>选择排序(Selection Sort)<ul>
-<li>遍历一次序列，从中选择最小的元素，然后将其和序列中第一个元素进行交换</li>
-<li>此时序列中第一个元素有序，然后对剩下的元素再次进行上述操作，直到整个序列有序</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之选择排序.gif" alt="img"></p>
-<ul>
-<li>堆排序(Heap Sort): <code>依赖堆数据结构</code> <a href="https://gravity-xin.github.io/2018/11/12/Heap/" target="_blank" rel="noopener">Heap</a><ul>
-<li>构造堆</li>
-<li>从堆中Pop堆顶元素，然后调整生成新的堆</li>
-<li>重复上述操作，直到排序完成</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之堆排序.gif" alt="img"></p>
-<ul>
-<li>归并排序(Merge Sort): <code>递归分治法的思想，分为拆分子序列和合并子序列两个过程</code><ul>
-<li>将序列拆分为长度为n/2的子序列</li>
-<li>对每个子序列继续进行拆分，直到无法拆分为止</li>
-<li>对两个子序列进行合并，得到最终有序的序列</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之归并排序.gif" alt="img"></p>
-<ul>
-<li>计数排序(Counting Sort): <code>要求序列中的元素为有确定范围的整数，将序列中的元素作为下标存储到额外开辟的数组空间中</code><ul>
-<li>确定输入序列中的最小元素和最大元素，构建额外的数组C，数组元素初始化为0</li>
-<li>对序列中的每一个值为i的元素，数组C的第i项的数组元素值加1</li>
-<li>遍历数组C，对于每一个数组元素i，每反向填充到序列一次就减1，直到为0</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之计数排序.gif" alt="img"></p>
-<ul>
-<li>桶排序(Bucket Sort): <code>利用某个函数将序列中的元素映射到有限数量的桶中，然后对每一个分别进行排序，最后将元素进行拼接</code><ul>
-<li>设置确定数量的桶</li>
-<li>遍历序列，将其中的每一个元素分别映射到对应的桶中</li>
-<li>对于每一个桶使用某方法进行排序，比如快排</li>
-<li>将不为空的桶中的元素进行拼接</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之桶排序.png" alt="img"></p>
-<ul>
-<li>基数排序(Radix Sort): <code>对序列中的元素先按照低位进行排序，然后再按照高位进行排序</code><ul>
-<li>获取序列中的最大元素，并获取其位数为n</li>
-<li>从最低位开始，取得序列中每个元素在该位的值，构建radix数组</li>
-<li>对radix数组进行计数排序</li>
-<li>重复上述步骤n次，最终得到有序序列</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/排序之基数排序.gif" alt="img"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/12/Mysql常用SQL/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/12/Mysql常用SQL/" itemprop="url">Mysql常用SQL</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-12T11:35:02+08:00">
-                2019-03-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/12/Mysql常用SQL/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/12/Mysql常用SQL/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li>查看mysql配置</li>
-</ul>
-<p>show variables like ‘%version%’<br>show variables like ‘%isolation%’</p>
-<ul>
-<li>查看mysql状态</li>
-</ul>
-<p>show status like ‘%thread%’<br>show status like ‘%connection%’</p>
-<ul>
-<li>查看mysql客户端连接信息</li>
-</ul>
-<p>show full processlist</p>
-<ul>
-<li>查看mysql表的详细信息</li>
-</ul>
-<p>show table status like ‘%table_name%’</p>
-<ul>
-<li>查看mysql表使用的索引</li>
-</ul>
-<p>show index from table_name</p>
-<ul>
-<li>增加或删除mysql表的索引</li>
-</ul>
-<p>alter table table_name add index index_title(row1, row2…)<br>alter table table_name drop index index_title</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/12/Redis基础/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/12/Redis基础/" itemprop="url">Redis基础</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-12T10:57:17+08:00">
-                2019-03-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/12/Redis基础/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/12/Redis基础/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li><p>高性能的KV缓存和数据库</p>
-</li>
-<li><p>支持数据持久化，数据可以保存在内存或磁盘中</p>
-<ul>
-<li>AOF: 将所有的写操作命令以redis命令协议的方式保存到日志文件中；但是AOF文件往往比较大，且恢复数据较慢</li>
-<li>RDB: 将内存快照写入到临时文件中，并可通过该文件进行恢复；但是由于是间隔一段时间进行持久化，有可能会发生数据的丢失</li>
-</ul>
-</li>
-<li>支持的值的类型包括<code>string</code>,<code>list</code>,<code>hash</code>,<code>set</code>和<code>zset</code><ul>
-<li>string: int raw embstr<ul>
-<li>如果字符串内容可以转化为long，则转换为long类型的张数</li>
-<li>当字符串长度小于39时，使用embstr；否则使用传统的raw</li>
-</ul>
-</li>
-<li>list: ziplist linkedlist<ul>
-<li>当列表元素数量不大，元素也不大的时候使用ziplist</li>
-<li>当列表元素数量较大时，使用linkedlist</li>
-</ul>
-</li>
-<li>hash: ziplist hashtable<ul>
-<li>ziplist按照key1 value1 key2 value2进行顺序存储</li>
-<li>hashtable则是用数组实现，每一个元素为KV对</li>
-</ul>
-</li>
-<li>set: intset hashtable</li>
-<li>zset: ziplist skiplist+hashtable<ul>
-<li>ziplist: 将data和score按顺序排放</li>
-<li>skiplist保证元素有序，hashtable保证可以快速查找元素</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>单个数据操作是原子性的，同时支持通过<code>multi</code>, <code>exec</code>, <code>watch</code>, <code>unwatch</code>, <code>discard</code>等命令来实现事务</li>
-<li>支持Pipeline操作，将多个操作放在一起，减少客户端和服务端之间的通信次数，从而提高效率</li>
-<li>支持设置key的过期时间，内部通过定期删除和惰性删除的方式来进行过期key的删除<ul>
-<li>定期删除: 每隔一段时间，通过设置的算法从过期的键中删除一部分<ul>
-<li><code>volatile-lru</code>: 从过期键中选择最近最少使用的淘汰</li>
-<li><code>volatile-ttl</code>: 从过期键中选择更早过期时间的淘汰</li>
-<li><code>volatile-random</code>: 从过期键中随机进行淘汰</li>
-<li><code>allkeys-lru</code>: 从所有键中选择最近最少使用的淘汰</li>
-<li><code>allkeys-random</code>: 从所有键中随机进行淘汰</li>
-<li><code>noeviction</code>: 不进行淘汰，当操作导致内存不够用时，直接返回错误</li>
-</ul>
-</li>
-<li>惰性删除: 放任键过期不管，当读取该键时，判断键是否过期，如果过期则执行删除操作</li>
-</ul>
-</li>
-<li>支持通过<code>pub</code>和<code>sub</code>实现发布订阅</li>
-<li>内部实现为单线程机制，基于操作系统提供的多路复用IO接口，将多个事件放入到一个队列中，并在单个线程上进行执行</li>
-<li>支持master-slave模式的高可用架构，用于读写分离和容灾恢复，使用sentinel哨兵来监控redis实例是否故障，实现自动主备切换</li>
-<li>常见使用场景<ul>
-<li>mysql等关系型数据库中热点数据的存储，需要一套key命名规则 <code>表名:主键名:主键值:字段名</code></li>
-<li>使用list实现简单的消息队列</li>
-<li>发布/订阅实现观察者模式</li>
-<li>基于单线程架构实现分布式锁</li>
-<li>基于set集合操作实现共同好友列表等</li>
-<li>基于zset实现访问量排行等</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/12/Mysql基础/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/12/Mysql基础/" itemprop="url">Mysql基础</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-12T10:57:10+08:00">
-                2019-03-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/12/Mysql基础/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/12/Mysql基础/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li>逻辑架构<ul>
-<li>客户端</li>
-<li>服务器</li>
-<li>存储引擎<ul>
-<li>InnoDB<ul>
-<li>mysql默认事务型引擎</li>
-<li>处理大量短期事务，应该优先考虑使用该引擎</li>
-<li>支持行锁和表锁</li>
-<li>支持事务和自动崩溃恢复</li>
-<li>索引文件和数据文件相同，根据主键查询为聚簇索引，索引data域为具体行数据；根据其它字段查询为非聚簇索引，索引data域为主键值，再根据主键的索引找到具体行</li>
-</ul>
-</li>
-<li>MyISAM<ul>
-<li>支持表锁</li>
-<li>不支持事务和自动崩溃恢复</li>
-<li>索引文件和数据文件分离，索引data域为行的地址，为非聚簇索引；主键索引与其它字段的索引格式一样，都是非聚簇索引</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>并发请求控制<ul>
-<li>读写锁</li>
-<li>表锁与行锁</li>
-</ul>
-</li>
-<li>事务<ul>
-<li>ACID特性</li>
-<li>隔离级别: 一个事务中所做的修改对于其他事务的可见性<ul>
-<li>READ UNCOMMITED: 未提交读 发生脏读的情况<ul>
-<li>事务A读取了事务B更新的数据，然后B回滚操作，那么A读取到的数据是脏数据</li>
-</ul>
-</li>
-<li>READ COMMITED: 提交读 发生不可重复读的情况<ul>
-<li>事务A多次读取同一数据，事务B在事务A多次读取的过程中，对数据作了更新并提交，导致事务A多次读取同一数据时，结果不一致</li>
-<li>侧重于对数据的修改</li>
-<li>解决不可重复读的问题只需锁住满足条件的行</li>
-</ul>
-</li>
-<li>REPEATABLE READ: 可重复读 解决了脏读的问题，还使用MVCC多版本控制来解决幻读的问题 <strong>mysql默认的隔离级别</strong><ul>
-<li>事务A将数据库中所有学生的成绩从具体分数改为ABCDE等级，事务B就在这个时候插入了一条具体分数的记录，当事务A结束后发现还有一条记录没有改过来，就好像发生了幻觉一样，这就叫幻读</li>
-<li>侧重于数据的增加或删除</li>
-<li>解决幻读需要锁表</li>
-</ul>
-</li>
-<li>SERIALIZABLE 可串行化 事务串行执行</li>
-</ul>
-</li>
-<li>死锁: 多个事务互相等待对方占用的锁</li>
-<li>使用事务日志来提高事务的执行效率，不直接改磁盘上的数据，而是记录事务日志，然后在后台慢慢将数据刷回到磁盘</li>
-<li>AUTOCOMMIT: 在InnoDB中，如果没有显式开始事务，则自动将每一个sql操作当做事务进行提交</li>
-</ul>
-</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>隔离级别</th>
-<th>脏读（Dirty Read）</th>
-<th>不可重复读（NonRepeatable Read）</th>
-<th>幻读（Phantom Read）</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>未提交读</td>
-<td>可能</td>
-<td>可能</td>
-<td>可能</td>
-</tr>
-<tr>
-<td>已提交读</td>
-<td>不可能</td>
-<td>可能</td>
-<td>可能</td>
-</tr>
-<tr>
-<td>可重复读</td>
-<td>不可能</td>
-<td>不可能</td>
-<td>可能</td>
-</tr>
-<tr>
-<td>可串行化</td>
-<td>不可能</td>
-<td>不可能</td>
-<td>不可能</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>多版本并发控制(MVCC): 保存数据在某个时间点的快照，使用乐观锁的方式<ul>
-<li>InnoDB在每行记录中添加额外的两个隐藏的列(创建时间和删除时间)来实现MVCC</li>
-</ul>
-</li>
-<li>索引<ul>
-<li>使用索引会降低增删改的速度，因为需要维护索引</li>
-<li>分类<ul>
-<li>主键索引 PRIMARY KEY</li>
-<li>唯一索引 UNIQUE</li>
-<li>普通索引 INDEX</li>
-<li>组合索引 INDEX</li>
-<li>全文索引 FULLTEXT</li>
-</ul>
-</li>
-<li>实现机制<ul>
-<li>B+树<ul>
-<li>磁盘IO次数为树的高度</li>
-<li>多个树节点占用磁盘一页的空间，可以利用磁盘缓存和访问局部性原理提高IO效率</li>
-</ul>
-</li>
-<li>哈希<ul>
-<li>每次只查询出一行，不支持范围查询</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>优化<ul>
-<li>使用explain命令定位性能瓶颈<ul>
-<li>是否为全表扫描</li>
-<li>用了哪些索引</li>
-</ul>
-</li>
-<li>索引的字段应尽量的小，减少单个索引占用的磁盘空间，从而可以增加磁盘上一页中的树节点数量，从而减少磁盘IO次数</li>
-<li>组合索引与最左前缀匹配原理<ul>
-<li>创建组合索引时，将使用最频繁的列放在左边</li>
-<li>使用组合索引查询时，where子句将使用最频繁的列放在最左边</li>
-</ul>
-</li>
-<li>使用区分度高的列作为索引</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>SQL语句执行顺序: <code>select -- from -- where -- group by -- having -- order by</code><ul>
-<li>from: 确定从哪些表中进行检索，多个表的执行顺序是从后往前，因此需要将数据量较少的表放到最后</li>
-<li>where: 确定表中数据的过滤条件，多个过滤条件的执行顺序是从后往前，因此可以过滤到最多数据的条件应放到最后 <strong>过滤条件对应的字段是表中所有的字段，过滤条件不能使聚合函数</strong></li>
-<li>group by: 确定过滤出的数据的数据分组</li>
-<li>having: 对已经分组的数据设置过滤条件 <strong>过滤条件对应的字段是表中被select查询出来的字段，过滤条件一般是聚合函数，一般配合分组进行使用</strong></li>
-<li>select: 获取符合条件的数据结果集</li>
-<li>order by: 对数据结果集进行排序，执行顺序为从前往后</li>
-</ul>
-</li>
-<li>大表优化<ul>
-<li>限制查询范围</li>
-<li>读写分离</li>
-<li>缓存</li>
-<li>垂直拆分: 根据表中内容的相关性拆分为几张表</li>
-<li>水平拆分: 按照某个字段进行分片</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/09/Kubernetes基本使用/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/09/Kubernetes基本使用/" itemprop="url">Kubernetes基本使用</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-09T12:25:57+08:00">
-                2019-03-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/09/Kubernetes基本使用/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/09/Kubernetes基本使用/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在Kubernetes中，主要通过Kubectl命令行工具对集群中的资源进行增删改查的操作，集群中的资源包括Pod、Service、各种控制器、Node等等</p>
-<ul>
-<li><code>Kubectl</code>的使用方式<ul>
-<li>入门命令<ul>
-<li><code>create</code>: 创建集群资源</li>
-<li><code>expose</code>: 使用Pod、Service或各种控制器来创建Service资源，外部可以通过该Service实现对Pod的访问</li>
-<li><code>run</code>: 在集群上运行特定镜像，创建Pod资源并使用Deployment或Job来对其进行控制</li>
-<li><code>set</code>: 给集群中的特定资源进行配置，可以设置Pod中的环境变量、镜像名称、LabelSelector等</li>
-</ul>
-</li>
-<li>中级命令<ul>
-<li><code>get</code>: 查看集群中的各类资源的状态<ul>
-<li><code>pod</code>: 查看Pod资源状态</li>
-<li><code>deployment</code>: 查看Deployment控制器状态</li>
-<li><code>service</code>: 查看Service资源状态</li>
-</ul>
-</li>
-<li><code>explain</code>: 查看资源中各类资源的说明</li>
-<li><code>edit</code>: 对集群中的资源对应的yaml文件进行编辑，保存后自动生效</li>
-<li><code>delete</code>: 对集群中的资源进行删除</li>
-</ul>
-</li>
-<li>部署管理<ul>
-<li><code>rollout</code>: 对资源的更新部署进行管理，比如查看更新的状态，暂停和恢复更新，版本回滚等</li>
-<li><code>rolling-update</code>: 对资源的部署进行滚动更新</li>
-<li><code>scale</code>: 手动对资源进行扩容或缩容</li>
-<li><code>autoscale</code>: 设置资源的自动水平伸缩</li>
-</ul>
-</li>
-<li>集群管理<ul>
-<li><code>certificate</code>: 修改集群认证信息</li>
-<li><code>cluster-info</code>: 查询集群信息</li>
-<li><code>top</code>: 查看集群中资源使用情况，如CPU、内存、磁盘等</li>
-<li><code>cordon</code>: 标记集群中某节点不可被调度</li>
-<li><code>uncordon</code>: 标记集群中某节点可以被调度</li>
-<li><code>drain</code>: 将集群中某节点上运行的资源赶到其它节点上</li>
-<li><code>taint</code>: 将集群中的某节点增加污点，与Pod的Toleration来配合使用，实现高级的调度</li>
-</ul>
-</li>
-<li>故障排除和调试<ul>
-<li><code>describe</code>: 显示集群某资源的详细信息<ul>
-<li><code>pod</code>: 查看Pod的详细信息</li>
-<li><code>service</code>: 查看Service的详细信息，以及Service对应Pod的EndPoints列表等</li>
-</ul>
-</li>
-<li><code>logs</code>: 查看集群中某个Pod上的日志</li>
-<li><code>attach</code>: 附加到某个Pod中</li>
-<li><code>exec</code>: 在某个Pod中运行命令</li>
-<li><code>port-forward</code>: 设置某个Pod的端口和本地端口的映射</li>
-<li><code>proxy</code>: 在本地启动对集群API Server的代理</li>
-<li><code>cp</code>: 在<code>Pod</code>和本地之间进行文件拷贝</li>
-<li><code>auth</code>: 进行操作权限的校验</li>
-</ul>
-</li>
-<li>高级命令<ul>
-<li><code>apply</code>: 对集群中的资源进行配置</li>
-<li><code>patch</code>: 更新集群中的资源配置</li>
-<li><code>replace</code>: 对集群中的资源进行替换</li>
-<li><code>convert</code>: 将配置文件转换为不同的API版本</li>
-</ul>
-</li>
-<li>资源管理<ul>
-<li><code>label</code>: 给资源添加Label</li>
-<li><code>annotate</code>: 给资源添加Annotation</li>
-<li><code>completion</code>: 输出不同Shell的自动补全配置</li>
-</ul>
-</li>
-<li>其它<ul>
-<li><code>api-versions</code>: 输出集群支持的API群组</li>
-<li><code>api-resources</code>: 输出集群支持的资源信息</li>
-<li><code>config</code>: 修改Kubectl使用的kubeconfig文件</li>
-<li><code>plugin</code>: 给集群添加插件</li>
-<li><code>version</code>: 输出客户端和服务端的版本信息</li>
-<li><code>cluster_info</code>: 查看集群中Master上系统Service信息</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/08/Kubernetes网络基础/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/08/Kubernetes网络基础/" itemprop="url">Kubernetes网络基础</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-08T15:57:50+08:00">
-                2019-03-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/08/Kubernetes网络基础/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/08/Kubernetes网络基础/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li>三种网络<ul>
-<li>节点网络: 所有Node组成的网络，是真实有效的IP地址，与物理网卡或虚拟网卡绑定</li>
-<li>集群网络: 所有Service组成的网络，是虚拟的IP地址，不与物理网卡或虚拟网卡绑定。通过DNS对Service名称进行解析，通过在iptables、ipvs中添加规则实现对Pod的访问</li>
-<li>Pod网络: 所有Pod组成的网络，是真是有效的IP地址，与虚拟网卡绑定</li>
-</ul>
-</li>
-</ul>
-<p>三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络  <strong>所有的网络相关，其本质上都是iptables或者ipvs中的规则在起作用，以及dns解析在起作用</strong></p>
-<p><img src="/images/Kubernetes之三种网络.png" alt="img"></p>
-<ul>
-<li><p>三种通信</p>
-<ul>
-<li>Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过localhost进行访问</li>
-<li>Pod与Pod的容器之间<ul>
-<li>两个Pod如果位于同一个Node上，容器间可以利用<code>docker0</code>网桥相连接进行通信</li>
-<li>两个Pod如果在不同Node上，此时容器分别被<code>docker0</code>网桥隐藏，无法直接连接，此时需要Flannel来接管Pod的IP分配，以Overlay Network叠加式网络的方式进行连接</li>
-</ul>
-</li>
-<li>Pod与Service之间，由于Service在K8S集群中有独立的IP地址和DNS名称，可以通过其与Service直接进行通信</li>
-</ul>
-</li>
-<li><p>网络配置和网络策略: 提供了<code>CNI</code>容器网络接口规范，可以将第三方插件纳入到集群中</p>
-<ul>
-<li>网络配置: Pod和Service的IP分配</li>
-<li>网络策略: Pod之间是否可以互相访问</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2623,7 +2676,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">89</span>
+                  <span class="site-state-item-count">97</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2645,7 +2698,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">162</span>
+                  <span class="site-state-item-count">169</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="IO编程 文件读写 使用open, read, readline, readlines, write, close来进行文件的打开、读写和关闭 默认操作的是文本文件，可以在mode参数中增加b来操作二进制文件 使用encoding参数来设置文件内容的编码格式 使用with as语句来简化文件操作, 本质是文件对象有enter和exit方法，用于初始化和释放文件的fd   StringIO/Byte">
+<meta name="keywords" content="Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python提高">
+<meta property="og:url" content="http://yoursite.com/2019/06/26/Python提高/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="IO编程 文件读写 使用open, read, readline, readlines, write, close来进行文件的打开、读写和关闭 默认操作的是文本文件，可以在mode参数中增加b来操作二进制文件 使用encoding参数来设置文件内容的编码格式 使用with as语句来简化文件操作, 本质是文件对象有enter和exit方法，用于初始化和释放文件的fd   StringIO/Byte">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-06-28T06:37:02.033Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python提高">
+<meta name="twitter:description" content="IO编程 文件读写 使用open, read, readline, readlines, write, close来进行文件的打开、读写和关闭 默认操作的是文本文件，可以在mode参数中增加b来操作二进制文件 使用encoding参数来设置文件内容的编码格式 使用with as语句来简化文件操作, 本质是文件对象有enter和exit方法，用于初始化和释放文件的fd   StringIO/Byte">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/06/26/Python提高/">
+
+
+
+
+
+  <title>Python提高 | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/26/Python提高/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python提高</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-26T13:52:35+08:00">
+                2019-06-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程技术/" itemprop="url" rel="index">
+                    <span itemprop="name">编程技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/06/26/Python提高/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/06/26/Python提高/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="IO编程"><a href="#IO编程" class="headerlink" title="IO编程"></a>IO编程</h2><ul>
+<li>文件读写<ul>
+<li>使用open, read, readline, readlines, write, close来进行文件的打开、读写和关闭</li>
+<li>默认操作的是文本文件，可以在mode参数中增加b来操作二进制文件</li>
+<li>使用encoding参数来设置文件内容的编码格式</li>
+<li>使用with as语句来简化文件操作, 本质是文件对象有<strong>enter</strong>和<strong>exit</strong>方法，用于初始化和释放文件的fd</li>
+</ul>
+</li>
+<li>StringIO/BytesIO<ul>
+<li>io.StringIO对象，表示一个存储在内存中的字符串</li>
+<li>io.BytesIO对象，表示一个存储在内存中的二进制数据</li>
+<li>使用read, readline, write来进行内存对象的读写</li>
+</ul>
+</li>
+<li>目录与文件<ul>
+<li>使用os, os.path, shutil模块中的相关函数来操作目录和文件</li>
+<li>os.mkdir, os.rmdir, os.listdir来创建、删除和遍历目录</li>
+<li>os.path.abspath, os.path.join, os.path.split来操作文件路径</li>
+<li>os.rename, os.remove来重命名、删除文件</li>
+<li>shutil.copyfile来拷贝文件</li>
+</ul>
+</li>
+<li>序列化/反序列化<ul>
+<li>用于将内存中的变量信息保存到磁盘中，并在需要的时候进行恢复</li>
+<li>可以使用pickel模块中的dump和load函数实现序列化和反序列化，该方法只能在相同版本的python中使用</li>
+<li>可以使用json模块的dump和load函数实现序列化和反序列化，该方法可以跨语言使用</li>
+<li>如果需要对class对象使用json的方式处理，需要为class对象提供一个转换函数</li>
+<li>该转换函数用于将class对象中的相关属性转换为一个字典对象</li>
+</ul>
+</li>
+</ul>
+<h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><ul>
+<li>多进程<ul>
+<li>Linux操作系统提供了fork系统调用，用于将当前进程进行复制得到一个子进程，该系统调用会在父进程和子进程分别返回，在父进程中返回新建的子进程ID，在子进程中返回0</li>
+<li>os模块的fork函数封装了该系统调用，可以用于创建一个子进程</li>
+<li>os.getpid, os.getppid获取当前进程ID和当前进程的父进程ID</li>
+<li>使用multiprocessing模块进行多进程编程</li>
+<li>multiprocessing.Process代表一个进程对象</li>
+<li>multiprocessing.Pool代表一个进程池对象，用于批量创建子进程</li>
+<li>使用subprocess模块可以方便启动一个子进程，并控制其输入和输出</li>
+<li>进程间通信<ul>
+<li>multiprocessing.Queue: 进程间通过消息队列的方式进行通信</li>
+<li>multiprocessing.Pipes: 进行间通过管道的方式进行通信</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>多线程<ul>
+<li>可以使用threading模块来实现多线程</li>
+<li>threading.Thread代表一个线程对象</li>
+<li>使用threading.Lock来对线程间共享的数据进行保护</li>
+<li>Python的解释器中，由于GIL(Global Interperter Lock)的存在，导致Python程序无法真正利用多核CPU</li>
+</ul>
+</li>
+<li>线程本地存储<ul>
+<li>使用threading.local创建线程本地存储对象，用于线程内部数据的存储</li>
+</ul>
+</li>
+<li>进程 vs 线程<ul>
+<li>一般常用Master-Worker模式进行多任务，Master负责分配任务，Worker负责执行任务</li>
+<li>在多进程时，Master为主进程，Worker为其他进程</li>
+<li>在多线程时，Master为主线程，Worker为其他线程</li>
+<li>多进程的优点在于稳定性高，当某个Worker进程崩溃时，不影响Master进程和其他Worker进程；缺点在于进程的创建、切换操作代价大</li>
+<li>多线程的优点在于线程的创建、切换代价小；缺点在于任一线程崩溃，整个进程也会崩溃</li>
+<li>任务本身还可以分为计算密集型和IO密集型<ul>
+<li>对于计算密集型任务，特点是消耗较多的CPU资源，应该将并行任务数量设置为CPU核心数；不适合用并发的方法来实现，因为任务越多，任务切换所消耗的CPU就越多，真正执行任务的CPU就越少</li>
+<li>对于IO密集型任务，特点是CPU消耗少，等待IO完成的时间长，适合用并发的方法来实现</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>分布式多进程<ul>
+<li>multiprocessing.managers模块支持将多进程部署到多台机器上，实现分布式多进程</li>
+</ul>
+</li>
+</ul>
+<h2 id="网络编程"><a href="#网络编程" class="headerlink" title="网络编程"></a>网络编程</h2><ul>
+<li>TCP<ul>
+<li>使用socket模块，创建面向连接的流式的TCP Socket对象，服务器地址、服务器端口、客户端地址、客户端端口唯一确定一个Socket对象</li>
+<li>对于TCP客户端，使用connect、send、recv、close来执行连接、发送、接收来关闭操作</li>
+<li>对于TCP服务器，使用bind、listen、accept、send、recv、close来执行绑定、监听、接收请求并创建新的Socket、读写和关闭操作</li>
+</ul>
+</li>
+<li>UDP<ul>
+<li>使用socket模块。创建面向无连接的数据包式的UDP Socket对象</li>
+<li>对于UDP客户端，通过sendto、recv来执行发送和读取操作</li>
+<li>对于UDP服务端，通过bind、recvfrom、sendto来执行绑定、读取和发送操作</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/21/Matplotlib库/" rel="next" title="Matplotlib库">
+                <i class="fa fa-chevron-left"></i> Matplotlib库
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/28/Python常用模块/" rel="prev" title="Python常用模块">
+                Python常用模块 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2019/06/26/Python提高/" data-title="Python提高" data-url="http://yoursite.com/2019/06/26/Python提高/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">97</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">169</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#IO编程"><span class="nav-number">1.</span> <span class="nav-text">IO编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程与线程"><span class="nav-number">2.</span> <span class="nav-text">进程与线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络编程"><span class="nav-number">3.</span> <span class="nav-text">网络编程</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

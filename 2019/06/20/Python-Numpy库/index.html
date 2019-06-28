@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python,Numpy,Array,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Numpy是一个用于数组计算的Python库 ndarray对象: 表示一个N维的数组对象(多维数组、矩阵) 基本概念  所有的数组元素具有相同的数据类型，在内存中占有相同大小的区域  数组的维数称为秩rank  每一个线性的数组称为是一个轴axis，表示沿着第axis个下标变化的方向进行操作；axis=0表示对每一列进行操作，axis=1表示对每一行进行操作 基本属性 ndim: 数组的秩 si">
+<meta name="keywords" content="Python,Numpy,Array">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python Numpy库">
+<meta property="og:url" content="http://yoursite.com/2019/06/20/Python-Numpy库/index.html">
+<meta property="og:site_name" content="Yihang&#39;s Blog">
+<meta property="og:description" content="Numpy是一个用于数组计算的Python库 ndarray对象: 表示一个N维的数组对象(多维数组、矩阵) 基本概念  所有的数组元素具有相同的数据类型，在内存中占有相同大小的区域  数组的维数称为秩rank  每一个线性的数组称为是一个轴axis，表示沿着第axis个下标变化的方向进行操作；axis=0表示对每一列进行操作，axis=1表示对每一行进行操作 基本属性 ndim: 数组的秩 si">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-06-24T08:18:25.610Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python Numpy库">
+<meta name="twitter:description" content="Numpy是一个用于数组计算的Python库 ndarray对象: 表示一个N维的数组对象(多维数组、矩阵) 基本概念  所有的数组元素具有相同的数据类型，在内存中占有相同大小的区域  数组的维数称为秩rank  每一个线性的数组称为是一个轴axis，表示沿着第axis个下标变化的方向进行操作；axis=0表示对每一列进行操作，axis=1表示对每一行进行操作 基本属性 ndim: 数组的秩 si">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/06/20/Python-Numpy库/">
+
+
+
+
+
+  <title>Python Numpy库 | Yihang's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yihang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/20/Python-Numpy库/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python Numpy库</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-20T12:08:25+08:00">
+                2019-06-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程技术/" itemprop="url" rel="index">
+                    <span itemprop="name">编程技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/06/20/Python-Numpy库/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/06/20/Python-Numpy库/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Numpy是一个用于数组计算的Python库</p>
+<p>ndarray对象: 表示一个N维的数组对象(多维数组、矩阵)</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>  所有的数组元素具有相同的数据类型，在内存中占有相同大小的区域<br>  数组的维数称为秩rank<br>  每一个线性的数组称为是一个轴axis，表示沿着第axis个下标变化的方向进行操作；axis=0表示对每一列进行操作，axis=1表示对每一行进行操作</p>
+<h2 id="基本属性"><a href="#基本属性" class="headerlink" title="基本属性"></a>基本属性</h2><ul>
+<li>ndim: 数组的秩</li>
+<li>size: 数组元素的总个数 m*n</li>
+<li>dtype: 数组元素的数据类型 int32 float complex等</li>
+<li>shape: 数组的形状 (m, n) m行n列</li>
+<li>strides: 在对数组进行遍历时，跨越到下一个维度时需要跨国的字节数 (m, n) 跨越到下一行需要跨过m个字节，跨越到下一列需要跨过n个字节；通过该字段，可以快速的在多维数组中进行遍历</li>
+</ul>
+<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><pre><code><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="comment"># 创建一维数组</span></span><br><span class="line">a = np.array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line"><span class="comment"># 创建二维数组(矩阵)</span></span><br><span class="line">b = np.array([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],[<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>]])</span><br><span class="line"><span class="comment"># 创建一个指定形状、数据类型、未初始化的数组</span></span><br><span class="line">c = np.empty([<span class="number">3</span>, <span class="number">2</span>], dtype=int)</span><br><span class="line"><span class="comment"># 创建一个指定形状，数据类型、数组元素为0的数组</span></span><br><span class="line">d = np.zeros([<span class="number">4</span>, <span class="number">5</span>], dtype=float)</span><br><span class="line"><span class="comment"># 创建一个指定形状，数据类型，数组元素为1的数组</span></span><br><span class="line">f = np.ones([<span class="number">2</span>, <span class="number">3</span>], dtype=int)</span><br><span class="line"><span class="comment"># 从已存在的列表、元祖、多维数组等创建数组</span></span><br><span class="line">g = np.asarray((<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>))</span><br><span class="line"><span class="comment"># 从数值范围创建数组</span></span><br><span class="line">h = np.arange(<span class="number">10</span>, <span class="number">20</span>, <span class="number">2</span>, dtype=float)</span><br><span class="line">i = np.arange(<span class="number">5</span>)</span><br><span class="line"><span class="comment"># 创建等差数列的一维数组</span></span><br><span class="line">j = np.linspace(<span class="number">5</span>, <span class="number">100</span>, <span class="number">20</span>)</span><br><span class="line"><span class="comment"># 创建等比数列的一维数组</span></span><br><span class="line">k = np.logspace(<span class="number">5</span>, <span class="number">100</span>, <span class="number">20</span>)</span><br><span class="line"><span class="comment"># 使用索引和切片来访问和修改数组元素</span></span><br><span class="line"><span class="comment"># 使用start:stop:step格式来进行切片操作</span></span><br><span class="line"><span class="comment"># 对于切片的参数格式，如果只放置一个参数，如[2]，将返回与该索引相对应的单个元素</span></span><br><span class="line"><span class="comment"># 如果为[2:]，表示从该索引开始以后的所有项都将被提取</span></span><br><span class="line"><span class="comment"># 如果使用了两个参数，如[2:7]，那么则提取两个索引(不包括停止索引)之间的项</span></span><br><span class="line">l = np.arange(<span class="number">10</span>)</span><br><span class="line">m = l[<span class="number">2</span>:<span class="number">7</span>:<span class="number">2</span>]</span><br><span class="line"><span class="comment"># 对于多维数组，同样适用上述切片操作</span></span><br><span class="line">n = np.array([[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],[<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>],[<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]])</span><br><span class="line">o = n[<span class="number">1</span>:]</span><br><span class="line"><span class="comment"># 切片操作中，还可以使用...表示选择元祖的长度与数组的维度相同</span></span><br><span class="line">p = n[..., <span class="number">1</span>] <span class="comment"># 选择第二列元素</span></span><br><span class="line">q = n[<span class="number">1</span>, ...] <span class="comment"># 选择第二行元素</span></span><br><span class="line">r = n[..., <span class="number">1</span>:] <span class="comment"># 选择第二列及其以后列的所有元素</span></span><br><span class="line"><span class="comment"># 如果两个数组的shape相同，那么数组运算的结果就是两个数组对应位置上的元素运算的结果</span></span><br><span class="line">a = np.array([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>])</span><br><span class="line">b = np.array([<span class="number">10</span>,<span class="number">20</span>,<span class="number">30</span>,<span class="number">40</span>])</span><br><span class="line">c = a * b</span><br><span class="line"><span class="comment"># 当运算中的两个数组shape不同时，运算操作将触发广播机制</span></span><br><span class="line">a = np.array([[ <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],[<span class="number">10</span>,<span class="number">10</span>,<span class="number">10</span>],[<span class="number">20</span>,<span class="number">20</span>,<span class="number">20</span>],[<span class="number">30</span>,<span class="number">30</span>,<span class="number">30</span>]])</span><br><span class="line">b = np.array([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>])</span><br><span class="line">c = a + b</span><br><span class="line"><span class="comment"># 对数组元素进行迭代</span></span><br><span class="line">a = np.arange(<span class="number">6</span>).reshape(<span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> np.nditer(a):</span><br><span class="line">  print(x)</span><br><span class="line"><span class="comment"># 可以控制遍历的顺序</span></span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> np.nditer(a, order=<span class="string">"C"</span>): <span class="comment"># 行序优先</span></span><br><span class="line">  print(x)</span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> np.nditer(a, order=<span class="string">"F"</span>): <span class="comment"># 列序优先</span></span><br><span class="line">  print(x)</span><br><span class="line"><span class="comment"># 在不改变数据的情况下调整数组的形状</span></span><br><span class="line">e = np.reshape(d, [<span class="number">5</span>, <span class="number">4</span>])</span><br><span class="line"><span class="comment"># 数组的flat属性为数组元素迭代器</span></span><br><span class="line">a = np.arange(<span class="number">9</span>).reshape(<span class="number">3</span>,<span class="number">3</span>)</span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> a.flat:</span><br><span class="line">  <span class="keyword">print</span> (x)</span><br><span class="line"><span class="comment"># 数组的flatten方法返回展平的数组元素，是对原始数组元素的拷贝，对其所做的修改不会影响原始数组</span></span><br><span class="line"><span class="comment"># 数组的ravel方法返回展示的数组元素，是对原始数组元素的引用，对其所做的修改会影响原始数组</span></span><br><span class="line">a = np.arange(<span class="number">8</span>).reshape(<span class="number">2</span>,<span class="number">4</span>)</span><br><span class="line">b = a.flatten()</span><br><span class="line">c = a.ravel()</span><br><span class="line"><span class="comment"># 转换数组的维度 转置</span></span><br><span class="line">a = np.arange(<span class="number">12</span>).reshape(<span class="number">3</span>,<span class="number">4</span>)</span><br><span class="line">b = np.transpose(a)</span><br><span class="line"><span class="comment"># 数组的T属性即为数组的转置</span></span><br><span class="line">a = np.arange(<span class="number">12</span>).reshape(<span class="number">3</span>,<span class="number">4</span>)</span><br><span class="line">b = a.T</span><br><span class="line"><span class="comment"># 沿指定轴连接相同shape的多个数组</span></span><br><span class="line">a = np.array([[<span class="number">1</span>,<span class="number">2</span>],[<span class="number">3</span>,<span class="number">4</span>]])</span><br><span class="line">b = np.array([[<span class="number">5</span>,<span class="number">6</span>],[<span class="number">7</span>,<span class="number">8</span>]])</span><br><span class="line">c = np.concatenate((a, b), axis=<span class="number">0</span>)</span><br><span class="line">d = np.concatenate((a, b), axis=<span class="number">1</span>)</span><br><span class="line"><span class="comment"># 沿新轴连接相同shape的多个数组，会增加新的维度</span></span><br><span class="line">a = np.array([[<span class="number">1</span>,<span class="number">2</span>],[<span class="number">3</span>,<span class="number">4</span>]])</span><br><span class="line">b = np.array([[<span class="number">5</span>,<span class="number">6</span>],[<span class="number">7</span>,<span class="number">8</span>]])</span><br><span class="line">c = np.stack((a, b), axis=<span class="number">0</span>) <span class="comment"># 新增维度的下标为0</span></span><br><span class="line">d = np.stack((a, b), axis=<span class="number">1</span>) <span class="comment"># 新增维度的下标为1</span></span><br><span class="line"><span class="comment"># 水平或垂直堆叠来生成新的数组</span></span><br><span class="line">a = np.array([[<span class="number">1</span>,<span class="number">2</span>],[<span class="number">3</span>,<span class="number">4</span>]])</span><br><span class="line">b = np.array([[<span class="number">5</span>,<span class="number">6</span>],[<span class="number">7</span>,<span class="number">8</span>]])</span><br><span class="line">c = np.hstack((a, b))</span><br><span class="line">d = np.vstack((a, b))</span><br><span class="line"><span class="comment"># 将数组沿着指定的轴分割为子数组</span></span><br><span class="line">a = np.arange(<span class="number">9</span>)</span><br><span class="line">b = np.split(a, <span class="number">3</span>)</span><br><span class="line">c = np.split(a, [<span class="number">4</span>, <span class="number">7</span>])</span><br><span class="line"><span class="comment"># 水平或垂直分割数组为子数组</span></span><br><span class="line">a = np.floor(<span class="number">10</span> * np.random.random((<span class="number">2</span>, <span class="number">6</span>)))</span><br><span class="line">b = np.hsplit(a, <span class="number">3</span>) <span class="comment"># 水平分割为三个子数组</span></span><br><span class="line">c = np.vsplit(a, <span class="number">2</span>) <span class="comment"># 垂直分割为两个子数组</span></span><br><span class="line"><span class="comment"># 返回指定shape的新数组，如果新数组的大小大于原数组，则填入原数组中数据元素的副本</span></span><br><span class="line">a = np.array([[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],[<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]])</span><br><span class="line">b = np.resize(a, (<span class="number">3</span>, <span class="number">2</span>))</span><br><span class="line">c = np.resize(a, (<span class="number">3</span>, <span class="number">3</span>))</span><br><span class="line"><span class="comment"># 在数组的末尾添加值</span></span><br><span class="line">a = np.array([[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],[<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]])</span><br><span class="line">b = np.append(a, [[<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]], axis=<span class="number">0</span>)</span><br><span class="line">c = np.append(a, [[<span class="number">7</span>, <span class="number">8</span>], [<span class="number">9</span>, <span class="number">10</span>]], axis=<span class="number">1</span>)</span><br><span class="line"><span class="comment"># 去除数组元素中的重复值</span></span><br><span class="line">a = np.array([<span class="number">5</span>,<span class="number">2</span>,<span class="number">6</span>,<span class="number">2</span>,<span class="number">7</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">8</span>,<span class="number">2</span>,<span class="number">9</span>])</span><br><span class="line">b = np.unique(a)</span><br><span class="line"><span class="comment"># 三角函数运算 sin cos tan</span></span><br><span class="line">a = np.array([<span class="number">0</span>,<span class="number">30</span>,<span class="number">45</span>,<span class="number">60</span>,<span class="number">90</span>])</span><br><span class="line">b = np.sin(a*np.pi/<span class="number">180</span>)</span><br><span class="line"><span class="comment"># 舍入函数</span></span><br><span class="line">a = np.array([<span class="number">1.0</span>,<span class="number">5.55</span>,  <span class="number">123</span>,  <span class="number">0.567</span>,  <span class="number">25.532</span>])</span><br><span class="line">b = np.around(a)</span><br><span class="line">c = np.floor(a)</span><br><span class="line">d = np.ceil(a)</span><br><span class="line"><span class="comment"># 算术函数 add subtract multiply divide 对数组的shape有要求</span></span><br><span class="line">a = np.arange(<span class="number">9</span>, dtype = np.float_).reshape(<span class="number">3</span>,<span class="number">3</span>)</span><br><span class="line">b = np.array([<span class="number">10</span>,<span class="number">10</span>,<span class="number">10</span>])</span><br><span class="line">c = np.add(a, b)</span><br><span class="line">d = np.subtract(a, b)</span><br><span class="line">e = np.multiply(a, b)</span><br><span class="line">f = np.divide(a, b)</span><br><span class="line"><span class="comment"># 统计函数</span></span><br><span class="line"><span class="comment"># amin amax 获取沿着指定轴的最小和最大值</span></span><br><span class="line">a = np.array([[<span class="number">3</span>,<span class="number">7</span>,<span class="number">5</span>],[<span class="number">8</span>,<span class="number">4</span>,<span class="number">3</span>],[<span class="number">2</span>,<span class="number">4</span>,<span class="number">9</span>]])</span><br><span class="line">b = np.amin(a, axis=<span class="number">0</span>)</span><br><span class="line">c = np.amin(a, axis=<span class="number">1</span>)</span><br><span class="line"><span class="comment"># ptp 获取沿着指定轴的最大最小值的差</span></span><br><span class="line"> a = np.array([[<span class="number">3</span>,<span class="number">7</span>,<span class="number">5</span>],[<span class="number">8</span>,<span class="number">4</span>,<span class="number">3</span>],[<span class="number">2</span>,<span class="number">4</span>,<span class="number">9</span>]])</span><br><span class="line">b = np.ptp(a, axis=<span class="number">0</span>)</span><br><span class="line">c = np.ptp(a, axis=<span class="number">1</span>)</span><br><span class="line"><span class="comment"># percentile 获取沿着指定轴的百分位数</span></span><br><span class="line">a = np.array([[<span class="number">10</span>, <span class="number">7</span>, <span class="number">4</span>], [<span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>]])</span><br><span class="line">b = np.percentile(a, <span class="number">50</span>) <span class="comment"># 所有元素排序排序之后的中位数，如果axis参数为None，则默认展开数组</span></span><br><span class="line">c = np.percentile(a, <span class="number">50</span>, axis=<span class="number">0</span>) <span class="comment"># 在纵轴上求</span></span><br><span class="line">c = np.percentile(a, <span class="number">50</span>, axis=<span class="number">1</span>) <span class="comment"># 在横轴上求</span></span><br><span class="line"><span class="comment"># median 获取沿着指定轴的中位数</span></span><br><span class="line">a = np.array([[<span class="number">30</span>,<span class="number">65</span>,<span class="number">70</span>],[<span class="number">80</span>,<span class="number">95</span>,<span class="number">10</span>],[<span class="number">50</span>,<span class="number">90</span>,<span class="number">60</span>]])</span><br><span class="line">b = np.median(a) <span class="comment"># 所有元素排序排序之后的中位数</span></span><br><span class="line">c = np.percentile(a, axis=<span class="number">0</span>) <span class="comment"># 在纵轴上求</span></span><br><span class="line">c = np.percentile(a, axis=<span class="number">1</span>) <span class="comment"># 在横轴上求</span></span><br><span class="line"><span class="comment"># mean 获取沿着指定轴的平均值</span></span><br><span class="line"><span class="comment"># average 获取沿着指定轴的加权平均值</span></span><br><span class="line"><span class="comment"># std 获取标准差</span></span><br><span class="line"><span class="comment"># var 获取方差</span></span><br><span class="line"><span class="comment"># 排序操作 sort quicksort快排 mergesort归并 heapsort堆排序</span></span><br><span class="line">a = np.array([[<span class="number">3</span>,<span class="number">7</span>],[<span class="number">9</span>,<span class="number">1</span>]])</span><br><span class="line">b = np.sort(a, axis=<span class="number">0</span>, kind=<span class="string">"quicksort"</span>) <span class="comment"># 按照纵轴进行排序</span></span><br><span class="line"><span class="comment"># argsort 返回数组值从小到大的索引值</span></span><br><span class="line">a = np.array([<span class="number">66</span>, <span class="number">55</span>, <span class="number">77</span>])  </span><br><span class="line">b = np.argsort(a)</span><br><span class="line"><span class="comment"># 数组元素条件筛选函数</span></span><br><span class="line"><span class="comment"># argmax argmin 获取沿着指定轴中最大和最小元素的索引</span></span><br><span class="line"><span class="comment"># nonzero 获取数组中非零元素的索引</span></span><br><span class="line"><span class="comment"># where 获取数组中满足给定条件的元素的索引</span></span><br><span class="line"><span class="comment"># extract 根据某个条件从数组中抽取元素，返回这些元素的索引</span></span><br><span class="line"><span class="comment"># 副本与视图，副本是数据的完整拷贝，对其进行的修改不影响原始数据；视图是对数据的引用，对其进行的修改会影响原始数据</span></span><br><span class="line"><span class="comment"># 副本发生在: 1.使用np.copy函数</span></span><br><span class="line"><span class="comment"># 视图发生在: 1.数组的切片操作 2.使用np.view()函数</span></span><br></pre></td></tr></table></figure>
+</code></pre>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/Numpy/" rel="tag"># Numpy</a>
+          
+            <a href="/tags/Array/" rel="tag"># Array</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/18/Shell编程入门/" rel="next" title="Shell编程入门">
+                <i class="fa fa-chevron-left"></i> Shell编程入门
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/21/SciPy库/" rel="prev" title="SciPy库">
+                SciPy库 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2019/06/20/Python-Numpy库/" data-title="Python Numpy库" data-url="http://yoursite.com/2019/06/20/Python-Numpy库/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Yihang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">97</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">169</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本属性"><span class="nav-number">2.</span> <span class="nav-text">基本属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本操作"><span class="nav-number">3.</span> <span class="nav-text">基本操作</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yihang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"comment"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

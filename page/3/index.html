@@ -249,6 +249,1902 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/19/Kubernetes中的Pod/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/19/Kubernetes中的Pod/" itemprop="url">Kubernetes中的Pod</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-19T13:43:17+08:00">
+                2019-03-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/19/Kubernetes中的Pod/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/19/Kubernetes中的Pod/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Pod: Kubernetes中的最小调度单元，可以包含一个或多个容器</p>
+<h2 id="Pod资源的spec字段"><a href="#Pod资源的spec字段" class="headerlink" title="Pod资源的spec字段"></a>Pod资源的spec字段</h2><ul>
+<li><code>containers</code>: Pod使用的容器列表，一个Pod中可以含有多个容器<ul>
+<li><code>args</code>: 容器启动的参数列表，如果不指定则使用镜像中的CMD参数</li>
+<li><code>command</code>: 容器启动的命令列表，如果不指定则使用镜像的ENTRYPOINT参数；该命令不会运行在shell中</li>
+<li><code>env</code>: 容器中的环境变量，可以直接指定值，也可以从ConfigMap、Secret等指定值<ul>
+<li><code>name</code>: 环境变量名称</li>
+<li><code>value</code>: 直接指定的环境变量值</li>
+<li><code>valueFrom</code>: 从其他源指定环境变量值<ul>
+<li><code>configMapKeyRef</code>: 从ConfigMap中指定</li>
+<li><code>fieldRef</code>: 从当前Pod字段描述中指定</li>
+<li><code>resourceFieldRef</code>: 从当前容器资源描述中指定</li>
+<li><code>secretKeyRef</code>: 从Secret中指定</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>name</code>: 容器名称</li>
+<li><code>image</code>: 容器使用的镜像</li>
+<li><code>imagePullPolicy</code>: 拉取镜像的方式，可选值为Always、Never、IfNotPresent</li>
+<li><code>lifecycle</code>: 设置容器在启动后和结束前的钩子操作，包括ExecAction执行自定义命令、TCPSocketAction向指定的TCP端口发送请求、HTTPGetAction向指定的HTTP服务发送请求<ul>
+<li><code>postStart</code></li>
+<li><code>preStop</code></li>
+</ul>
+</li>
+<li><code>livenessProbe</code>: 容器存活的探测方式，包括ExecAction执行自定义命令、TCPSocketAction向指定的TCP端口发送请求、HTTPGetAction向指定的HTTP服务发送请求</li>
+<li><code>readinessProbe</code>: 容器启动后是否就绪的探测方式，只有当容器就绪之后才会被加入到对应Service的EndPoints中，被外部访问，支持的探测方式和livenessProbe相同</li>
+<li><code>ports</code>: 需要从容器中暴露的端口列表，仅仅是给系统提供关于容器端口使用的信息。如果不指定，并不会阻止容器中的进程使用的端口被暴露</li>
+<li><code>resources</code>: 容器需要使用的系统资源列表</li>
+<li><code>volumeMounts</code>: 存储卷在容器中的挂载点</li>
+</ul>
+</li>
+<li><code>hostIPC</code>: 设置Pod中的容器是否与共享Node节点的IPC名称空间</li>
+<li><code>hostNetwork</code>: 设置Pod中的容器是否与共享Node节点的Network名称空间，此时可以直接访问Node地址来直接访问Pod，而不再需要通过Service将Pod暴露</li>
+<li><code>hostPID</code>: 设置Pod中的容器是否与共享Node节点的PID名称空间</li>
+<li><code>imagePullSecrets</code>: 指定在拉取镜像时访问Registry的配置，和docker-registry类型的Secret资源进行绑定</li>
+<li><code>nodeName</code>: 节点名称，直接指定Pod运行的节点名称</li>
+<li><code>nodeSelector</code>: 节点选择器，被调度器使用，用于选择符合条件的Node节点</li>
+<li><code>initContainers</code>: 串行执行的初始化容器列表，一般用于给主容器初始化系统环境，在主容器启动前退出</li>
+<li><code>restartPolicy</code>: 当容器存活探测失败时Pod的重启策略，Always、OnFailure、Never</li>
+<li><code>tolerations</code>: Pod的容忍度列表，被调度器使用，用于选择符合条件的Node节点</li>
+<li><code>volumes</code>: Pod使用的存储卷列表</li>
+<li><code>terminationGracePeriodSeconds</code>: Pod终止时，会向容器中的进程发送Term信号。在等待设置的时间后，再向容器中的进程发送Kill信号。因此容器响应Term信号的时间应小于该值，从而实现平滑终止</li>
+</ul>
+<h2 id="Pod资源的生命周期"><a href="#Pod资源的生命周期" class="headerlink" title="Pod资源的生命周期"></a>Pod资源的生命周期</h2><ul>
+<li><code>Pending</code>: Pod已被系统接受，但是容器镜像尚未创建。包括Pod调度到节点Node上、通过网络下载镜像的时间</li>
+<li><code>Running</code>: Pod已经和某个Node绑定，并且Pod中的容器都已被创建，至少有一个容器处于启动、运行或重启的状态<ul>
+<li>使用串行执行的初始化容器执行系统环境初始化操作</li>
+<li>启动主容器和其他辅助的容器</li>
+<li>在主容器启动后执行postStart钩子操作</li>
+<li>执行readinessProbe和livenessProbe探测操作，如果存活探测失败则根据restartPolicy规则来决定是否重启Pod</li>
+<li>在主容器结束前执行preStop钩子操作</li>
+</ul>
+</li>
+<li><code>Succeeded</code>: Pod中的容器已经成功终止且不再会被重启</li>
+<li><code>Failed</code>: Pod所有容器已经终止且至少有一个容器是因为失败而终止，即进程以非0状态退出或者被操作系统终止，此时根据restartPolicy规则来决定是否重启Pod</li>
+<li><code>Unknown</code>: 由于某些原因Master暂时无法获取到Pod的状态，比如网络通信失败等</li>
+</ul>
+<p><img src="/images/Kubernetes之Pod生命周期.png" alt="img"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/18/Kubernetes资源定义/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/18/Kubernetes资源定义/" itemprop="url">Kubernetes资源定义</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-18T13:44:40+08:00">
+                2019-03-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/18/Kubernetes资源定义/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/18/Kubernetes资源定义/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在K8S中，使用<code>.yaml</code>配置文件对集群中的资源进行定义</p>
+<h2 id="核心资源类型"><a href="#核心资源类型" class="headerlink" title="核心资源类型"></a>核心资源类型</h2><ul>
+<li>工作负载型<ul>
+<li>Pod: 可以被创建、调度和管理的原子单元</li>
+<li>Pod控制器<ul>
+<li>ReplicaSet</li>
+<li>Deployment</li>
+<li>StatefulSet</li>
+<li>DaemonSet</li>
+<li>Job</li>
+<li>CronJob</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>服务发现和负载均衡型<ul>
+<li>Service</li>
+<li>Ingress</li>
+</ul>
+</li>
+<li>配置与存储型<ul>
+<li>ConfigMap</li>
+<li>Secret</li>
+<li>PersistentVolumeClaim</li>
+</ul>
+</li>
+<li>集群型: 前三者都属于某个名称空间，而集群型资源不属于任何的名称空间<ul>
+<li>Namespace</li>
+<li>Node</li>
+<li>Role</li>
+<li>RoleBinding</li>
+<li>ClusterRole</li>
+<li>ClusterRoleBinding</li>
+<li>PersistentVolume</li>
+</ul>
+</li>
+<li>元数据型资源<ul>
+<li>HorizontalPodAutoscaler: HPA</li>
+<li>PodTemplate</li>
+<li>LimitRange</li>
+</ul>
+</li>
+</ul>
+<h2 id="资源定义方式"><a href="#资源定义方式" class="headerlink" title="资源定义方式"></a>资源定义方式</h2><p>使用<code>kubectl get --output yaml</code>来查看集群资源的描述</p>
+<p>集群中的资源描述文件包含下列字段:</p>
+<ul>
+<li><code>apiVersion</code>: 资源所属的K8S API的群组</li>
+<li><code>kind</code>: 对象资源类型</li>
+<li><code>metadata</code>: 对象的元数据<ul>
+<li><code>name</code>: 对象名称</li>
+<li><code>namespace</code>: 对象所属的集群名称空间</li>
+<li><code>uid</code>: 对象唯一标识</li>
+<li><code>labels</code>: 对象的标签</li>
+<li><code>annotations</code>: 对象的注解</li>
+</ul>
+</li>
+<li><code>spec</code>: 对象应该满足的要求。不同类型的资源，该字段中包含的下级字段是有区别的 <strong>K8S的核心就是通过控制器保证资源对象总是在期望的状态</strong></li>
+<li><code>status</code>: 对象实际的运行状态，该字段由集群进行维护，而不是用户自己定义</li>
+</ul>
+<p>使用<code>kubectl explain</code>来查看集群资源的定义方式，如<code>kubectl explain pod</code>, <code>kubectl explain pod.spec</code>等</p>
+<p>使用<code>kubectl apply -f FILENAME</code>将资源定义文件提交到集群中，可以是创建资源或者更新资源</p>
+<p>使用<code>kubectl delete -f FILENAME</code>来删除该资源</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/13/算法-Sort/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/13/算法-Sort/" itemprop="url">算法-Sort</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-13T10:00:20+08:00">
+                2019-03-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程技术/" itemprop="url" rel="index">
+                    <span itemprop="name">编程技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/13/算法-Sort/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/13/算法-Sort/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="算法概述"><a href="#算法概述" class="headerlink" title="算法概述"></a>算法概述</h2><p>可以分为两大类</p>
+<ul>
+<li>比较类: 通过比较来决定元素间的相对次序，时间复杂度不能突破O(nlogn)，也称为非线性时间排序<ul>
+<li>交换<ul>
+<li>冒泡排序</li>
+<li>快速排序</li>
+</ul>
+</li>
+<li>插入<ul>
+<li>插入排序</li>
+<li>希尔排序</li>
+</ul>
+</li>
+<li>选择<ul>
+<li>选择排序</li>
+<li>堆排序</li>
+</ul>
+</li>
+<li>归并<ul>
+<li>二路归并排序</li>
+<li>多路归并排序</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>非比较类: 不通过比较来决定元素间的相对次数，时间复杂度可以突破O(nlogn)，以线性时间运行，也称为线性时间排序<ul>
+<li>计数排序</li>
+<li>桶排序</li>
+<li>基数排序</li>
+</ul>
+</li>
+</ul>
+<p>时间复杂度</p>
+<table>
+<thead>
+<tr>
+<th>排序方法</th>
+<th>平均时间复杂度</th>
+<th>最坏时间复杂度</th>
+<th>最好时间复杂度</th>
+<th>空间复杂度</th>
+<th>稳定性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>冒泡排序</td>
+<td>O(n^2)</td>
+<td>O(n^2)</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>快速排序</td>
+<td>O(nlogn)</td>
+<td>O(n^2)</td>
+<td>O(nlogn)</td>
+<td>O(nlogn)</td>
+<td>不稳定</td>
+</tr>
+<tr>
+<td>插入排序</td>
+<td>O(n^2)</td>
+<td>O(n^2)</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>希尔排序</td>
+<td>O(n^1.3)</td>
+<td>O(n^2)</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td>不稳定</td>
+</tr>
+<tr>
+<td>选择排序</td>
+<td>O(n^2)</td>
+<td>O(n^2)</td>
+<td>O(n^2)</td>
+<td>O(1)</td>
+<td>不稳定</td>
+</tr>
+<tr>
+<td>堆排序</td>
+<td>O(nlogn)</td>
+<td>O(nlogn)</td>
+<td>O(nlogn)</td>
+<td>O(1)</td>
+<td>不稳定</td>
+</tr>
+<tr>
+<td>归并排序</td>
+<td>O(nlogn)</td>
+<td>O(nlogn)</td>
+<td>O(nlogn)</td>
+<td>O(n)</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>计数排序</td>
+<td>O(n+k)</td>
+<td>O(n+k)</td>
+<td>O(n+k)</td>
+<td>O(n+k)</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>桶排序</td>
+<td>O(n+k)</td>
+<td>O(n^2)</td>
+<td>O(n)</td>
+<td>O(n+k)</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>基数排序</td>
+<td>O(n*k)</td>
+<td>O(n*k)</td>
+<td>O(n*k)</td>
+<td>O(n+k)</td>
+<td>稳定</td>
+</tr>
+</tbody>
+</table>
+<h2 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h2><p>n: 待排序的序列长度</p>
+<ul>
+<li>冒泡排序(Bubble Sort)<ul>
+<li>遍历一遍序列，依次比较相邻的两个元素，如果它们次序错误则将其进行交换，这样末尾的元素为最大</li>
+<li>除了最后一个元素之外，重复进行上述步骤</li>
+<li>当一次遍历中未发生交换操作或者遍历了n次后，整个序列有序</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之冒泡排序.gif" alt="img"></p>
+<ul>
+<li>快速排序(Quick Sort): <code>递归分治法的思想</code><ul>
+<li>选择序列中的第一个元素作为基准</li>
+<li>进行分区操作，即遍历一遍序列，将所有元素小于该基准的放在基准前面，大于该基准的放在基准后面，此时该基准元素位于序列中正确的排序位置</li>
+<li>分别对基准元素前面和后面的子序列进行同样的操作，直到整个序列有序</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之快速排序.gif" alt="img"></p>
+<ul>
+<li>插入排序(Insertion Sort)<ul>
+<li>将序列上的第一个元素看做已经有序</li>
+<li>取出序列中的第二个元素作为待加入元素，在已有序的子序列中从后向前遍历</li>
+<li>如果子序列中的元素较大，则将其向后移位，直到待加入元素已经插入到正确位置，形成一个有序的子序列</li>
+<li>重复上述操作，直到整个序列有序</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之插入排序.gif" alt="img"></p>
+<ul>
+<li>希尔排序(Shell Sort): <code>对插入排序的改进，通过设置不同的增量依次进行插入排序，也叫缩小增量排序</code><ul>
+<li>选择一个增量序列t1,t2,……,tk，其中ti&gt;ti+1, tk=1</li>
+<li>对于每一个增量ti，将序列分割为ti个子序列，对各个子序列分别进行插入排序</li>
+<li>当增量为1时，其实是将整个序列作为一个子序列进行插入排序</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之希尔排序.gif" alt="img"></p>
+<ul>
+<li>选择排序(Selection Sort)<ul>
+<li>遍历一次序列，从中选择最小的元素，然后将其和序列中第一个元素进行交换</li>
+<li>此时序列中第一个元素有序，然后对剩下的元素再次进行上述操作，直到整个序列有序</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之选择排序.gif" alt="img"></p>
+<ul>
+<li>堆排序(Heap Sort): <code>依赖堆数据结构</code> <a href="https://gravity-xin.github.io/2018/11/12/Heap/" target="_blank" rel="noopener">Heap</a><ul>
+<li>构造堆</li>
+<li>从堆中Pop堆顶元素，然后调整生成新的堆</li>
+<li>重复上述操作，直到排序完成</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之堆排序.gif" alt="img"></p>
+<ul>
+<li>归并排序(Merge Sort): <code>递归分治法的思想，分为拆分子序列和合并子序列两个过程</code><ul>
+<li>将序列拆分为长度为n/2的子序列</li>
+<li>对每个子序列继续进行拆分，直到无法拆分为止</li>
+<li>对两个子序列进行合并，得到最终有序的序列</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之归并排序.gif" alt="img"></p>
+<ul>
+<li>计数排序(Counting Sort): <code>要求序列中的元素为有确定范围的整数，将序列中的元素作为下标存储到额外开辟的数组空间中</code><ul>
+<li>确定输入序列中的最小元素和最大元素，构建额外的数组C，数组元素初始化为0</li>
+<li>对序列中的每一个值为i的元素，数组C的第i项的数组元素值加1</li>
+<li>遍历数组C，对于每一个数组元素i，每反向填充到序列一次就减1，直到为0</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之计数排序.gif" alt="img"></p>
+<ul>
+<li>桶排序(Bucket Sort): <code>利用某个函数将序列中的元素映射到有限数量的桶中，然后对每一个分别进行排序，最后将元素进行拼接</code><ul>
+<li>设置确定数量的桶</li>
+<li>遍历序列，将其中的每一个元素分别映射到对应的桶中</li>
+<li>对于每一个桶使用某方法进行排序，比如快排</li>
+<li>将不为空的桶中的元素进行拼接</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之桶排序.png" alt="img"></p>
+<ul>
+<li>基数排序(Radix Sort): <code>对序列中的元素先按照低位进行排序，然后再按照高位进行排序</code><ul>
+<li>获取序列中的最大元素，并获取其位数为n</li>
+<li>从最低位开始，取得序列中每个元素在该位的值，构建radix数组</li>
+<li>对radix数组进行计数排序</li>
+<li>重复上述步骤n次，最终得到有序序列</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/排序之基数排序.gif" alt="img"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/12/Mysql常用SQL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/12/Mysql常用SQL/" itemprop="url">Mysql常用SQL</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-12T11:35:02+08:00">
+                2019-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/12/Mysql常用SQL/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/12/Mysql常用SQL/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ul>
+<li>查看mysql配置</li>
+</ul>
+<p>show variables like ‘%version%’<br>show variables like ‘%isolation%’</p>
+<ul>
+<li>查看mysql状态</li>
+</ul>
+<p>show status like ‘%thread%’<br>show status like ‘%connection%’</p>
+<ul>
+<li>查看mysql客户端连接信息</li>
+</ul>
+<p>show full processlist</p>
+<ul>
+<li>查看mysql表的详细信息</li>
+</ul>
+<p>show table status like ‘%table_name%’</p>
+<ul>
+<li>查看mysql表使用的索引</li>
+</ul>
+<p>show index from table_name</p>
+<ul>
+<li>增加或删除mysql表的索引</li>
+</ul>
+<p>alter table table_name add index index_title(row1, row2…)<br>alter table table_name drop index index_title</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/12/Redis基础/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/12/Redis基础/" itemprop="url">Redis基础</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-12T10:57:17+08:00">
+                2019-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/12/Redis基础/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/12/Redis基础/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ul>
+<li><p>高性能的KV缓存和数据库</p>
+</li>
+<li><p>支持数据持久化，数据可以保存在内存或磁盘中</p>
+<ul>
+<li>AOF: 将所有的写操作命令以redis命令协议的方式保存到日志文件中；但是AOF文件往往比较大，且恢复数据较慢</li>
+<li>RDB: 将内存快照写入到临时文件中，并可通过该文件进行恢复；但是由于是间隔一段时间进行持久化，有可能会发生数据的丢失</li>
+</ul>
+</li>
+<li>支持的值的类型包括<code>string</code>,<code>list</code>,<code>hash</code>,<code>set</code>和<code>zset</code><ul>
+<li>string: int raw embstr<ul>
+<li>如果字符串内容可以转化为long，则转换为long类型的张数</li>
+<li>当字符串长度小于39时，使用embstr；否则使用传统的raw</li>
+</ul>
+</li>
+<li>list: ziplist linkedlist<ul>
+<li>当列表元素数量不大，元素也不大的时候使用ziplist</li>
+<li>当列表元素数量较大时，使用linkedlist</li>
+</ul>
+</li>
+<li>hash: ziplist hashtable<ul>
+<li>ziplist按照key1 value1 key2 value2进行顺序存储</li>
+<li>hashtable则是用数组实现，每一个元素为KV对</li>
+</ul>
+</li>
+<li>set: intset hashtable</li>
+<li>zset: ziplist skiplist+hashtable<ul>
+<li>ziplist: 将data和score按顺序排放</li>
+<li>skiplist保证元素有序，hashtable保证可以快速查找元素</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>单个数据操作是原子性的，同时支持通过<code>multi</code>, <code>exec</code>, <code>watch</code>, <code>unwatch</code>, <code>discard</code>等命令来实现事务</li>
+<li>支持Pipeline操作，将多个操作放在一起，减少客户端和服务端之间的通信次数，从而提高效率</li>
+<li>支持设置key的过期时间，内部通过定期删除和惰性删除的方式来进行过期key的删除<ul>
+<li>定期删除: 每隔一段时间，通过设置的算法从过期的键中删除一部分<ul>
+<li><code>volatile-lru</code>: 从过期键中选择最近最少使用的淘汰</li>
+<li><code>volatile-ttl</code>: 从过期键中选择更早过期时间的淘汰</li>
+<li><code>volatile-random</code>: 从过期键中随机进行淘汰</li>
+<li><code>allkeys-lru</code>: 从所有键中选择最近最少使用的淘汰</li>
+<li><code>allkeys-random</code>: 从所有键中随机进行淘汰</li>
+<li><code>noeviction</code>: 不进行淘汰，当操作导致内存不够用时，直接返回错误</li>
+</ul>
+</li>
+<li>惰性删除: 放任键过期不管，当读取该键时，判断键是否过期，如果过期则执行删除操作</li>
+</ul>
+</li>
+<li>支持通过<code>pub</code>和<code>sub</code>实现发布订阅</li>
+<li>内部实现为单线程机制，基于操作系统提供的多路复用IO接口，将多个事件放入到一个队列中，并在单个线程上进行执行</li>
+<li>支持master-slave模式的高可用架构，用于读写分离和容灾恢复，使用sentinel哨兵来监控redis实例是否故障，实现自动主备切换</li>
+<li>常见使用场景<ul>
+<li>mysql等关系型数据库中热点数据的存储，需要一套key命名规则 <code>表名:主键名:主键值:字段名</code></li>
+<li>使用list实现简单的消息队列</li>
+<li>发布/订阅实现观察者模式</li>
+<li>基于单线程架构实现分布式锁</li>
+<li>基于set集合操作实现共同好友列表等</li>
+<li>基于zset实现访问量排行等</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/12/Mysql基础/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/12/Mysql基础/" itemprop="url">Mysql基础</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-12T10:57:10+08:00">
+                2019-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/12/Mysql基础/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/12/Mysql基础/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ul>
+<li>逻辑架构<ul>
+<li>客户端</li>
+<li>服务器</li>
+<li>存储引擎<ul>
+<li>InnoDB<ul>
+<li>mysql默认事务型引擎</li>
+<li>处理大量短期事务，应该优先考虑使用该引擎</li>
+<li>支持行锁和表锁</li>
+<li>支持事务和自动崩溃恢复</li>
+<li>索引文件和数据文件相同，根据主键查询为聚簇索引，索引data域为具体行数据；根据其它字段查询为非聚簇索引，索引data域为主键值，再根据主键的索引找到具体行</li>
+</ul>
+</li>
+<li>MyISAM<ul>
+<li>支持表锁</li>
+<li>不支持事务和自动崩溃恢复</li>
+<li>索引文件和数据文件分离，索引data域为行的地址，为非聚簇索引；主键索引与其它字段的索引格式一样，都是非聚簇索引</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>并发请求控制<ul>
+<li>读写锁</li>
+<li>表锁与行锁</li>
+</ul>
+</li>
+<li>事务<ul>
+<li>ACID特性</li>
+<li>隔离级别: 一个事务中所做的修改对于其他事务的可见性<ul>
+<li>READ UNCOMMITED: 未提交读 发生脏读的情况<ul>
+<li>事务A读取了事务B更新的数据，然后B回滚操作，那么A读取到的数据是脏数据</li>
+</ul>
+</li>
+<li>READ COMMITED: 提交读 发生不可重复读的情况<ul>
+<li>事务A多次读取同一数据，事务B在事务A多次读取的过程中，对数据作了更新并提交，导致事务A多次读取同一数据时，结果不一致</li>
+<li>侧重于对数据的修改</li>
+<li>解决不可重复读的问题只需锁住满足条件的行</li>
+</ul>
+</li>
+<li>REPEATABLE READ: 可重复读 解决了脏读的问题，还使用MVCC多版本控制来解决幻读的问题 <strong>mysql默认的隔离级别</strong><ul>
+<li>事务A将数据库中所有学生的成绩从具体分数改为ABCDE等级，事务B就在这个时候插入了一条具体分数的记录，当事务A结束后发现还有一条记录没有改过来，就好像发生了幻觉一样，这就叫幻读</li>
+<li>侧重于数据的增加或删除</li>
+<li>解决幻读需要锁表</li>
+</ul>
+</li>
+<li>SERIALIZABLE 可串行化 事务串行执行</li>
+</ul>
+</li>
+<li>死锁: 多个事务互相等待对方占用的锁</li>
+<li>使用事务日志来提高事务的执行效率，不直接改磁盘上的数据，而是记录事务日志，然后在后台慢慢将数据刷回到磁盘</li>
+<li>AUTOCOMMIT: 在InnoDB中，如果没有显式开始事务，则自动将每一个sql操作当做事务进行提交</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>隔离级别</th>
+<th>脏读（Dirty Read）</th>
+<th>不可重复读（NonRepeatable Read）</th>
+<th>幻读（Phantom Read）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>未提交读</td>
+<td>可能</td>
+<td>可能</td>
+<td>可能</td>
+</tr>
+<tr>
+<td>已提交读</td>
+<td>不可能</td>
+<td>可能</td>
+<td>可能</td>
+</tr>
+<tr>
+<td>可重复读</td>
+<td>不可能</td>
+<td>不可能</td>
+<td>可能</td>
+</tr>
+<tr>
+<td>可串行化</td>
+<td>不可能</td>
+<td>不可能</td>
+<td>不可能</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>多版本并发控制(MVCC): 保存数据在某个时间点的快照，使用乐观锁的方式<ul>
+<li>InnoDB在每行记录中添加额外的两个隐藏的列(创建时间和删除时间)来实现MVCC</li>
+</ul>
+</li>
+<li>索引<ul>
+<li>使用索引会降低增删改的速度，因为需要维护索引</li>
+<li>分类<ul>
+<li>主键索引 PRIMARY KEY</li>
+<li>唯一索引 UNIQUE</li>
+<li>普通索引 INDEX</li>
+<li>组合索引 INDEX</li>
+<li>全文索引 FULLTEXT</li>
+</ul>
+</li>
+<li>实现机制<ul>
+<li>B+树<ul>
+<li>磁盘IO次数为树的高度</li>
+<li>多个树节点占用磁盘一页的空间，可以利用磁盘缓存和访问局部性原理提高IO效率</li>
+</ul>
+</li>
+<li>哈希<ul>
+<li>每次只查询出一行，不支持范围查询</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>优化<ul>
+<li>使用explain命令定位性能瓶颈<ul>
+<li>是否为全表扫描</li>
+<li>用了哪些索引</li>
+</ul>
+</li>
+<li>索引的字段应尽量的小，减少单个索引占用的磁盘空间，从而可以增加磁盘上一页中的树节点数量，从而减少磁盘IO次数</li>
+<li>组合索引与最左前缀匹配原理<ul>
+<li>创建组合索引时，将使用最频繁的列放在左边</li>
+<li>使用组合索引查询时，where子句将使用最频繁的列放在最左边</li>
+</ul>
+</li>
+<li>使用区分度高的列作为索引</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>SQL语句执行顺序: <code>select -- from -- where -- group by -- having -- order by</code><ul>
+<li>from: 确定从哪些表中进行检索，多个表的执行顺序是从后往前，因此需要将数据量较少的表放到最后</li>
+<li>where: 确定表中数据的过滤条件，多个过滤条件的执行顺序是从后往前，因此可以过滤到最多数据的条件应放到最后 <strong>过滤条件对应的字段是表中所有的字段，过滤条件不能使聚合函数</strong></li>
+<li>group by: 确定过滤出的数据的数据分组</li>
+<li>having: 对已经分组的数据设置过滤条件 <strong>过滤条件对应的字段是表中被select查询出来的字段，过滤条件一般是聚合函数，一般配合分组进行使用</strong></li>
+<li>select: 获取符合条件的数据结果集</li>
+<li>order by: 对数据结果集进行排序，执行顺序为从前往后</li>
+</ul>
+</li>
+<li>大表优化<ul>
+<li>限制查询范围</li>
+<li>读写分离</li>
+<li>缓存</li>
+<li>垂直拆分: 根据表中内容的相关性拆分为几张表</li>
+<li>水平拆分: 按照某个字段进行分片</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/09/Kubernetes基本使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/09/Kubernetes基本使用/" itemprop="url">Kubernetes基本使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-09T12:25:57+08:00">
+                2019-03-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/09/Kubernetes基本使用/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/09/Kubernetes基本使用/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在Kubernetes中，主要通过Kubectl命令行工具对集群中的资源进行增删改查的操作，集群中的资源包括Pod、Service、各种控制器、Node等等</p>
+<ul>
+<li><code>Kubectl</code>的使用方式<ul>
+<li>入门命令<ul>
+<li><code>create</code>: 创建集群资源</li>
+<li><code>expose</code>: 使用Pod、Service或各种控制器来创建Service资源，外部可以通过该Service实现对Pod的访问</li>
+<li><code>run</code>: 在集群上运行特定镜像，创建Pod资源并使用Deployment或Job来对其进行控制</li>
+<li><code>set</code>: 给集群中的特定资源进行配置，可以设置Pod中的环境变量、镜像名称、LabelSelector等</li>
+</ul>
+</li>
+<li>中级命令<ul>
+<li><code>get</code>: 查看集群中的各类资源的状态<ul>
+<li><code>pod</code>: 查看Pod资源状态</li>
+<li><code>deployment</code>: 查看Deployment控制器状态</li>
+<li><code>service</code>: 查看Service资源状态</li>
+</ul>
+</li>
+<li><code>explain</code>: 查看资源中各类资源的说明</li>
+<li><code>edit</code>: 对集群中的资源对应的yaml文件进行编辑，保存后自动生效</li>
+<li><code>delete</code>: 对集群中的资源进行删除</li>
+</ul>
+</li>
+<li>部署管理<ul>
+<li><code>rollout</code>: 对资源的更新部署进行管理，比如查看更新的状态，暂停和恢复更新，版本回滚等</li>
+<li><code>rolling-update</code>: 对资源的部署进行滚动更新</li>
+<li><code>scale</code>: 手动对资源进行扩容或缩容</li>
+<li><code>autoscale</code>: 设置资源的自动水平伸缩</li>
+</ul>
+</li>
+<li>集群管理<ul>
+<li><code>certificate</code>: 修改集群认证信息</li>
+<li><code>cluster-info</code>: 查询集群信息</li>
+<li><code>top</code>: 查看集群中资源使用情况，如CPU、内存、磁盘等</li>
+<li><code>cordon</code>: 标记集群中某节点不可被调度</li>
+<li><code>uncordon</code>: 标记集群中某节点可以被调度</li>
+<li><code>drain</code>: 将集群中某节点上运行的资源赶到其它节点上</li>
+<li><code>taint</code>: 将集群中的某节点增加污点，与Pod的Toleration来配合使用，实现高级的调度</li>
+</ul>
+</li>
+<li>故障排除和调试<ul>
+<li><code>describe</code>: 显示集群某资源的详细信息<ul>
+<li><code>pod</code>: 查看Pod的详细信息</li>
+<li><code>service</code>: 查看Service的详细信息，以及Service对应Pod的EndPoints列表等</li>
+</ul>
+</li>
+<li><code>logs</code>: 查看集群中某个Pod上的日志</li>
+<li><code>attach</code>: 附加到某个Pod中</li>
+<li><code>exec</code>: 在某个Pod中运行命令</li>
+<li><code>port-forward</code>: 设置某个Pod的端口和本地端口的映射</li>
+<li><code>proxy</code>: 在本地启动对集群API Server的代理</li>
+<li><code>cp</code>: 在<code>Pod</code>和本地之间进行文件拷贝</li>
+<li><code>auth</code>: 进行操作权限的校验</li>
+</ul>
+</li>
+<li>高级命令<ul>
+<li><code>apply</code>: 对集群中的资源进行配置</li>
+<li><code>patch</code>: 更新集群中的资源配置</li>
+<li><code>replace</code>: 对集群中的资源进行替换</li>
+<li><code>convert</code>: 将配置文件转换为不同的API版本</li>
+</ul>
+</li>
+<li>资源管理<ul>
+<li><code>label</code>: 给资源添加Label</li>
+<li><code>annotate</code>: 给资源添加Annotation</li>
+<li><code>completion</code>: 输出不同Shell的自动补全配置</li>
+</ul>
+</li>
+<li>其它<ul>
+<li><code>api-versions</code>: 输出集群支持的API群组</li>
+<li><code>api-resources</code>: 输出集群支持的资源信息</li>
+<li><code>config</code>: 修改Kubectl使用的kubeconfig文件</li>
+<li><code>plugin</code>: 给集群添加插件</li>
+<li><code>version</code>: 输出客户端和服务端的版本信息</li>
+<li><code>cluster_info</code>: 查看集群中Master上系统Service信息</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/08/Kubernetes网络基础/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yihang">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yihang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/08/Kubernetes网络基础/" itemprop="url">Kubernetes网络基础</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-08T15:57:50+08:00">
+                2019-03-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/08/Kubernetes网络基础/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/08/Kubernetes网络基础/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ul>
+<li>三种网络<ul>
+<li>节点网络: 所有Node组成的网络，是真实有效的IP地址，与物理网卡或虚拟网卡绑定</li>
+<li>集群网络: 所有Service组成的网络，是虚拟的IP地址，不与物理网卡或虚拟网卡绑定。通过DNS对Service名称进行解析，通过在iptables、ipvs中添加规则实现对Pod的访问</li>
+<li>Pod网络: 所有Pod组成的网络，是真是有效的IP地址，与虚拟网卡绑定</li>
+</ul>
+</li>
+</ul>
+<p>三者处于不同的网段中，外部的访问分别经过节点网络、集群网络和Pod网络  <strong>所有的网络相关，其本质上都是iptables或者ipvs中的规则在起作用，以及dns解析在起作用</strong></p>
+<p><img src="/images/Kubernetes之三种网络.png" alt="img"></p>
+<ul>
+<li><p>三种通信</p>
+<ul>
+<li>Pod内部的多个容器间使用联盟式网络，共享网络设备，可以直接通过localhost进行访问</li>
+<li>Pod与Pod的容器之间<ul>
+<li>两个Pod如果位于同一个Node上，容器间可以利用<code>docker0</code>网桥相连接进行通信</li>
+<li>两个Pod如果在不同Node上，此时容器分别被<code>docker0</code>网桥隐藏，无法直接连接，此时需要Flannel来接管Pod的IP分配，以Overlay Network叠加式网络的方式进行连接</li>
+</ul>
+</li>
+<li>Pod与Service之间，由于Service在K8S集群中有独立的IP地址和DNS名称，可以通过其与Service直接进行通信</li>
+</ul>
+</li>
+<li><p>网络配置和网络策略: 提供了<code>CNI</code>容器网络接口规范，可以将第三方插件纳入到集群中</p>
+<ul>
+<li>网络配置: Pod和Service的IP分配</li>
+<li>网络策略: Pod之间是否可以互相访问</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/07/Docker容器的资源管理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -761,1789 +2657,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/04/计算机中的存储模型/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/04/计算机中的存储模型/" itemprop="url">计算机中的存储模型</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-04T16:33:22+08:00">
-                2019-03-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/04/计算机中的存储模型/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/04/计算机中的存储模型/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>计算机存储体系图</p>
-<p><img src="/images/计算机中的存储模型.png" alt="img"></p>
-<h2 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h2><ul>
-<li><p>物理内存: 计算机实际的内存大小</p>
-<ul>
-<li>管理结构: 程序需要加载到内存中才可以执行。当多个进程进入内存之后，需要给其划分内存大小。一种方式是将内存进行等长度的划分，然后选择一部分分给进程；另一种方式是进程需要多少就给其划分多少，为不等长划分。因此需要使用某种数据结构来跟踪内存的使用情况<ul>
-<li>等长: 使用<code>位图</code>来管理，将内存划分为大小相同的内存块，使用位图中的每一位来标记每一块的使用情况，从而形成一个位图<br><img src="/images/计算机中的存储模型之位图.png" alt="img"></li>
-<li>不等长: 使用<code>空闲区表/空闲区链表</code>来管理，通过链式结构将内存的使用情况组织起来<br><img src="/images/计算机中的内存模型之空闲区表.png" alt="img"></li>
-</ul>
-</li>
-<li>分配算法 <strong>以空闲区链表为例</strong><ul>
-<li>首次适配: 在空闲区链表中从头开始查找符合申请内存大小的块，直到找到满足条件的为止。由于该算法不断从头开始申请内存，导致大部分使用的都是低地址空间的内存，从而留下了高地址空间来满足大内存的申请要求。缺点是较低的地址空间中频繁的申请和释放导致低地址空间存在较多内存碎片，同时每次都从头开始查找，查找效率较低</li>
-<li>下次适配: 是对首次适配算法的改进，即每次都上次适配的地址开始向下查找，而不是从头开始。该算法使得内存使用均匀，但是可能会导致不存在大的内存块来满足内存分配</li>
-<li>最佳适配: 首先按照空闲区大小从小到大进行排序，然后每次都从头开始匹配，这样保证每次分配的结果都是最优的。但是实际由于空闲区不一定与申请的内存大小完全相同，会导致产生很多较小的内存碎片，同时每次分配后都需要重新排序，开销较大</li>
-<li>最差适配: 首先按照空闲区大小从大到小进行排序，然后每次将最大空闲区内存块进行分配，然后如果空闲区过大，可以进行对空闲区进行二次分配。这样如果不能分配，则所有空闲区都不能分配</li>
-</ul>
-</li>
-<li>回收算法 <strong>一般来说，回收算法和分配算法是相关联的</strong><ul>
-<li>四种情况: 从左往右从上往下分别为上相邻，下相邻，上下相邻和上下不相邻<br><img src="/images/计算机中的内存模型之内存回收.png" alt="img"></li>
-</ul>
-</li>
-<li>内存碎片问题: 指的是内存中占据一定大小的空间却无法被使用的内存，分为内碎片和外碎片<ul>
-<li>内碎片: 比如按照页式等长分配，如果某进程需要5页多内存，那么只能给其分配6页内存，此时多余分配的不到1页的内存无法被其他进程使用，称为内碎片</li>
-<li>外碎片: 尚未被分配的且因为内存太小而无法被再次分配的内存块称为外碎片</li>
-<li>紧缩技术: 对内存碎片进行合并的方法。原理是将暂时不运行的进程安全的移动位置，独立出内存，从而将多个内存碎片进行组装得到一个较大的内存块</li>
-</ul>
-</li>
-<li>伙伴算法: Linux系统内存分配和回收算法的实现。基本思想是将内存大小看做2的n次方，如果一个进程申请的内存块大小m满足<code>2^n-1 &lt; m &lt; 2^n</code>，则将此时的内存块进行分配。如下图，当进程需要200K空间时，1M等于1024K，如果m小于1M的一半，那么继续分离m，当分离到256时，刚好能满足200K的需求，所以进行分配。内存回收时，根据左右相邻的占用情况进行合并<br><img src="/images/计算机中的内存模型之伙伴算法.png" alt="img"></li>
-</ul>
-</li>
-<li><p>虚拟内存: 进程运行于内存之中，每一个进程都有独立的内存地址空间。进程的内存地址空间是抽象出来的，属于虚拟内存</p>
-<ul>
-<li>特点<ul>
-<li>将物理内存看做是磁盘的高速缓存，在物理内存中只保留活跃的数据并根据需要在物理内存和磁盘中进行数据交换，使得物理内存的使用更加高效</li>
-<li>为每一个进程抽象出一致的内存空间，使得多进程可以更加简单的运行；同时保证每一个进程的地址空间不会被其他进程破坏</li>
-</ul>
-</li>
-<li>运行过程<ul>
-<li>进程1在访问物理内存的数据时，首先获得的是虚拟内存地址空间的地址</li>
-<li>通过<code>MMU</code>将虚拟地址进行转换得到物理内存地址，从而获取数据</li>
-<li>由于物理内存空间有限，只需要将每一个进程常用的数据加载到内存之中，其他的数据先暂存到磁盘(Swap分区)上</li>
-<li>当进程在访问物理内存时，如果物理内存中的数据不存在，则发生中断，然后将磁盘上对应的数据加载到内存之中<br><img src="/images/计算机中的内存模型之虚拟内存.png" alt="img"></li>
-</ul>
-</li>
-<li>页式管理: 将物理内存、虚拟内存和磁盘上的交换分区都划分为固定大小的内存块，一般为4K。 <strong>等长划分</strong><ul>
-<li>页表: 对划分的内存块进行管理<br><img src="/images/计算机中的内存模型之页表.png" alt="img"><ul>
-<li>页表项: 页表中的每一项，包括地址转换和标记位。比如以x86架构的32位机器，地址总线为32位，寻址能力为2^32，页大小为4K，即2^12。因此我们需要(32-12)=20位来表示物理内存的页框号，即物理内存能够被分为2^20个页。标记位主要包括有效位，即该页面在物理内存中还是在磁盘上；访问位，即该页近期是否被访问过；修改位，即该页近期是否被修改过；保护位，即该页面是否属于操作系统，如果是则普通进程没有权限访问它<br><img src="/images/计算机中的内存模型之页表项.png" alt="img"><br><img src="/images/计算机中的内存模型之页框号.png" alt="img"></li>
-<li>单一页表: 页表必须连续存放，并且需要常驻内存，当地址空间很大时，页表会占用很大空间</li>
-<li>多级页表: 根据使用过的页面来建立页表，一级索引二级，二级索引内存<br><img src="/images/计算机中的内存模型之多级页表.png" alt="img"></li>
-</ul>
-</li>
-<li>MMU: Memory Management Unit，是CPU管理虚拟存储器和物理存储器的控制线路，同时负责将虚拟地址转换为物理地址，以及提供硬件机制的内存访问授权</li>
-<li>快表TLB: 页表项的缓存，提高页面查询速度</li>
-<li>页错误/缺页异常: 当访问的页面在页表中没有记录或者页表项的有效位为0时，此时产生缺页异常，需要操作系统将磁盘上的数据交换到内存中</li>
-<li>页面置换算法: 针对内存和磁盘上数据的交换，目的是尽量减少页面交换和减少缺页异常，因为磁盘访问比较耗时<ul>
-<li>OPT: 理想页面置换算法，将未来不使用或很久以后才使用的页面置换出内存 <strong>该算法并不能实现，仅仅是页面置换算法的一个衡量标准</strong></li>
-<li>FIFO: 先进先出算法，将最早到来的页面置换出去，简单但不高效</li>
-<li>第二次机会: FIFO的一种改进，即当页面要被置换出去时，如果页表项中的访问位为1，则不置换，而是将访问我设置为0，同时将其放到队列末尾</li>
-<li>时钟算法: 对第二次机会算法的改进，将链式结构改为环形结构，这样就不需要出现将队头放入到队尾的这种比较耗时的操作</li>
-<li>LRU: 最少使用算法，将近期使用次数最少的页置换出去</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>段式管理: 将进程划分为若干个段进行存储，每一个段都是一个逻辑实体，比如程序段、数据段等。通过段表来进行管理，段表中包括段号、段起始点、装入位、段长度等。 <strong>不等长划分</strong></li>
-<li>段/页式管理: 通过段表找到段，再通过段表中的段内偏移(实际是页框号加页内偏移)来找到页<br><img src="/images/计算机中的内存模型之段页式管理.png" alt="img"></li>
-<li>内存映射: 使用<code>mmap</code>函数实现，该函数在内核中建立了文件与虚拟内存空间中某一段内存映射关系，这样该文件便脱离了磁盘文件系统的管理。进程在操作这一段内存时，操作系统自动将对应的数据写入到文件中，而不需要调用效率较低的<code>read</code>,<code>write</code>系统调用函数。同时也可以基于<code>mmap</code>实现不同进程间的文件共享</li>
-<li>写时复制: 使用<code>fork</code>函数创建子进程时，父子进程都通过各自的页表映射打牌物理内存上相同的页，但是当子进程修改内存数据时，由于页表上的访问权限位为只读，此时操作系统为子进程分配新的页</li>
-</ul>
-</li>
-</ul>
-<h2 id="磁盘"><a href="#磁盘" class="headerlink" title="磁盘"></a>磁盘</h2><ul>
-<li>磁盘结构: 通过磁头的转动来获取磁盘上的数据</li>
-</ul>
-<p><img src="/images/计算机中的内存模型之磁盘结构1.png" alt="img"><br><img src="/images/计算机中的内存模型之磁盘结构2.png" alt="img"></p>
-<ul>
-<li>磁盘存取: 通过磁盘控制器来存取数据；磁盘控制器将数据从磁盘读取到IO总线上，然后通过总线传送到内存中。内存此时可以看做是磁盘的一个高速缓存<ul>
-<li>寻道时间: 将磁头组合定位到所在磁道的柱面上需要的时间</li>
-<li>旋转延迟: 等待访问块中第一个扇区转到磁头下的时间</li>
-<li>传输数据: 读写数据时，数据所在磁盘和扇区间的空隙经过磁头的时间</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/计算机中的内存模型之磁盘控制器.png" alt="img"></p>
-<ul>
-<li><p>磁盘调度</p>
-<ul>
-<li>调度算法: 磁盘本身也会根据内存的分页机制来进行分页；由于页面的请求顺序是随机的，但是磁盘控制器控制的磁头组合只有一个，因此需要通过磁盘调度算法实现在最短时间内完成最多的页面请求<ul>
-<li>FCFS: 先来先服务调度算法，将磁盘页面请求排成一个队列，先请求的先服务。优点是公平，缺点是效率太低<br><img src="/images/计算机中的内存模型之磁盘调度算法FCFS.png" alt="img"></li>
-<li>SSTF: 最短寻道时间算法，优先选择距离当前磁头最近的请求。优点是改善了平均请求耗时，缺点是不公平，比如某些距离磁头较远的请求可能长时间得不到响应<br><img src="/images/计算机中的内存模型之磁盘调度算法SSTF.png" alt="img"></li>
-<li>SCAN: 电梯调度算法，当有磁盘页面请求时，将磁头按一个方向移动，当该方向服务完毕后再转换方向，类似电梯。由于磁盘也是高速旋转设备，让它停止并转换方向也是非常耗时的<br><img src="/images/计算机中的内存模型之磁盘调度算法SCAN.png" alt="img"></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>磁盘预读和缓冲: 提高磁盘访问的效率，减少磁盘IO的次数</p>
-<ul>
-<li>预读: 每次读取磁盘数据时，总会多读取相邻的几页数据。利用局部性原理，减少磁盘IO的次数</li>
-<li>缓冲: 每次写入磁盘时，并不是立即写入到磁盘中去，而是先添加到缓冲区中，等缓冲区满或有必要的时候再刷新到磁盘中去，减少磁盘IO的次数</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/04/优秀博客收藏/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/04/优秀博客收藏/" itemprop="url">优秀博客收藏</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-04T10:26:27+08:00">
-                2019-03-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/阅读分享/" itemprop="url" rel="index">
-                    <span itemprop="name">阅读分享</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/04/优秀博客收藏/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/04/优秀博客收藏/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li>Go语言中的协程调度</li>
-</ul>
-<p><a href="https://www.ardanlabs.com/blog/2018/08/scheduling-in-go-part1.html" target="_blank" rel="noopener">OS Scheduler</a></p>
-<p><a href="https://www.ardanlabs.com/blog/2018/08/scheduling-in-go-part2.html" target="_blank" rel="noopener">Go Scheduler</a></p>
-<p><a href="https://www.ardanlabs.com/blog/2018/12/scheduling-in-go-part3.html" target="_blank" rel="noopener">Concurrency</a></p>
-<ul>
-<li><p>Mysql中InnoDB和MyISAM的索引设计和实现<br><a href="http://blog.codinglabs.org/articles/theory-of-mysql-index.html" target="_blank" rel="noopener">Mysql Index</a></p>
-</li>
-<li><p>Docker For Mac宿主机直连容器的方法</p>
-</li>
-</ul>
-<p><a href="https://pjw.io/articles/2018/04/25/access-to-the-container-network-of-docker-for-mac/" target="_blank" rel="noopener">Docker For Mac</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/01/LevelDB-入门/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/01/LevelDB-入门/" itemprop="url">LevelDB-入门</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-01T14:27:34+08:00">
-                2019-03-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/01/LevelDB-入门/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/01/LevelDB-入门/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ul>
-<li>可以持久化的本地KV存储系统，当内存占用较大时，会将部分数据存储到磁盘中</li>
-<li>存入的数据按照key值进行有序排序，相邻的key在存储文件中顺序存储；可以自定义key比较规则</li>
-<li>提供基本的读、写、删除操作，也提供针对多个key的批量原子操作</li>
-<li>支持数据快照(snapshot)功能，支持数据压缩功能</li>
-<li>写操作远远快于读操作，顺序读写操作远远快于随机读写操作</li>
-</ul>
-<h2 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h2><p><img src="/images/LevelDB之整体结构.png" alt="img"></p>
-<h2 id="静态角度"><a href="#静态角度" class="headerlink" title="静态角度"></a>静态角度</h2><ul>
-<li>内存中的Memtable: 写入操作的KV记录先保存在其中；占用的内存大小有上限</li>
-<li>内存中的Immutable Memtable: 只可读，不可写和删除</li>
-<li>磁盘中的Current文件: 记录当前Manifest文件名称，因为Manifest文件随着LevelDB的运行和SSTable的变化，会生成新的Manifest文件来记录该变化</li>
-<li>磁盘中的Manifest文件: 记录各个SSTable文件的管理信息，如文件所属level、文件名称、最小和最大Key等</li>
-<li>磁盘中的Log文件: 对写入操作进行记录；当系统崩溃后，如果内存中的某些数据尚未保存到磁盘中，可以使用其进行数据的恢复</li>
-<li>磁盘中的SSTable文件: 文件中的Key是有序的 <strong>level0的SSTable文件(后缀为.sst)和其它level的文件相比有特殊性，该层级内的多个.sst文件可能存在key重叠</strong></li>
-</ul>
-<h3 id="Log文件"><a href="#Log文件" class="headerlink" title="Log文件"></a>Log文件</h3><p>Log文件:</p>
-<p><img src="/images/LevelDB之Log文件.png" alt="img"></p>
-<p>Record:</p>
-<p><img src="/images/LevelDB之Record.png" alt="img"></p>
-<ul>
-<li>物理上来看，是以32KB为单位的物理Block，每一个Block为基本读取单位；一个Log文件就是连续32KB大小的Block构成的</li>
-<li>逻辑上来看，一条KV记录看做是一条Record<ul>
-<li>CheckSum: 对类型字段和数据字段的校验码</li>
-<li>记录长度: 数据的大小</li>
-<li>类型: 每条记录的逻辑结构和Log文件物理Block之间的关系</li>
-<li>数据: KV对</li>
-</ul>
-</li>
-</ul>
-<h3 id="SSTable文件"><a href="#SSTable文件" class="headerlink" title="SSTable文件"></a>SSTable文件</h3><p>Log文件中的Key是无序的，凡是SSTable文件中的Key是有序的</p>
-<p>物理布局:</p>
-<p><img src="/images/LevelDB之SSTable的物理布局.png" alt="img"></p>
-<p>逻辑布局:</p>
-<p><img src="/images/LevelDB之SSTable的逻辑布局.png" alt="img"></p>
-<ul>
-<li><p>物理上来看，与Log文件一样，分为固定大小的Block</p>
-<ul>
-<li>数据存储区</li>
-<li>压缩算法类型</li>
-<li>数据校验码</li>
-</ul>
-</li>
-<li><p>逻辑上来看，分为数据存储区和数据管理区</p>
-<ul>
-<li>数据存储区: 存放实际的KV对<ul>
-<li>有序的KV记录</li>
-<li>重启点信息: 由于Key有序，相邻Key有可能部分内容存在重叠，为了减少存储空间，可以将相同部分记录在第一个Key中，后续Key只需要记录不同部分。<code>重启点</code>表示从这条记录开始，不再采取只记录不同Key部分，而是重新记录所有的Key值</li>
-<li>重启点数量</li>
-</ul>
-</li>
-<li>数据管理区: 索引指针等管理数据，方便快速查找相应记录<ul>
-<li>元数据区</li>
-<li>元数据区索引</li>
-<li>数据索引区: 红色部分记录大于等于数据块i中最大Key值的那个Key，第二个字段指出数据块i在SSTable文件中的起始位置，第三个字段指出数据块i的大小</li>
-<li>文件尾部区</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>数据存储区:</p>
-<p><img src="/images/LevelDB之数据存储区.png" alt="img"></p>
-<p>KV记录:</p>
-<p><img src="/images/LevelDB之数据KV记录.png" alt="img"></p>
-<p>数据索引区:</p>
-<p><img src="/images/LevelDB之数据索引区.png" alt="img"></p>
-<p>文件尾部区:</p>
-<p><img src="/images/LevelDB之文件尾部区.png" alt="img"></p>
-<h3 id="Memtable-Immutable-Memtable"><a href="#Memtable-Immutable-Memtable" class="headerlink" title="Memtable/Immutable Memtable"></a>Memtable/Immutable Memtable</h3><p>Memtable和Immutable Memtable的结构是完全相同的，唯一区别在于后者是可读但不可写和删除</p>
-<p>提供了读、写和删除的操作接口；实际上并不会真正进行删除操作，而是将删除操作作为插入一条记录而实现的，同时将Key加上删除标记，真正的删除操作在后续写入磁盘的压缩操作中进行</p>
-<p>Memtable中的Key是有序的，<strong>实际实现的数据结构是SkipList</strong></p>
-<h2 id="动态角度"><a href="#动态角度" class="headerlink" title="动态角度"></a>动态角度</h2><p>读、写、删除操作的执行过程，数据压缩的过程以及系统崩溃后的恢复过程</p>
-<ul>
-<li>写入<ul>
-<li>先对Log文件进行追加写操作，成功后写入到Memtable中(更新跳跃表结构)；一次写入涉及一次磁盘顺序写和一次内存写入，故写入操作速度快</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/LevelDB之写入操作.png" alt="img"></p>
-<ul>
-<li><p>删除</p>
-<ul>
-<li>与写入操作相同，但不是真正执行删除操作，而是写入<code>Key:删除标记</code>，在后台的压缩操作中真正执行删除操作</li>
-</ul>
-</li>
-<li><p>读取</p>
-<ul>
-<li>依次从Memtable、Immutable Memtable和SSTable进行读取</li>
-<li>按照数据的新鲜程度来决定查找顺序，Level i+1的数据时Level i的数据经过压缩操作后得到的</li>
-<li>Level 0和其它Level中查找某个key的过程是不一样的。因为Level 0下的不同文件可能key的范围有重叠，某个要查询的key有可能多个文件都包含，这样的查找策略是先找出Level 0中哪些文件包含这个key(通过Manifest问卷)，之后按照文件的新鲜程度排序，依次查找，读出key对应的value。而如果是非Level 0的话，因为这个Level的文件之间key是不重叠的，所以只需要从一个文件就可以找到key对应的value</li>
-<li>对于SSTable，LevelDB具体的查找过程: 先在内存中的Cache中查找是否包含这个文件的缓存记录，如果包含，则从缓存中读取;如果不包含，则打开SSTable文件，同时将这个文件的索引部分加载到内存中并放入Cache中。这样Cache里面就有了这个SSTable的缓存项，但是只有索引部分在内存中，之后LevelDB根据索引定位到哪个内容Block会包含这条key，从文件中读出这个Block的内容，在根据记录一一比较，如果找到则返回结果，如果没有找到，那么说明这个Level的SSTable文件并不包含这个key，然后到下一级别的SSTable中去查找</li>
-<li>读取操作涉及的操作较多，效率没有写入快 <strong>因此LevelDB更适合写操作大于读操作，顺序读取较多的情况</strong></li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/LevelDB之读取操作.png" alt="img"></p>
-<ul>
-<li>压缩<ul>
-<li>当Memtable占用的内存大小达到上限时，需要将内存中的数据保存到磁盘中。此时，会生成新的Log文件和Memtable，原先的Memtable变为Immutable Memtable，而后续到来的数据将被保存到新的Log文件和Memtable中</li>
-<li>将Immutable Memtable中的数据导入至磁盘中，并进行压缩操作，最终形成一个SSTable文件</li>
-<li>SSTable文件随着内存数据的不断导出和压缩，形成一种层级结构，这也是称为LevelDB的原因</li>
-<li>压缩操作主要用来删除无效Key，减少数据规模，降低磁盘占用</li>
-<li>压缩的类型包括两种<ul>
-<li>minor<ul>
-<li>将Immutable Memtable中的数据直接导入到SSTable文件中</li>
-<li>由于Immutable Table是一个多层级的跳跃表，其中的记录是根据key有序排列的，所以minor压缩就是按照Key由小到大遍历，并依次写入一个Level 0 的新建SSTable文件中，写完后建立文件的index数据</li>
-<li>由此可以看出Level 0的多个文件中，可能存在key范围的重叠</li>
-</ul>
-</li>
-<li>major<ul>
-<li>当某个Level下的SSTable文件数目超过一定值后，会从这个Level的SSTable中选择一个或多个文件，将其和Level+1的SSTable文件合并</li>
-<li>对于大于Level 0的层级，选择其中一个文件就行；但是对于Level 0来说，如果指定一个文件的话，本Level中很可能有其他SSTable文件的key范围和这个文件有重叠，因此需要找出所有有重叠的文件和Level 1的文件进行合并</li>
-<li>对多个文件采用多路归并排序的方式进行合并</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/LevelDB之压缩操作.png" alt="img"></p>
-<ul>
-<li>缓存<ul>
-<li>如果读取操作如果没有在Memtable中找到记录，则要多次进行磁盘访问操作；使用缓存来降低磁盘访问次数，提高查找效率</li>
-<li>引入了两个不同的缓存<ul>
-<li>Table Cache<ul>
-<li>Key值是SSTable的文件名称</li>
-<li>Value<ul>
-<li>指向磁盘打开的SSTable文件的文件指针</li>
-<li>指向内存中这个SSTable文件对应的Table结构指针，其中保存了SSTable的Index内容以及用来指示Block Cache的CacheID</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Block Cache<ul>
-<li>Key是文件的CacheID加上Block在文件中的起始位置BlockOffset</li>
-<li>Value是Block的内容</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>如果读取的数据的局部性比较好，则大部分内容都能在Cache中读到，可以提高读取效率；如果是随机读取，则性能较差</li>
-</ul>
-</li>
-</ul>
-<p>Table Cache:</p>
-<p><img src="/images/LevelDB之Table缓存.png" alt="img"></p>
-<p>Block Cache:</p>
-<p><img src="/images/LevelDB之Block缓存.png" alt="img"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/28/Docker网络基础/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/28/Docker网络基础/" itemprop="url">Docker网络基础</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-28T11:42:16+08:00">
-                2019-02-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/02/28/Docker网络基础/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/28/Docker网络基础/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Docker提供的网络模式"><a href="#Docker提供的网络模式" class="headerlink" title="Docker提供的网络模式"></a>Docker提供的网络模式</h2><p><img src="/images/Docker之网络模式.png" alt="img"></p>
-<ul>
-<li><p>Bridge(默认模式): 创建名为<code>docker0</code>, IP地址为<code>172.17.0.1</code>的虚拟网桥，默认为NAT桥，在iptables中定义了数据转发的规则  <strong>桥接式网络</strong></p>
-<ul>
-<li>该网桥可以当交换机使用，如果网桥还设置了IP地址则还可以当网卡使用</li>
-<li>当启动一个容器时，给容器分配IP地址和一对虚拟网卡设备，一端在容器中，一端在桥上(此时网桥当做交换机使用)</li>
-<li>同一个宿主机上的多个容器之间，默认是可以互相访问的(都是使用<code>docker0</code>作为交换机，且网段相同)</li>
-<li>宿主机本身将<code>docker0</code>网桥看做IP为<code>172.17.0.1</code>的网卡，也可以与容器进行通信</li>
-<li>由于容器本身被NAT桥隐藏，因此外部主机(物理机或容器)默认是无法访问宿主机上的容器的</li>
-<li>为了让外部主机访问宿主机上的容器，需要使用DNAT方式，即在iptables中添加一个转发规则，当外部主机访问宿主机上的某个端口时该请求被转发到对应容器中  <strong>Docker中的端口映射</strong></li>
-</ul>
-</li>
-<li><p>Container: 多个容器间共享<code>Network</code>, <code>UTS</code>和<code>IPC</code>命名空间，容器间共享网络协议栈和网络虚拟设备  <strong>联盟式网络</strong></p>
-<ul>
-<li>同一个宿主机之间的容器，可以直接通过<code>localhost</code>或<code>127.0.0.1</code>进行访问</li>
-</ul>
-</li>
-<li><p>Host: 容器与宿主机共享<code>Network</code>命名空间，网络协议栈和网络设备与宿主机相同，没有独立的IP地址  <strong>开放式网络</strong></p>
-</li>
-<li><p>None: 容器中使用独立的<code>Network</code>命名空间，但是没有网络设备和配置  <strong>封闭式网络</strong></p>
-<ul>
-<li>只有<code>localhost</code>网络接口</li>
-<li>一般该容器主要是用例进行批处理的任务，不需要与外部进行网络通信</li>
-</ul>
-</li>
-<li><p>Overlay</p>
-</li>
-<li><p>自定义网络: <code>docker network create</code>命令自定义创建网络。如果创建的网络的模式为Bridge的话，此时会新建一个新的类似于<code>docker0</code>的网桥</p>
-</li>
-</ul>
-<h2 id="网络模式的使用"><a href="#网络模式的使用" class="headerlink" title="网络模式的使用"></a>网络模式的使用</h2><ul>
-<li><p><code>docker network ls</code>: 显示Docker支持的网络</p>
-</li>
-<li><p><code>docker network create</code>: 创建指定类型的网络</p>
-</li>
-<li><p><code>docker network inspect</code>: 查看Docker网络使用的网络模式</p>
-</li>
-<li><p><code>docker container create|run</code>命令</p>
-<ul>
-<li><code>--network</code>选项<ul>
-<li><code>--network bridge</code>: 设置容器使用Bridge模式的网络</li>
-<li><code>--network host</code>: 设置容器使用Host模式的网络</li>
-<li><code>--network none</code>: 设置容器使用None模式的网络</li>
-<li><code>--network container:containerName</code>: 设置与名称为containerName的容器共享Network命名空间</li>
-</ul>
-</li>
-<li><code>--host</code>选项: 设置容器的主机名，通过查看<code>/etc/hosts</code>或<code>hostname</code>命令来确认主机名</li>
-<li><code>--dns</code>选项: 设置容器的DNS服务器地址，通过查看<code>/etc/resolv.conf</code>来确认DNS服务器地址</li>
-<li><code>--add-host</code>选项: 增加主机名称和IP地址的映射关系，向hosts文件中写入DNS解析结果，通过查看<code>/etc/hosts</code>来确认</li>
-<li><code>-p</code>选项: 使用DNAT的方式，将容器内的端口和宿主机上的端口进行映射，可以通过<code>docker container port</code>命令查看映射结果 <strong>本质是在iptables中增加数据转发规则</strong><ul>
-<li><code>-p containerPort</code>: 将指定容器的端口映射到宿主机所有地址上的一个动态随机端口</li>
-<li><code>-p hostPort:containerPort</code>: 将指定容器的端口映射到宿主机所有地址上的指定端口</li>
-<li><code>-p ip::containerPort</code>: 将指定容器的端口映射到宿主机指定地址上的动态随机端口</li>
-<li><code>-p ip:hostPort:containerPort</code>: 将指定容器的端口映射到宿主机上指定地址上的指定端口</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><code>docker container inspect</code>: 查看容器使用的网络</p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/28/Docker镜像容器基础/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/28/Docker镜像容器基础/" itemprop="url">Docker镜像容器基础</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-28T10:03:40+08:00">
-                2019-02-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统架构/" itemprop="url" rel="index">
-                    <span itemprop="name">系统架构</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/02/28/Docker镜像容器基础/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/28/Docker镜像容器基础/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Docker镜像包含启动一个容器所需要的文件系统及其内容</p>
-<h2 id="镜像和容器的本质"><a href="#镜像和容器的本质" class="headerlink" title="镜像和容器的本质"></a>镜像和容器的本质</h2><ul>
-<li><p>采用分层构建机制，最底层为bootfs，其上为rootfs</p>
-<ul>
-<li>bootfs: 用于系统引导的文件系统，包括bootloader和kernel，容器启动完成后会被卸载以节约内存资源</li>
-<li>rootfs: 位于bootfs之上，是容器的根文件系统；rootfs由内核挂载为只读模式，然后通过<code>联合挂载</code>技术额为挂载一个可写层</li>
-</ul>
-</li>
-<li><p>一个镜像可以看做包含多个只读层，然后通过联合文件系统(Union File System)技术将不同的层整合成一个文件系统</p>
-<ul>
-<li>多个只读层对用户是透明的，用户看到的就是一个文件系统</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之镜像的本质.png" alt="img"></p>
-<ul>
-<li>由此，提出了镜像层的概念<ul>
-<li>一个镜像可以看做包含多个镜像层，可以使用<code>docker image history</code>来查看镜像层信息</li>
-<li>每一层除了包含自身内容，还包含一些元数据信息和指向下一层的指针，可以使用<code>docker image inspect</code>来查看元数据信息</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之镜像层.png" alt="img"></p>
-<ul>
-<li>一个未被运行的容器的定义几乎和镜像是一模一样，唯一区别在于<strong>容器的最上面的镜像层是可读写的</strong></li>
-</ul>
-<p><img src="/images/Docker之容器的本质.png" alt="img"></p>
-<ul>
-<li>因此，未被运行的容器 = 镜像 + 读写层</li>
-</ul>
-<p><img src="/images/Docker之镜像和容器的区别.png" alt="img"></p>
-<ul>
-<li>一个处于运行状态的容器被定义为一个可读写的文件系统、隔离的进程空间及其中包含的进程</li>
-</ul>
-<p><img src="/images/Docker之运行的容器的本质.png" alt="img"></p>
-<ul>
-<li>通过文件系统隔离技术，容器中的进程对文件系统的修改、删除和创建等操作，仅仅作用于最上层的可读写镜像层，不会影响下层</li>
-</ul>
-<p><img src="/images/Docker之容器对文件的修改.png" alt="img"></p>
-<h2 id="对镜像和容器操作命令的理解"><a href="#对镜像和容器操作命令的理解" class="headerlink" title="对镜像和容器操作命令的理解"></a>对镜像和容器操作命令的理解</h2><h3 id="Image"><a href="#Image" class="headerlink" title="Image"></a>Image</h3><ul>
-<li><code>docker image ls</code><ul>
-<li>列出所有镜像中的镜像层信息</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之image ls命令.png" alt="img"></p>
-<p><img src="/images/Docker之image ls -a命令.png" alt="img"></p>
-<ul>
-<li><code>docker image rm</code><ul>
-<li>将镜像中的只读层软删除(当该层不再被使用时才会真正删除)</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之image rm命令.png" alt="img"></p>
-<ul>
-<li><code>docker image build</code><ul>
-<li>反复执行<code>docker container run</code>, 修改可读写层、<code>docker commit</code></li>
-<li>在每一次循环中生成一个新的层，最终得到一个镜像</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之image build命令.png" alt="img"></p>
-<ul>
-<li><code>docker image save</code><ul>
-<li>将镜像中的镜像层进行压缩，同时保存每一层的元数据信息</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之image save命令.png" alt="img"></p>
-<ul>
-<li><code>docker image history</code><ul>
-<li>递归输出镜像中的各个镜像层</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之image history命令.png" alt="img"></p>
-<h3 id="Container"><a href="#Container" class="headerlink" title="Container"></a>Container</h3><ul>
-<li><code>docker container create</code><ul>
-<li>在指定的镜像最上层添加一个可读写层，生成一个新的容器</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之container create命令.png" alt="img"></p>
-<ul>
-<li><code>docker container start</code><ul>
-<li>为容器中的文件系统创建一个进程隔离空间，并在其中运行进程</li>
-<li>一个容器只可以有一个进程隔离空间</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之container start命令.png" alt="img"></p>
-<ul>
-<li><code>docker container run</code><ul>
-<li>先添加可读写层；再创建进程隔离空间并运行进程</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之container run命令.png" alt="img"></p>
-<ul>
-<li><code>docker container ls</code><ul>
-<li>列出所有容器D</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之container ls命令.png" alt="img"></p>
-<p><img src="/images/Docker之container ls -a命令.png" alt="img"></p>
-<ul>
-<li><code>docker container stop</code><ul>
-<li>向容器进程隔离空间中进程发送SIGTERM信号，然后停止所有的进程</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之container stop命令.png" alt="img"></p>
-<ul>
-<li><code>docker container kill</code><ul>
-<li>向容器进程隔离空间中进程发送SIGKILL信号</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之container kill命令.png" alt="img"></p>
-<ul>
-<li><code>docker container pause</code><ul>
-<li>使用cgroups的特性将容器的进程隔离空间暂停</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之container pause命令.png" alt="img"></p>
-<ul>
-<li><code>docker container rm</code><ul>
-<li>将容器中的可读写层删除，只可以对处于非运行状态的容器执行</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之container rm命令.png" alt="img"></p>
-<ul>
-<li><code>docker container commit</code><ul>
-<li>将容器中的可读写层转换为只读层，从而将容器转换为镜像</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之container commit命令.png" alt="img"></p>
-<ul>
-<li><code>docker container exec</code><ul>
-<li>在容器的进程隔离空间中启动一个新进程</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之container exec命令.png" alt="img"></p>
-<ul>
-<li><code>docker container|image inspect</code><ul>
-<li>提取容器或镜像中最顶层镜像层的元数据信息</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之container image inspect命令.png" alt="img"></p>
-<ul>
-<li><code>docker container export</code><ul>
-<li>将容器中的镜像层进行整合，移除不必要的层和元数据，得到一个层</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/Docker之container export命令.png" alt="img"></p>
-<h2 id="分层镜像与联合挂载技术"><a href="#分层镜像与联合挂载技术" class="headerlink" title="分层镜像与联合挂载技术"></a>分层镜像与联合挂载技术</h2><ul>
-<li>Aufs</li>
-<li>overlayfs</li>
-<li>btrfs</li>
-<li>devicemapper</li>
-<li>vfs</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/22/数据结构-SkipList/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/22/数据结构-SkipList/" itemprop="url">数据结构-SkipList</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-22T14:41:34+08:00">
-                2019-02-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程技术/" itemprop="url" rel="index">
-                    <span itemprop="name">编程技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/02/22/数据结构-SkipList/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/22/数据结构-SkipList/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>经常使用的用于快速查找的平衡有序数据结构包括:</p>
-<ul>
-<li>AVL树</li>
-<li>红黑树</li>
-<li>B树</li>
-</ul>
-<p>这些数据结构的实现往往比较复杂</p>
-<p>而在开源的Redis和LevelDB等软件中，使用了SkipList（跳跃表）这一数据结构来作为平衡有序数据结构。SkipList的原理简单，实现容易，且操作效率与其他数据结构差距不大。</p>
-<h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><ul>
-<li>有序列表的搜索: 二分查找</li>
-</ul>
-<p><img src="/images/SkipList之有序列表.png" alt="img"></p>
-<ul>
-<li>随机化提取某些节点</li>
-</ul>
-<p><img src="/images/SkipList之提取某些元素1.png" alt="img"></p>
-<ul>
-<li>继续随机化提取某些节点</li>
-</ul>
-<p><img src="/images/SkipList之提取某些元素2.png" alt="img"></p>
-<p>SkipList使用这些随机化提取的元素作为查找时的索引，这样在搜索时可以提高查找的效率</p>
-<h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ul>
-<li>有很多层结构组成</li>
-<li>每一层都是有序链表</li>
-<li>最底层包含所有元素</li>
-<li>如果一个元素出现在第i层链表中，则也会出现在第i层之下的链表中</li>
-<li>每一个元素节点包含两个指针，一个指向同层链表的下一个元素，一个指向下一层链表的元素</li>
-</ul>
-<p><img src="/images/SkipList之整体结构.png" alt="img"></p>
-<ul>
-<li><p>查找元素X</p>
-<ul>
-<li>在每一层进行查找，设置查找起点P为根节点</li>
-<li>当P为空指针时，返回查找失败</li>
-<li>当P.Next.Value等于X时，返回成功；当P.Next.Value小于X时，P设置为P.Next，返回第二步</li>
-</ul>
-</li>
-<li><p>添加元素</p>
-<ul>
-<li>确定每一层需要添加的元素，一共需要占据n层（随机值）</li>
-<li>使用查找过程在每一层确定查出需要插入的位置</li>
-<li>在插入位置后分别插入元素，调整指针值</li>
-</ul>
-</li>
-<li><p>删除元素</p>
-<ul>
-<li>在每一层查找元素，获取节点</li>
-<li>删除该节点元素，调整指针指向</li>
-</ul>
-</li>
-</ul>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Node 跳跃表中元素</span></span><br><span class="line"><span class="keyword">type</span> Node <span class="keyword">struct</span> &#123;</span><br><span class="line">    key   <span class="keyword">uint64</span>      <span class="comment">// 节点元素key</span></span><br><span class="line">    value <span class="keyword">interface</span>&#123;&#125; <span class="comment">// 节点元素值</span></span><br><span class="line">    level <span class="keyword">int</span>         <span class="comment">// 当前节点的层数</span></span><br><span class="line">    next  *Node       <span class="comment">// 当前元素指向的当前层次的下一个元素</span></span><br><span class="line">    prev  *Node       <span class="comment">// 当前元素指向的当前层次的前一个元素</span></span><br><span class="line">    down  *Node       <span class="comment">// 当前元素指向的下一层的元素</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// NewNode 创建新的跳跃表元素</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewNode</span><span class="params">(key <span class="keyword">uint64</span>, value <span class="keyword">interface</span>&#123;&#125;, level <span class="keyword">int</span>)</span> *<span class="title">Node</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;Node&#123;</span><br><span class="line">        key:   key,</span><br><span class="line">        value: value,</span><br><span class="line">        level: level,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// SkipList 跳跃表</span></span><br><span class="line"><span class="keyword">type</span> SkipList <span class="keyword">struct</span> &#123;</span><br><span class="line">    level <span class="keyword">int</span>     <span class="comment">// 跳跃表的层数</span></span><br><span class="line">    size  <span class="keyword">int32</span>   <span class="comment">// 跳跃表中元素的数量</span></span><br><span class="line">    head  []*Node <span class="comment">// 跳跃表的头元素列表</span></span><br><span class="line">    tail  []*Node <span class="comment">// 跳跃表的尾元素列表</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// NewSkipList 创建跳跃表</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewSkipList</span><span class="params">(level <span class="keyword">int</span>)</span> *<span class="title">SkipList</span></span> &#123;</span><br><span class="line">    s := &amp;SkipList&#123;</span><br><span class="line">        level: level,</span><br><span class="line">    &#125;</span><br><span class="line">    s.head = <span class="built_in">make</span>([]*Node, level, level)</span><br><span class="line">    s.tail = <span class="built_in">make</span>([]*Node, level, level)</span><br><span class="line">    <span class="keyword">for</span> j := <span class="number">0</span>; j &lt; level; j++ &#123;</span><br><span class="line">        s.head[j] = NewNode(<span class="number">0</span>, <span class="literal">nil</span>, level)</span><br><span class="line">        s.tail[j] = NewNode(<span class="number">0</span>, <span class="literal">nil</span>, level)</span><br><span class="line">        s.head[j].next = s.tail[j]</span><br><span class="line">        s.tail[j].next = <span class="literal">nil</span></span><br><span class="line">        s.head[j].prev = <span class="literal">nil</span></span><br><span class="line">        s.tail[j].prev = s.head[j]</span><br><span class="line">        <span class="keyword">if</span> j == <span class="number">0</span> &#123;</span><br><span class="line">            s.head[j].down = <span class="literal">nil</span></span><br><span class="line">            s.tail[j].down = <span class="literal">nil</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            s.head[j].down = s.head[j<span class="number">-1</span>]</span><br><span class="line">            s.tail[j].down = s.tail[j<span class="number">-1</span>]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Search 在跳跃表进行查找</span></span><br><span class="line"><span class="comment">// 如果node为nil，说明查找失败</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *SkipList)</span> <span class="title">Search</span><span class="params">(key <span class="keyword">uint64</span>)</span> *<span class="title">Node</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> key &lt;= <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> pNode *Node</span><br><span class="line">    <span class="keyword">for</span> i := s.level - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i-- &#123; <span class="comment">// 从最高层向下查找</span></span><br><span class="line">        pNode = s.head[i]</span><br><span class="line">        <span class="keyword">for</span> pNode != <span class="literal">nil</span> &amp;&amp; pNode != s.tail[i] &#123;</span><br><span class="line">            <span class="keyword">if</span> pNode.key == key &#123;</span><br><span class="line">                <span class="keyword">return</span> pNode</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> pNode.key &lt; key &#123;</span><br><span class="line">                pNode = pNode.next</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Insert 在跳跃表上进行插入</span></span><br><span class="line"><span class="comment">// 如果元素已存在，则进行更新操作</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *SkipList)</span> <span class="title">Insert</span><span class="params">(key <span class="keyword">uint64</span>, value <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> key &lt;= <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    previousNodes := <span class="built_in">make</span>([]*Node, s.level) <span class="comment">// 在每一层上待插入元素的前置元素</span></span><br><span class="line">    bFind := <span class="literal">false</span></span><br><span class="line">    <span class="keyword">var</span> pNode *Node</span><br><span class="line">    <span class="keyword">for</span> i := s.level - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i-- &#123; <span class="comment">// 从最高层向下查找</span></span><br><span class="line">        pNode = s.head[i]</span><br><span class="line">        <span class="keyword">for</span> pNode != <span class="literal">nil</span> &amp;&amp; pNode != s.tail[i] &#123;</span><br><span class="line">            <span class="keyword">if</span> pNode.key == key &#123;</span><br><span class="line">                bFind = <span class="literal">true</span> <span class="comment">// 如果找到了节点，则只需要将节点的值更新，不再需要前置元素列表</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> pNode.key &lt; key &#123;</span><br><span class="line">                pNode = pNode.next</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                pNode = pNode.prev</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> bFind &#123;</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> pNode == s.tail[i] &#123;</span><br><span class="line">            previousNodes[i] = pNode.prev</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            previousNodes[i] = pNode <span class="comment">// 将当前层的前置元素插入到列表中</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> bFind &#123; <span class="comment">// 如果查找到该元素，则对其进行更新操作</span></span><br><span class="line">        <span class="keyword">for</span> pNode != <span class="literal">nil</span> &#123;</span><br><span class="line">            pNode.value = value</span><br><span class="line">            pNode = pNode.down</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        level := randomLevel(s.level)</span><br><span class="line">        <span class="keyword">var</span> downNode *Node</span><br><span class="line">        <span class="keyword">for</span> l := <span class="number">0</span>; l &lt; level; l++ &#123; <span class="comment">// 插入元素并更新next和down指针</span></span><br><span class="line">            newNode := NewNode(key, value, level)</span><br><span class="line">            newNode.next = previousNodes[l].next</span><br><span class="line">            newNode.prev = previousNodes[l]</span><br><span class="line">            previousNodes[l].next = newNode</span><br><span class="line">            newNode.next.prev = newNode</span><br><span class="line">            newNode.down = downNode</span><br><span class="line">            downNode = newNode</span><br><span class="line">        &#125;</span><br><span class="line">        atomic.AddInt32(&amp;s.size, <span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Delete 从跳跃表中删除元素</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *SkipList)</span> <span class="title">Delete</span><span class="params">(key <span class="keyword">uint64</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> pNode *Node</span><br><span class="line">    bFind := <span class="literal">false</span></span><br><span class="line">    <span class="keyword">for</span> i := s.level - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i-- &#123; <span class="comment">// 从最高层向下查找</span></span><br><span class="line">        pNode = s.head[i]</span><br><span class="line">        <span class="keyword">for</span> pNode != <span class="literal">nil</span> &amp;&amp; pNode != s.tail[i] &#123;</span><br><span class="line">            <span class="keyword">if</span> pNode.key == key &#123;</span><br><span class="line">                bFind = <span class="literal">true</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> pNode.key &lt; key &#123;</span><br><span class="line">                pNode = pNode.next</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                pNode = pNode.down</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> bFind &#123;</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> bFind &#123; <span class="comment">// 如果查找到该元素，则对其进行删除操作</span></span><br><span class="line">        <span class="keyword">for</span> pNode != <span class="literal">nil</span> &#123;</span><br><span class="line">            pNode.prev.next = pNode.next</span><br><span class="line">            pNode.next.prev = pNode.prev</span><br><span class="line">            pNode = pNode.down</span><br><span class="line">        &#125;</span><br><span class="line">        atomic.AddInt32(&amp;s.size, <span class="number">-1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 生成[1, n]的随机数</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">randomLevel</span><span class="params">(n <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">    rand.Seed(time.Now().UnixNano())</span><br><span class="line">    <span class="keyword">return</span> rand.Intn(n) + <span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>后续可以优化的点:</p>
-<ul>
-<li>使用shard方法(基于key进行hash)对跳跃表中的元素进行分组，提高并发读写的效率</li>
-<li>使用读写锁进行并发读写的保护</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/19/Github上的优秀Golang项目/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/19/Github上的优秀Golang项目/" itemprop="url">Github上的优秀Golang项目</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-19T13:09:56+08:00">
-                2019-02-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程技术/" itemprop="url" rel="index">
-                    <span itemprop="name">编程技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/02/19/Github上的优秀Golang项目/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/19/Github上的优秀Golang项目/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><img src="/images/Github上的优秀Golang项目.png" alt="img"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/15/Golang-defer/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yihang">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yihang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/15/Golang-defer/" itemprop="url">Golang-defer</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-15T11:10:26+08:00">
-                2019-02-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程技术/" itemprop="url" rel="index">
-                    <span itemprop="name">编程技术</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/02/15/Golang-defer/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/15/Golang-defer/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>defer语句是Golang提供的一种用于<code>注册延时调用</code>的机制，可以让函数或者语句在当前函数执行完毕后<code>正常return和异常panic</code>执行</p>
-<ul>
-<li>使用场景</li>
-</ul>
-<p>一般defer语句用在资源回收的场景下，如关闭文件、释放锁、关闭连接等，如</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">f, err := os.Open(filename)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span>&#123;</span><br><span class="line">    <span class="built_in">panic</span>(err)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> f != <span class="literal">nil</span>&#123;</span><br><span class="line">    <span class="keyword">defer</span> f.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>底层原理</li>
-</ul>
-<p>defer语句在进行注册时，将注册的语句或函数压入到一个栈中，在当前函数return前，以<code>先进后出</code>的顺序执行，原因在于后面注册的语句或函数有可能依赖前面的资源，即资源的释放顺序应该与资源的申请顺序相反</p>
-<p>defer注册的语句或函数对外部变量的引用有两种方式，分别作为<code>函数参数</code>或<code>闭包引用</code>。在作为函数参数时，<code>在defer定义处就将变量当前值传递给defer，并且被缓存起来</code>；在作为闭包引用时，则<code>在注册的语句或函数真正调用时根据整个上下文确定变量当前值</code>。 <strong>函数参数中使用的是值传递；闭包中捕获的常量和变量都是引用传递</strong></p>
-<p>当变量以函数参数的形式被defer使用时，如果变量是值类型，则变量的值与defer定义时一致；如果变量是一个引用类型(如slice、map、chan或指针)时，虽然将变量当前值缓存了，但是引用指向的值可能会有变化</p>
-<p>defer注册的语句或函数在return之前执行，实际执行流程是</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">返回值 = xxx</span><br><span class="line">调用defer注册的语句或函数</span><br><span class="line">空的return</span><br></pre></td></tr></table></figure>
-<ul>
-<li>配合recover，实现异常处理</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2589,7 +2707,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">89</span>
+                  <span class="site-state-item-count">97</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2611,7 +2729,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">162</span>
+                  <span class="site-state-item-count">169</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
